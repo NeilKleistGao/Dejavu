@@ -1,0 +1,20 @@
+server:
+  port: 8001
+
+# mybatis配置
+mybatis:
+  type-aliases-package: com.buptse.pojo
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+# spring配置
+spring:
+  application:
+    name: pojo-com.buptse.service-provider
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/dejavudb?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: jlmnb
+    password: 123456
+
