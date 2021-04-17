@@ -9,6 +9,9 @@
         <module>buy-car-model</module>
         <module>sell-car-modlel</module>
         <module>personal-manage-model</module>
+        <module>eureka-7100</module>
+        <module>eureka-7200</module>
+        <module>eureka-7300</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -30,7 +33,7 @@
            <dependency>
                <groupId>org.springframework.cloud</groupId>
                <artifactId>spring-cloud-dependencies</artifactId>
-               <version>Greenwich.SR1</version>
+               <version>2020.0.2</version>
                <type>pom</type>
                <scope>import</scope>
            </dependency>

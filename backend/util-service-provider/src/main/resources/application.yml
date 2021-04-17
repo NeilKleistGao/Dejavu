@@ -18,3 +18,16 @@ spring:
     username: jlmnb
     password: 123456
 
+# Eureka的配置,服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server-01.com:7100/eureka/,http://eureka-server-02.com:7200/eureka/,http://eureka-server-03.com:7300/eureka/
+  instance:
+    instance-id: util-service-provider-8001 # 修改eureka上的默认描述信息
+    prefer-ip-address: true
+
+# info配置
+info:
+  app.name: util.service.provider.8001
+
