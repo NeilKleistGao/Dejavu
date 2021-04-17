@@ -1,2 +1,13 @@
 server:
-  port: 8004
+  port: 9001
+
+# Eureka配置
+eureka:
+  client:
+    register-with-eureka: false # 不向Eureka注册自己
+    service-url:
+      defaultZone: http://eureka-server-01.com:7100/eureka/,http://eureka-server-02.com:7200/eureka/,http://eureka-server-03.com:7300/eureka/
+spring:
+  cloud:
+    inetutils:
+      preferred-networks: 10.128.219

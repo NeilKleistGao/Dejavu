@@ -10,19 +10,22 @@ mybatis:
 # spring配置
 spring:
   application:
-    name: pojo-com.buptse.service-provider
+    name: util-service-provider
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/dejavudb?useUnicode=true&characterEncoding=UTF-8&useSSL=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: jlmnb
     password: 123456
+  cloud:
+    inetutils:
+      preferred-networks: 10.128.219
 
 # Eureka的配置,服务注册到哪里
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka-server-01.com:7100/eureka/,http://eureka-server-02.com:7200/eureka/,http://eureka-server-03.com:7300/eureka/
+      defaultZone: http://eureka-server-01.com:7100/eureka/
   instance:
     instance-id: util-service-provider-8001 # 修改eureka上的默认描述信息
     prefer-ip-address: true
@@ -30,4 +33,3 @@ eureka:
 # info配置
 info:
   app.name: util.service.provider.8001
-
