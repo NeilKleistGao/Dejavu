@@ -1,0 +1,18 @@
+server:
+  port: 80
+spring:
+  application:
+    name: cluster-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server-01.com:7100/eureka,http://eureka-server-02.com:7200/eureka,http://eureka-server-03.com:7300/eureka
+  instance:
+    prefer-ip-address: true

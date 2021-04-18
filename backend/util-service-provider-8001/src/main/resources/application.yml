@@ -29,3 +29,5 @@ eureka:
 # info配置
 info:
   app.name: util.service.provider.8001
+
+

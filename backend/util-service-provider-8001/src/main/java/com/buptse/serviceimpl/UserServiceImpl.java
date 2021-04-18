@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User queryById(Integer id) {
+        int i = 1/0;
         return userDao.queryById(id);
     }
 
@@ -29,4 +30,5 @@ public class UserServiceImpl implements UserService {
     public List<User> queryAll() {
         return userDao.queryAll();
     }
+
 }

@@ -43,6 +43,31 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>io.github.resilience4j</groupId>-->
+<!--            <artifactId>resilience4j-spring-boot2</artifactId>-->
+<!--            <version>1.6.1</version>-->
+<!--            <exclusions>-->
+<!--                &lt;!&ndash; 没有配置的 先排除 不然会报错 &ndash;&gt;-->
+<!--                &lt;!&ndash;                <exclusion>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <groupId>io.github.resilience4j</groupId>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <artifactId>resilience4j-circuitbreaker</artifactId>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </exclusion>&ndash;&gt;-->
+
+<!--                <exclusion>-->
+<!--                    <groupId>io.github.resilience4j</groupId>-->
+<!--                    <artifactId>resilience4j-ratelimiter</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>io.github.resilience4j</groupId>-->
+<!--                    <artifactId>resilience4j-bulkhead</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>io.github.resilience4j</groupId>-->
+<!--                    <artifactId>resilience4j-timelimiter</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>
