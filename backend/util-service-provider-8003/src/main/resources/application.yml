@@ -1,0 +1,31 @@
+server:
+  port: 8003
+
+# mybatis配置
+mybatis:
+  type-aliases-package: com.buptse.pojo
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+# spring配置
+spring:
+  application:
+    name: UTIL-SERVICE-PROVIDER
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/dejavudb?useUnicode=true&characterEncoding=UTF-8&useSSL=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: jlmnb
+    password: 123456
+
+# Eureka的配置,服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server-01.com:7100/eureka,http://eureka-server-01.com:7100/eureka,http://eureka-server-01.com:7100/eureka
+  instance:
+    instance-id: util-service-provider-8003 # 修改eureka上的默认描述信息
+
+# info配置
+info:
+  app.name: util.service.provider.8003

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.buptse.dao.UserDao">
+
+    <insert id="addUser" parameterType="com.buptse.pojo.User">
+        insert into dept(uid,phone_number,mail,name,avatar,password)
+        values (#{uid},#{phone_number},#{mail},#{name},#{avatar},#{password})
+    </insert>
+
+    <select id="queryById" resultType="com.buptse.pojo.User" parameterType="Integer">
+        select * from user where uid = #{uid}
+    </select>
+
+    <select id="queryAll" resultType="com.buptse.pojo.User">
+       select * from user;
+    </select>
+
+
+</mapper>

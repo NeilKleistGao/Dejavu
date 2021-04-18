@@ -4,7 +4,6 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>util-service-provider</module>
         <module>entity-api</module>
         <module>buy-car-model</module>
         <module>sell-car-modlel</module>
@@ -12,6 +11,9 @@
         <module>eureka-7100</module>
         <module>eureka-7200</module>
         <module>eureka-7300</module>
+        <module>util-service-provider-8001</module>
+        <module>util-service-provider-8002</module>
+        <module>util-service-provider-8003</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
