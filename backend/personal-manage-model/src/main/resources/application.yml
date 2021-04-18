@@ -8,4 +8,24 @@ eureka:
     service-url:
       defaultZone: http://eureka-server-01.com:7100/eureka,http://eureka-server-02.com:7200/eureka,http://eureka-server-03.com:7300/eureka
 
-
+resilience4j.circuitbreaker:
+  backends:
+    # backendA 是断路器策略的命名
+    backendA:
+      # 表示断路器关闭状态下，环形缓冲区的大小
+      ringBufferSizeInClosedState: 5
+      # 表示断路器处于 HalfOpen 状态下，环形缓冲区的大小
+      ringBufferSizeInHalfOpenState: 3
+      # 表示断路器从 open 切换到 half closed 状态时，需要保持的时间
+      waitInterval: 5000
+      # 表示故障率阈值百分比，超过这个阈值，断路器就会打开
+      failureRateThreshold: 50
+      # 表示事件缓冲区大小
+      eventConsumerBufferSize: 10
+      # 表示开启健康检测
+      registerHealthIndicator: true
+      recordFailurePredicate: cn.com.scitc.RecordFailurePredicate
+      recordExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+      ignoreExceptions:
+        - org.springframework.web.client.HttpClientErrorException

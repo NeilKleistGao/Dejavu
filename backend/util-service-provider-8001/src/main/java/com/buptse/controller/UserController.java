@@ -24,6 +24,7 @@ public class UserController {
         return service.queryById(uid);
     }
 
+
     //获取一些配置的信息，得到具体的微服务
     @Autowired
     private DiscoveryClient client;

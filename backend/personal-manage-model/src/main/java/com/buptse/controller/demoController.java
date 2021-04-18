@@ -2,6 +2,7 @@ package com.buptse.controller;
 
 
 import com.buptse.pojo.User;
+import com.buptse.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,16 +15,11 @@ import org.springframework.web.client.RestTemplate;
 public class demoController {
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    //private static final  String REST_URL_PREFIX = "http://localhost:8001";
-
-    // for ribbon
-    private static final  String REST_URL_PREFIX = "http://UTIL-SERVICE-PROVIDER";
+    UserService service;
 
     @GetMapping("/user/get/{uid}")
     public User queryById(@PathVariable("uid") Integer uid) {
-        return restTemplate.getForObject(REST_URL_PREFIX+"/user/get/"+uid,User.class);
+        return service.queryById(uid);
     }
 
 
