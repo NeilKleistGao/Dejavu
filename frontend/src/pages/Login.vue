@@ -1,5 +1,5 @@
 <!--
- * @FileDescription: 主页文件
+ * @FileDescription: 登录页面
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
@@ -13,6 +13,10 @@
 
 <script>
 export default {
-  name: 'PageIndex'
+  name: 'Login'
 }
 </script>
+
+<style scoped>
+
+</style>

@@ -1,5 +1,5 @@
 <!--
- * @FileDescription: 主页文件
+ * @FileDescription: 车辆详细信息页面
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
@@ -13,6 +13,10 @@
 
 <script>
 export default {
-  name: 'PageIndex'
+  name: 'CarDetail'
 }
 </script>
+
+<style scoped>
+
+</style>

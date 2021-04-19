@@ -1,3 +1,10 @@
+<!--
+ * @FileDescription: 404页面文件
+ * @Author: NeilKleistGao
+ * @Date: 2021/4/19
+ * @LastEditors: NeilKleistGao
+ * @LastEditTime: 2021/4/19
+ -->
 <template>
   <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
     <div>

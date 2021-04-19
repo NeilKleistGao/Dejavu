@@ -1,5 +1,5 @@
 <!--
- * @FileDescription: 主页文件
+ * @FileDescription: 成交记录界面
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
@@ -13,6 +13,10 @@
 
 <script>
 export default {
-  name: 'PageIndex'
+  name: 'Transaction'
 }
 </script>
+
+<style scoped>
+
+</style>
