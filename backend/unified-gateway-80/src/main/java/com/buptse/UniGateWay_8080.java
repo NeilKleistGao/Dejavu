@@ -6,8 +6,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class UniGateWay_80 {
+public class UniGateWay_8080 {
     public static void main(String[] args) {
-        SpringApplication.run(UniGateWay_80.class,args);
+        SpringApplication.run(UniGateWay_8080.class,args);
     }
 }
