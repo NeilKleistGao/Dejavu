@@ -17,7 +17,10 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: jlmnb
     password: 123456
-
+  boot:
+    admin:
+      client:
+        url: http://localhost:8888
 # Eureka的配置,服务注册到哪里
 eureka:
   client:
@@ -29,3 +32,9 @@ eureka:
 # info配置
 info:
   app.name: util.service.provider.8003
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

@@ -3,8 +3,5 @@ server:
 spring:
   application:
     name: monitor-dashboard-8888
-management:
-  metrics:
-    tags:
-      application: ${spring.application.name}
+
 

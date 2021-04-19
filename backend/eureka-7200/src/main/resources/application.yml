@@ -11,3 +11,17 @@ eureka:
     service-url: # 监控页面
       defaultZone: http://eureka-server-01.com:7100/eureka/,http://eureka-server-03.com:7300/eureka/
 
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8888
+  application:
+    name: eureka-server-7200
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
