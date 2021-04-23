@@ -18,6 +18,7 @@
         <q-btn flat class="q-mr-xs" label="我要买车"/>
         <q-btn flat class="q-mr-xs" label="我要卖车"/>
         <q-btn flat class="q-mr-xs" :label="'当前城市：' + city"/>
+        <q-separator vertical inset/>
         <q-btn flat class="q-mr-xs" label="登录"/>
         <q-btn flat class="q-mr-xs" label="注册"/>
       </q-toolbar>

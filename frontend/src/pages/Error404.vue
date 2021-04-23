@@ -3,28 +3,15 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/4/19
+ * @LastEditTime: 2021/4/23
  -->
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
-    <div>
-      <div style="font-size: 30vh">
-        404
-      </div>
-
-      <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
-      </div>
-
-      <q-btn
-        class="q-mt-xl"
-        color="white"
-        text-color="blue"
-        unelevated
-        to="/"
-        label="Go Home"
-        no-caps
-      />
+  <div>
+    <img src="not_found.png" style="width: 70%; height: 50%; margin-left: 15%; margin-right: auto">
+    <br/>
+    <h3 class="text-center">找不到该页面</h3>
+    <div class="flex flex-center" style="margin-top: -30px">
+      <q-btn class="text-center" outline color="primary" size="lg" label="返回主页" to="/"/>
     </div>
   </div>
 </template>
