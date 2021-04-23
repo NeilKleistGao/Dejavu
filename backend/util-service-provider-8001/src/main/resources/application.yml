@@ -40,3 +40,4 @@ management:
     web:
       exposure:
         include: '*'
+

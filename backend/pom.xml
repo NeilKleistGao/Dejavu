@@ -15,7 +15,7 @@
         <module>util-service-provider-8002</module>
         <module>util-service-provider-8003</module>
         <module>monitor-dashboard-8888</module>
-        <module>unified-gateway-80</module>
+        <module>unified-gateway-8080</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
