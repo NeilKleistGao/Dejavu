@@ -8,10 +8,9 @@
 | /register | Register.vue | 注册页面，如果已登录，则重定向到用户主页 | 
 | /user | User.vue | 用户主页，允许修改部分个人信息，显示简略的各项记录 |
 | /sell | Sell.vue | 预约卖车页面，用户填写车辆信息 |
-| /bargain | Bargain.vue | 砍价记录页面，显示当前车辆过去所有砍价记录 |
 | /car | CarDetail.vue | 车辆详细信息页面，包含车辆信息，砍价操作和少量砍价记录 |
-| /subscription | Subscription.vue | 订阅页面，包含用户所订阅的车辆列表 |
-| /transaction | Trasaction.vue | 成交页面，可以查看当前用户所有成交记录（包括买车和卖车） |
+| /* | Error404.vue | 404页面 |
+
 ## 组件及组件功能
 | 组件文件 | 说明 |
 | --- | --- |

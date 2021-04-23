@@ -14,9 +14,12 @@
           <q-icon class="iconfont icon-drifting"></q-icon>
           Dejavu二手车交易平台
         </q-toolbar-title>
+
+        <q-btn flat class="q-mr-xs" label="我要买车"/>
+        <q-btn flat class="q-mr-xs" label="我要卖车"/>
         <q-btn flat class="q-mr-xs" :label="'当前城市：' + city"/>
-        <q-btn flat label="登录"/>
-        <q-btn flat label="注册"/>
+        <q-btn flat class="q-mr-xs" label="登录"/>
+        <q-btn flat class="q-mr-xs" label="注册"/>
       </q-toolbar>
     </q-header>
     <q-page-container>
