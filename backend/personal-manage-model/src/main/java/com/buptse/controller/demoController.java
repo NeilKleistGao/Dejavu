@@ -15,7 +15,6 @@ public class demoController {
     @Autowired
     UserService service;
 
-
     @GetMapping("/user/get/{uid}")
     public User queryById(@PathVariable("uid") Integer uid) {
         return service.queryById(uid);

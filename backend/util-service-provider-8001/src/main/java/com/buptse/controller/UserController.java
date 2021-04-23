@@ -1,8 +1,9 @@
 package com.buptse.controller;
 
 
+import com.buptse.mapper.UserMapper;
 import com.buptse.pojo.User;
-import com.buptse.service.UserService;
+import com.buptse.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -17,11 +18,12 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService service;
+    private IUserService service;
 
     @GetMapping("/user/get/{uid}")
     public User queryById(@PathVariable("uid") Integer uid) {
-        return service.queryById(uid);
+        User user = service.getById(uid);
+        return service.getById(uid);
     }
 
 
