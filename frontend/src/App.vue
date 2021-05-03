@@ -3,13 +3,13 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/4/19
+ * @LastEditTime: 2021/5/3
  -->
 <template>
-  <div id="q-app">
+  <q-layout id="q-app">
     <q-header></q-header>
     <router-view />
-  </div>
+  </q-layout>
 </template>
 <script>
 export default {
