@@ -16,10 +16,10 @@ spring:
     name: UTIL-SERVICE-PROVIDER
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/dejavudb?useUnicode=true&characterEncoding=UTF-8&useSSL=true
+    url: jdbc:mysql://82.156.26.80:3306/dejavu?useUnicode=true&characterEncoding=UTF-8&useSSL=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: jlmnb
-    password: 123456
+    username:
+    password:
   boot:
     admin:
       client:

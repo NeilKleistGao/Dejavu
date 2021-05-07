@@ -3,6 +3,7 @@ package com.buptse.controller;
 
 import com.buptse.mapper.UserMapper;
 import com.buptse.pojo.User;
+import com.buptse.service.ICarService;
 import com.buptse.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -18,13 +19,13 @@ public class UserController {
 
     @Autowired
     private IUserService service;
-
+    @Autowired
+    private ICarService carService;
     @GetMapping("/user/get/{uid}")
     public User queryById(@PathVariable("uid") Integer uid) {
         User user = service.getById(uid);
         return service.getById(uid);
     }
-
     //获取一些配置的信息，得到具体的微服务
     @Autowired
     private DiscoveryClient client;

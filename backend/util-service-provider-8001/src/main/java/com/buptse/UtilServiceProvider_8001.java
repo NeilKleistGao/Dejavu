@@ -17,7 +17,4 @@ public class UtilServiceProvider_8001 {
     public static void main(String[] args) {
         SpringApplication.run(UtilServiceProvider_8001.class,args);
     }
-
-
-
 }
