@@ -17,7 +17,7 @@ public class demoController {
 
     @GetMapping("/user/get/{uid}")
     public User queryById(@PathVariable("uid") Integer uid) {
-        return service.queryById(uid);
+        return service.getUserById(uid);
     }
 
 

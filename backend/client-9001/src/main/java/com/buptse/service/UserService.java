@@ -18,7 +18,7 @@ public class UserService {
     // for eureka cluster
     private static final  String REST_URL_PREFIX = "http://UTIL-SERVICE-PROVIDER";
 
-    public User queryById(Integer uid) {
+    public User getUserById(Integer uid) {
         return restTemplate.getForObject(REST_URL_PREFIX+"/user/get/"+uid,User.class);
     }
 
