@@ -10,7 +10,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 
@@ -25,8 +24,6 @@ public class UserController {
         User user = service.getById(uid);
         return service.getById(uid);
     }
-
-
 
     //获取一些配置的信息，得到具体的微服务
     @Autowired
