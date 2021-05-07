@@ -29,13 +29,13 @@ public class Bargain implements Serializable {
 
     private Integer uid;
 
-    private Integer carId;
+    private Integer car_id;
 
     private BigDecimal price;
 
-    private LocalDateTime startTime;
+    private LocalDateTime start_time;
 
-    private LocalDateTime endTime;
+    private LocalDateTime end_time;
 
 
 }

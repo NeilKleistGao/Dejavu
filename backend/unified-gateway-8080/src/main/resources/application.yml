@@ -9,10 +9,10 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: person-manage-route
+        - id: route
           uri: http://localhost:9001/
           predicates:
-            - Path=/user/**
+            - Path=/**
   boot:
     admin:
       client:

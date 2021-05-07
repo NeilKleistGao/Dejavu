@@ -23,7 +23,7 @@ public class CarController {
     private ICarService service;
 
     @GetMapping("/car")
-    public Car getCarById(@RequestParam String id){
+    public Car getCarById(@RequestParam Integer id){
         return service.getById(id);
     }
 

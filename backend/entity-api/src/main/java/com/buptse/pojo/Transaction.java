@@ -27,17 +27,17 @@ public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer buyerId;
+    private Integer buyer_id;
 
-    private Integer sellerId;
+    private Integer seller_id;
 
-    private Integer carId;
+    private Integer car_id;
 
-    private BigDecimal dealPrice;
+    private BigDecimal deal_price;
 
-    private LocalDateTime dealTime;
+    private LocalDateTime deal_time;
 
-    private Integer saleId;
+    private Integer sale_id;
 
 
 }
