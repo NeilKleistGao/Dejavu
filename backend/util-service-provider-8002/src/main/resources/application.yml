@@ -1,11 +1,11 @@
 server:
   port: 8002
 
-# mybatis配置
-mybatis:
-  type-aliases-package: com.buptse.pojo
-  config-location: classpath:mybatis/mybatis-config.xml
-  mapper-locations: classpath:mybatis/mapper/*.xml
+# mybatis-plus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: false
 
 # spring配置
 spring:

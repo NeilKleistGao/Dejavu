@@ -5,9 +5,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>entity-api</module>
-        <module>buy-car-model</module>
-        <module>sell-car-modlel</module>
-        <module>personal-manage-model</module>
+        <module>client-9001</module>
         <module>eureka-7100</module>
         <module>eureka-7200</module>
         <module>eureka-7300</module>

@@ -1,7 +1,9 @@
 package com.buptse.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.buptse.dto.CarDto;
 import com.buptse.pojo.Car;
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +14,6 @@ import com.buptse.pojo.Car;
  * @since 2021-04-23
  */
 public interface ICarService extends IService<Car> {
-
+  List<CarDto> getCarDtoList(List<Car> carList);
+  CarDto getCarDto(Car car);
 }

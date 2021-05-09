@@ -30,7 +30,7 @@ public class User implements Serializable {
     @TableId(value = "uid", type = IdType.AUTO)
     private Integer uid;
 
-    private String phoneNumber;
+    private String phone_number;
 
     private String mail;
 

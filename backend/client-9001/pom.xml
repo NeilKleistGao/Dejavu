@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>personal-manage-model</artifactId>
+    <artifactId>client-9001</artifactId>
 
     <dependencies>
 

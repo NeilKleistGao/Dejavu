@@ -26,7 +26,7 @@ spring:
       client:
         url: http://localhost:8888
   application:
-    name: personal-manage-9001
+    name: client-9001
 
 management:
   endpoints:

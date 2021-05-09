@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,22 +29,23 @@ import lombok.experimental.Accessors;
 public class Car implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @TableId(value = "car_id", type = IdType.AUTO)
-    private Integer carId;
 
-    private String modelName;
+    @TableId(value = "car_id")
+    private Integer car_id;
 
-    private BigDecimal guidePrice;
+    private String model_name;
+
+    private BigDecimal guide_price;
 
     private String manufacturer;
 
-    private BigDecimal serviceLife;
+    private BigDecimal service_life;
 
     private BigDecimal mileage;
 
     private BigDecimal displacement;
 
-    private Integer regionCode;
+    private Integer region_code;
 
     private Integer uid;
 
@@ -51,17 +53,17 @@ public class Car implements Serializable {
 
     private Integer state;
 
-    private Integer bodyType;
+    private Integer body_type;
 
-    private Integer fuelType;
+    private Integer fuel_type;
 
-    private Integer gearBox;
+    private Integer gear_box;
 
     private BigDecimal power;
 
-    private Integer notRepairedDamage;
+    private Integer not_repaired_damage;
 
-    private LocalDateTime createDate;
+    private LocalDateTime create_date;
 
 
 }
