@@ -2,6 +2,7 @@ package com.buptse.controller;
 
 
 import com.buptse.mapper.UserMapper;
+import com.buptse.pojo.Car;
 import com.buptse.pojo.User;
 import com.buptse.service.ICarService;
 import com.buptse.service.IUserService;
@@ -26,6 +27,12 @@ public class UserController {
         User user = service.getById(uid);
         return service.getById(uid);
     }
+    @GetMapping("/car/{id}")
+    public Car getCar(@PathVariable("id") Integer carId){
+        Car car = carService.getById(carId);
+        return car;
+    }
+
     //获取一些配置的信息，得到具体的微服务
     @Autowired
     private DiscoveryClient client;

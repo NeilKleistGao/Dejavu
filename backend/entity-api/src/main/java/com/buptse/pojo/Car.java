@@ -1,5 +1,7 @@
 package com.buptse.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -26,7 +28,7 @@ import lombok.experimental.Accessors;
 public class Car implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @TableId(value = "car_id", type = IdType.AUTO)
     private Integer carId;
 
     private String modelName;
