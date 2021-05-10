@@ -8,7 +8,7 @@
 <template>
   <q-page class="flex flex-center">
     <!--ADD YOUR VUE CODE HERE-->
-    <div class="parent" style="height:80px;"></div>
+    <div class="parent" style="height:50px;"></div>
     <q-form @submit="gotoSearch">
       <div class="parentSearch">
         <div class="child" style="height:70px; width:550px;">
@@ -20,8 +20,9 @@
       </div>
     </q-form>
     <br/>
+    <div class="placeholder" style="height: 20px"></div>
     <div class="parentBuySell">
-      <div class="child" style="width:700px">
+      <div class="child" style="width:650px">
         <div>
           <q-btn color="blue" icon="fas fa-car" icon-right="send" label="我要买车" v-on:click="gotoSearch"/>
         </div>
@@ -89,10 +90,31 @@
           />
         </div>
       </div>
-      <div class="child" style="width:500px; height:280px;"></div>
+      <div class="child" style="width:100px"></div>
+      <div class="child" style="width:500px; height:280px;">
+        <div>
+          <q-btn v-on:click="gotoSell" color="blue" icon="fas fa-car-side" icon-right="send" label="我要卖车"/>
+        </div>
+        <div class="placeholder" style="height: 50px"></div>
+        <div style="display: flex;">
+          <div style="display:flex; width:200px; align-content: center; justify-content: center; align-items: stretch;">
+            <div>
+              <q-btn outline rounded color="primary" label="预约卖车" style="width: 180px; height:60px"/>
+            </div>
+          </div>
+          <div style="display:flex; width:200px; align-content: center; justify-content: center; align-items: stretch;">
+            <div>
+              <q-btn outline rounded color="primary" label="估价" style="width: 180px; height:60px"/>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <br/>
     <div class="parentQA">
+      <h1>QA</h1>
+      <h2>Dejavu二手车的车辆异地可以看车吗？？</h2>
+      可以，不过请您在异地看车之前务必先和我们的销售取得联系，确认车辆的在售情况，以免您异地看车时出现车辆已售的情况耽误您的时间。
       <div class="child" style="width:800px; height:300px;"></div>
     </div>
   </q-page>
@@ -116,13 +138,18 @@ export default {
           message: this.message
         }
       })
+    },
+    gotoSell () {
+      this.$router.push({
+        path: '/sell'
+      })
     }
   }
 }
 </script>
 
 <style>
-  .parent, .parentSearch, .parentBuySell, .parentQA {
+  .parent, .parentSearch, .parentBuySell, .parentQA, .placeholder {
     display: flex;
     width: 1200px;
     justify-content: center;
