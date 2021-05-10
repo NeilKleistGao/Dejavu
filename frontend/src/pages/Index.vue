@@ -6,50 +6,65 @@
  * @LastEditTime: 2021/5/9
  -->
 <template>
-  <q-page>
+  <q-page class="flex flex-center">
     <!--ADD YOUR VUE CODE HERE-->
-    <div class="flex flex-center column">
-      <div class="row bg-blue-grey-2" style="min-height: 400px; width: 80%; padding: 24px;">
-        <div id="parent" class="fit row inline  justify-center items-start content-start" style="overflow: hidden;">
-          <div class="col-6" style="overflow: auto;min-height: 100px; max-height: 100px; ">
-            <q-card>
-              <q-card-section>
-                <q-input></q-input>
-              </q-card-section>
-            </q-card>
-          </div>,<div class="col-1" style="overflow: auto;min-height: 100px; max-height: 100px; ">
-          <q-card>
-            <q-card-section>
-              <q-btn flat>搜索</q-btn>
-            </q-card-section>
-          </q-card>
-        </div>,<div class="col-6      bg-grey-6" style="overflow: auto;min-height: 250px; max-height: 250px; ">
-          <q-card>
-            <q-card-section>
-              Child #2
-            </q-card-section>
-          </q-card>
-        </div>,<div class="col-4      bg-grey-6" style="overflow: auto;min-height: 250px; max-height: 250px; ">
-          <q-card>
-            <q-card-section>
-              Child #3
-            </q-card-section>
-          </q-card>
-        </div>,<div class="col-12      bg-grey-6" style="overflow: auto;min-height: 300px; max-height: 300px; ">
-          <q-card>
-            <q-card-section>
-              Child #4
-            </q-card-section>
-          </q-card>
+    <div class="parent" style="height:80px;"></div>
+    <q-form @submit="gotoSearch">
+      <div class="parentSearch">
+        <div class="child" style="height:70px; width:550px;">
+          <q-input outlined v-model="message" label="请输入关键字，例如：君越 2.4L" style="height:50px;"/>
         </div>
+        <div class="child">
+          <q-btn label="搜索" v-on:click="gotoSearch" type="submit" color="primary" style="width:100px; height:55px;"/>
         </div>
       </div>
+    </q-form>
+    <br/>
+    <div class="parentBuySell">
+      <div class="child" style="width:700px"></div>
+      <div class="child" style="width:500px; height:280px;"></div>
+    </div>
+    <br/>
+    <div class="parentQA">
+      <div class="child" style="width:800px; height:300px;"></div>
     </div>
   </q-page>
 </template>
 
 <script>
 export default {
-  name: 'PageIndex'
+  name: 'PageIndex',
+
+  data: function () {
+    return {
+      message: ''
+    }
+  },
+
+  methods: {
+    gotoSearch () {
+      this.$router.push({
+        path: '/search',
+        query: {
+          message: this.message
+        }
+      })
+    }
+  }
 }
 </script>
+
+<style>
+  .parent, .parentSearch, .parentBuySell, .parentQA {
+    display: flex;
+    width: 1200px;
+    justify-content: center;
+    align-content: center;
+    align-items: stretch;
+  }
+
+  .child {
+    width: 100px;
+    outline: solid 1px;
+  }
+</style>
