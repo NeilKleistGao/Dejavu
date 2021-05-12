@@ -703,6 +703,6 @@ public class CityAndCodeUtil {
         return cityKeyMap.get(city);
     }
     public static String getCityByCode(Integer code){
-        return codeKeyMap.get(code);
+        return codeKeyMap.get(String.valueOf(code));
     }
 }
