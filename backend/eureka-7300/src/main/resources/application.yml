@@ -1,0 +1,27 @@
+server:
+  port: 7300
+
+#Eureka
+eureka:
+  instance:
+    hostname: eureka-server-03 # Eureka服务端的实例名称
+  client:
+    register-with-eureka: false # 表示是否向eureka注册中心注册自己
+    fetch-registry: false # fetch-registry如果为false,则表示自己为注册中心
+    service-url: # 监控页面
+      defaultZone: http://eureka-server-02.com:7200/eureka/,http://eureka-server-01.com:7100/eureka/
+
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8888
+  application:
+    name: eureka-server-7300
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

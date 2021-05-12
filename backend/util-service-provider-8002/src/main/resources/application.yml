@@ -1,0 +1,40 @@
+server:
+  port: 8002
+
+# mybatis-plus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: false
+
+# spring配置
+spring:
+  application:
+    name: UTIL-SERVICE-PROVIDER
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://82.156.26.80:3306/dejavu?useUnicode=true&characterEncoding=UTF-8&useSSL=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: gerayking
+    password: Fuxuanwei123
+  boot:
+    admin:
+      client:
+        url: http://localhost:8888
+# Eureka的配置,服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server-01.com:7100/eureka,http://eureka-server-01.com:7100/eureka,http://eureka-server-01.com:7100/eureka
+  instance:
+    instance-id: util-service-provider-8002 # 修改eureka上的默认描述信息
+
+# info配置
+info:
+  app.name: util.service.provider.8002
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
