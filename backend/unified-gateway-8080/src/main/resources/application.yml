@@ -1,0 +1,31 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: cluster-gateway-8080
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: route
+          uri: http://localhost:9001/
+          predicates:
+            - Path=/**
+  boot:
+    admin:
+      client:
+        url: http://localhost:8888
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server-01.com:7100/eureka,http://eureka-server-02.com:7200/eureka,http://eureka-server-03.com:7300/eureka
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

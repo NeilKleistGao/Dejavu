@@ -1,11 +1,11 @@
 server:
   port: 8003
 
-# mybatis配置
-mybatis:
-  type-aliases-package: com.buptse.pojo
-  config-location: classpath:mybatis/mybatis-config.xml
-  mapper-locations: classpath:mybatis/mapper/*.xml
+# mybatis-plus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: false
 
 # spring配置
 spring:
@@ -13,10 +13,10 @@ spring:
     name: UTIL-SERVICE-PROVIDER
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/dejavudb?useUnicode=true&characterEncoding=UTF-8&useSSL=true
+    url: jdbc:mysql://82.156.26.80:3306/dejavu?useUnicode=true&characterEncoding=UTF-8&useSSL=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: jlmnb
-    password: 123456
+    username: gerayking
+    password: Fuxuanwei123
   boot:
     admin:
       client:

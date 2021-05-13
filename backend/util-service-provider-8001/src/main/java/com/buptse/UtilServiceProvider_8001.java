@@ -12,12 +12,9 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication
 @EnableEurekaClient //在服务启动后，自动注册到Eureka中
 @EnableDiscoveryClient //服务发现
-@MapperScan(value = "com.buptse.dao")
+@MapperScan(value = "com.buptse.mapper")
 public class UtilServiceProvider_8001 {
     public static void main(String[] args) {
         SpringApplication.run(UtilServiceProvider_8001.class,args);
     }
-
-
-
 }
