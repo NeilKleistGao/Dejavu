@@ -155,7 +155,8 @@ export default {
         })
       } else {
         this.$router.push({
-          path: '/search'
+          path: '/search',
+          query: data
         })
       }
     },

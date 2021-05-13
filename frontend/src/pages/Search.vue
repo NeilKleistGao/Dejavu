@@ -106,18 +106,18 @@
       </div>
     </div>
     <div class="q-pa-md row items-start q-gutter-md" style="width: 60%; margin-left: 20%">
-      <q-card class="my-card" v-for="item in carList" :key="item.id" @click="goDetail(item.id)">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+      <q-card class="my-card" v-for="item in carList" :key="item.car_id" @click="goDetail(item.car_id)">
+        <q-img src="car_details_test_img/1.png">
           <div class="absolute-bottom">
-            <div class="text-h6">{{item.manufacturer}} {{item.model}}</div>
-            <div class="text-subtitle1">{{item.server}}年</div>
+            <div class="text-h6">{{item.manufacturer}} {{item.model_name}}</div>
+            <div class="text-subtitle1">{{item.service_life}}年</div>
             <div></div>
           </div>
         </q-img>
 
         <q-card-section>
           <div>
-            <del class="text-h6">{{item.guild_price}}万元</del>
+            <del class="text-h6">{{item.guide_price}}万元</del>
             <span class="text-subtitle1 text-red">{{item.price}}万元</span>
           </div>
         </q-card-section>
@@ -145,56 +145,83 @@ export default {
       brand: '', // 品牌筛选
       body: '', // 车型筛选
       price: '', // 价格筛选
-      carList: [ // 车辆信息列表
-        {
-          id: 1,
-          model: '2019款C200',
-          manufacturer: '奔驰',
-          server: 1.2,
-          guild_price: 24,
-          price: '23.88',
-          img: 'car_details_test_img/1.png'
-        }, {
-          id: 1,
-          model: '2019款C200',
-          manufacturer: '奔驰',
-          server: 1.2,
-          guild_price: 24,
-          price: '23.88',
-          img: 'car_details_test_img/1.png'
-        }, {
-          id: 1,
-          model: '2019款C200',
-          manufacturer: '奔驰',
-          server: 1.2,
-          guild_price: 24,
-          price: '23.88',
-          img: 'car_details_test_img/1.png'
-        }, {
-          id: 1,
-          model: '2019款C200',
-          manufacturer: '奔驰',
-          server: 1.2,
-          guild_price: 24,
-          price: '23.88',
-          img: 'car_details_test_img/1.png'
-        }, {
-          id: 1,
-          model: '2019款C200',
-          manufacturer: '奔驰',
-          server: 1.2,
-          guild_price: 24,
-          price: '23.88',
-          img: 'car_details_test_img/1.png'
-        }
-      ],
+      carList: [], // 车辆信息列表
       current: 1, // 当前页码
-      max_page: 10
+      max_page: 1
     }
   },
   methods: {
+    /**
+     * @description: 跳转到车辆详细信息页面
+     * @param {Number} id
+     * @return void
+     */
     goDetail (id) {
       window.location = '/#/car/' + id.toString()
+    },
+    /**
+     * @description: 获取满足条件的车辆列表
+     * @return void
+     */
+    getCarsList () {
+      let url = '/api/car/list?'
+      if (this.brand !== '') {
+        url += 'manufacturer=' + this.brand + '&'
+      }
+      if (this.body !== '') {
+        url += 'body=' + this.body + '&'
+      }
+      if (this.price !== '') {
+        const bar = this.price.indexOf('-')
+        const min = this.price.substring(0, bar)
+        const max = bar === this.price.length - 1 ? '' : this.price.substring(bar + 1)
+        url += 'min-price=' + min + '&'
+        if (max !== '') {
+          url += 'max-price' + max + '&'
+        }
+      }
+
+      url = url.substr(0, url.length - 1)
+      this.$axios.get(url).then(res => {
+        if (res.status === 200) {
+          this.carList = res.data
+        }
+      })
+    }
+  },
+  beforeMount () {
+    const query = this.$route.query
+    if (query.manufacturer !== null && query.manufacturer !== undefined) {
+      this.brand = query.manufacturer
+    }
+    if (query.body !== null && query.body !== undefined) {
+      this.body = query.body
+    }
+    if (query['min-guild-price'] !== null && query['min-guild-price'] !== undefined) {
+      let p = query['min-guild-price'] + '-'
+      if (query['max-guild-price'] !== null && query['max-guild-price'] !== undefined) {
+        p += query['max-guild-price']
+      }
+
+      this.price = p
+    }
+    this.getCarsList()
+  },
+  watch: {
+    brand: {
+      handler () {
+        this.getCarsList()
+      }
+    },
+    body: {
+      handler () {
+        this.getCarsList()
+      }
+    },
+    price: {
+      handler () {
+        this.getCarsList()
+      }
     }
   }
 }
