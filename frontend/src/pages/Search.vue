@@ -16,7 +16,7 @@
               <q-breadcrumbs-el label="北京"/>
               <q-breadcrumbs-el v-if="brand !== ''" :label="brand"/>
               <q-breadcrumbs-el v-if="body !== ''" :label="body"/>
-              <q-breadcrumbs-el v-if="price !== ''" :label="price + '万元'"/>
+              <q-breadcrumbs-el v-if="price !== ''" :label="price + '元'"/>
               <q-breadcrumbs-el v-if="text !== ''" :label="'搜索：' + text"/>
             </q-breadcrumbs>
           </div>
@@ -86,18 +86,18 @@
           class="bg-primary text-white shadow-2"
         >
           <q-tab name="" label="不限"/>
-          <q-tab name="0-3" label="3万以下" />
-          <q-tab name="3-5" label="3-5万" />
-          <q-tab name="5-7" label="5-7万" />
-          <q-tab name="7-9" label="7-9万" />
-          <q-tab name="9-12" label="9-12万" />
-          <q-tab name="12-16" label="12-16万" />
+          <q-tab name="0-30000" label="3万以下" />
+          <q-tab name="30000-50000" label="3-5万" />
+          <q-tab name="50000-70000" label="5-7万" />
+          <q-tab name="70000-90000" label="7-9万" />
+          <q-tab name="90000-120000" label="9-12万" />
+          <q-tab name="120000-160000" label="12-16万" />
           <q-btn-dropdown auto-close stretch flat label="More...">
             <q-list>
-              <q-item clickable @click="price = '16-20'">
+              <q-item clickable @click="price = '160000-200000'">
                 <q-item-section>16-20万</q-item-section>
               </q-item>
-              <q-item clickable @click="price = '20-'">
+              <q-item clickable @click="price = '200000-'">
                 <q-item-section>20万以上</q-item-section>
               </q-item>
             </q-list>
@@ -117,8 +117,8 @@
 
         <q-card-section>
           <div>
-            <del class="text-h6">{{item.guide_price}}万元</del>
-            <span class="text-subtitle1 text-red">{{item.price}}万元</span>
+            <del class="text-h6">{{item.guide_price}}元</del>
+            <span class="text-subtitle1 text-red">{{item.price}}元</span>
           </div>
         </q-card-section>
       </q-card>
@@ -177,7 +177,7 @@ export default {
         const max = bar === this.price.length - 1 ? '' : this.price.substring(bar + 1)
         url += 'min-price=' + min + '&'
         if (max !== '') {
-          url += 'max-price' + max + '&'
+          url += 'max-price=' + max + '&'
         }
       }
 
@@ -197,10 +197,10 @@ export default {
     if (query.body !== null && query.body !== undefined) {
       this.body = query.body
     }
-    if (query['min-guild-price'] !== null && query['min-guild-price'] !== undefined) {
-      let p = query['min-guild-price'] + '-'
-      if (query['max-guild-price'] !== null && query['max-guild-price'] !== undefined) {
-        p += query['max-guild-price']
+    if (query['min-guide-price'] !== null && query['min-guide-price'] !== undefined) {
+      let p = query['min-guide-price'] + '-'
+      if (query['max-guide-price'] !== null && query['max-guide-price'] !== undefined) {
+        p += query['max-guide-price']
       }
 
       this.price = p
