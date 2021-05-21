@@ -65,7 +65,7 @@
             </div>
           </div>
           <div style="margin-top: 8em">
-            <q-btn push color="primary" size="lg" label="我要预约" style="margin-right: 2em"/>
+            <q-btn push color="primary" size="lg" label="我要预约" style="margin-right: 2em" @click="show_dialog = true"/>
             <q-btn push color="primary" size="lg" label="车型对比"/>
           </div>
         </q-card>
@@ -160,12 +160,24 @@
         </div>
       </q-card>
     </div>
+
+    <q-dialog v-model="show_dialog" persistent>
+      <q-card style="min-width: 40%" bordered>
+        <bargain-dialog v-model="bargain_data" :price="car_info.price"/>
+        <q-card-actions align="right">
+          <q-btn flat color="primary" v-close-popup label="预约买车"/>
+          <q-btn flat color="primary" v-close-popup label="取消"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
+import BargainDialog from 'components/BargainDialog'
 export default {
   name: 'CarDetail',
+  components: { BargainDialog },
   data () {
     return {
       car_image_list: ['car_details_test_img/1.png', 'car_details_test_img/2.png',
@@ -188,7 +200,15 @@ export default {
         power: 0, // 马力
         not_repaired_damage: '', // 是否有修复过
         create_date: '' // 上牌日期
-      } // 车辆详细信息
+      }, // 车辆详细信息
+      show_dialog: false, // 是否显示对话框
+      bargain_data: {
+        price: 0, // 买家报价
+        time: {
+          from: '', // 开始时间
+          to: '' // 结束时间
+        } // 联系时间区间
+      } // 砍价数据
     }
   },
   beforeMount () {
