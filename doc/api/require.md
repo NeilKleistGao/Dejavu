@@ -31,7 +31,8 @@ GET参数：
     "gear_box": "手动", // 变速箱
     "power": 0, // 马力
     "not_repaired_damage": false, // 是否有修复过
-    "date": "2016-08" // 上牌日期
+    "date": "2016-08", // 上牌日期
+    "images": ["img1.jpg", "img2.jpg"]
 }
 ```
 
@@ -73,7 +74,8 @@ GET参数：
             "manufacturer": "xxx",
             "server": 1,
             "guild-price": 100,
-            "price": 50
+            "price": 50,
+            "cover": "1.png" // 返回图片列表中第一张图片即可
         },
         {
             "car-id": "1919810",
@@ -81,7 +83,8 @@ GET参数：
             "manufacturer": "yyy",
             "server": 2,
             "guild-price": 200,
-            "price": 100
+            "price": 100,
+            "cover": "2.png"
         }
     ]
 }
@@ -105,4 +108,59 @@ GET参数：与“获取满足条件的车辆数据”相同
 }
 ```
 
+### 新增车辆信息
+url: `/car/new`
+
+说明：新增售车信息
+
+method: POST
+
+表单参数：
++ model：车辆类型名称
++ guild_price：指导价格
++ manufacture：生产商
++ server_life：使用时长
++ mileage：里程
++ displacement：排量
++ region:所在地
++ price：车辆报价
++ body_type：车辆类型
++ fuel_type：燃料类型
++ gearbox：变速箱类型
++ power：发动机功率
++ not_repaired_damage：有尚未修复的损坏
++ date：上牌日期
++ images：车辆图片列表
+
+GET参数：无
+
+返回数据示例：
+```json
+{
+    "car_id": 114514 // 返回新车辆的车辆id，如果创建失败返回-1
+}
+```
+
 ## 交易部分
+### 创建新的砍价
+url: `/transaction/bargain/new`
+
+说明：创建新的砍价记录
+
+method: POST
+
+表单参数：
++ uid：发起创建砍价的用户id
++ car_id: 砍价车辆id
++ price：砍价价格
++ start_time：砍价开始时间
++ end_time：砍价终止时间
+
+GET参数：无
+
+返回数据示例：
+```json
+{
+    "result": true // 表明创建成功
+}
+```
