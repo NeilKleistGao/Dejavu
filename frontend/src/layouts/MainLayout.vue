@@ -3,14 +3,14 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/4/19
+ * @LastEditTime: 2021/5/12
  -->
 
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar class="bg-primary text-white shadow-2" style="padding: 15px 10px">
-        <q-toolbar-title>
+        <q-toolbar-title @click="goHome">
           <q-icon class="iconfont icon-drifting"></q-icon>
           Dejavu二手车交易平台
         </q-toolbar-title>
@@ -26,6 +26,16 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+    <div>
+      <q-toolbar class="bg-primary text-white shadow-2" style="padding: 15px 10px">
+        <q-toolbar-title @click="goHome">
+          <q-icon class="iconfont icon-drifting"></q-icon>
+          <span class="text-h6">Dejavu二手车交易平台</span>
+          <br/>
+          <span class="text-subtitle2">Copyright 2021 www.dejavu.com All Rights Reserved</span>
+        </q-toolbar-title>
+      </q-toolbar>
+    </div>
   </q-layout>
 </template>
 
@@ -35,6 +45,15 @@ export default {
   data () {
     return {
       city: '北京' // 当前城市名称
+    }
+  },
+  methods: {
+    /**
+     * @description: 重定向回主页
+     * @return void
+     */
+    goHome () {
+      window.location = '/'
     }
   }
 }

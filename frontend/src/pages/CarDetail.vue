@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/5/3
+ * @LastEditTime: 2021/5/12
  -->
 <template>
   <q-page class="flex">
@@ -50,7 +50,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>{{car_info.date}}</td>
+                  <td>{{car_info.create_date}}</td>
                   <td>{{car_info.mileage}}</td>
                   <td>{{car_info.displacement}}</td>
                   <td>{{car_info.gear_box}}</td>
@@ -60,8 +60,8 @@
           </div>
           <div style="margin-top: 2em">
             <div class="row" style="width: 100%">
-              <span class="text-h6" style="margin-right: 5em">指导价格：{{car_info.guild_price}}</span>
-              <span class="text-h6">车主开价：{{car_info.price}}</span>
+              <span class="text-h6" style="margin-right: 5em">指导价格：{{car_info.guide_price}}</span>
+              <span class="text-h6">车主报价：{{car_info.price}}</span>
             </div>
           </div>
           <div style="margin-top: 8em">
@@ -94,7 +94,7 @@
                 </tr>
                 <tr>
                   <th class="text-subtitle2">指导价格</th>
-                  <th class="text-subtitle2">{{car_info.guild_price}}</th>
+                  <th class="text-subtitle2">{{car_info.guide_price}}</th>
                 </tr>
                 <tr>
                   <th class="text-subtitle2">车主报价</th>
@@ -152,7 +152,7 @@
                 </tr>
                 <tr>
                   <th class="text-subtitle2">上牌日期</th>
-                  <th class="text-subtitle2">{{car_info.date}}</th>
+                  <th class="text-subtitle2">{{car_info.create_date}}</th>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -172,24 +172,35 @@ export default {
         'car_details_test_img/3.png', 'car_details_test_img/4.png'], // 车辆照片集
       slide: 1, // 照片集当前下标
       car_info: {
-        model_name: 'AE86', // 车型名称
-        guild_price: 100000, // 指导价格
-        manufacturer: '丰田', // 厂商
-        service_life: 1.2, // 使用年限
-        mileage: 1000, // 里程数
+        model_name: '', // 车型名称
+        guide_price: 0, // 指导价格
+        manufacturer: '', // 厂商
+        service_life: 0, // 使用年限
+        mileage: 0, // 里程数
         displacement: 0, // 排量
-        region_code: '北京', // 地区
-        uid: '114514', // 所有用户
-        price: 80000, // 价格
-        state: 1, // 状态
+        region: '', // 地区
+        uid: '', // 所有用户
+        price: 0, // 价格
+        state: 0, // 状态
         body_type: 0, // 车身类型
         fuel_type: 0, // 燃料类型
         gear_box: 0, // 变速箱
         power: 0, // 马力
-        not_repaired_damage: false, // 是否有修复过
-        date: '2016-08' // 上牌日期
+        not_repaired_damage: '', // 是否有修复过
+        create_date: '' // 上牌日期
       } // 车辆详细信息
     }
+  },
+  beforeMount () {
+    const id = this.$route.params.id
+    this.$axios.get('/api/car?id=' + id).then(res => {
+      if (res.status === 200 && res.data.model_name !== null && res.data.model_name !== undefined) {
+        this.car_info = res.data
+        this.car_info.create_date = this.car_info.create_date.substr(0, this.car_info.create_date.indexOf('T'))
+      } else {
+        window.location = '/car'
+      }
+    })
   }
 }
 </script>
