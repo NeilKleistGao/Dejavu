@@ -1,5 +1,131 @@
 # 对接前端接口文档
 ## 用户部分
+### 获取用户基本信息
+url: `/user/info/query`
+
+说明：获取用户的基本信息
+
+method: GET
+
+表单参数：无
+
+GET参数：
++ `uid`：用户id
+
+返回数据示例：
+```json
+{
+    "phone": 13910733521,
+    "mail": "takuumi@fujiwara.com",
+    "avatar": "safdgfhg.jpg",
+    "name": "takuumi fujiwara"
+}
+```
+
+### 用户信息修改
+url: `/user/info/modify`
+
+说明：修改用户基本信息
+
+method: POST
+
+表单参数：
++ `uid`：用户id
++ `mail`: 用户邮箱，可选
++ `avatar`：用户头像链接，可选
+
+GET参数：无
+
+返回数据示例：
+```json
+{
+    "result": true // 成功时返回true，否则返回false
+}
+```
+
+### 用户密码修改
+url: `/user/info/password`
+
+说明：修改用户密码
+
+method: POST
+
+表单参数：
++ `uid`：用户id
++ `old`：用户旧密码
++ `new`：用户新密码
+
+GET参数：无
+
+返回数据示例：
+{
+    "result": false, // 成功修改返回true，否则返回false
+    "info": "密码错误" // 失败原因，仅在失败时才返回
+}
+
+### 用户注册
+url: `/user/register`
+
+说明：用户注册
+
+method: POST
+
+表单参数：
++ `phone`：用户电话号码
++ `mail`: 用户邮箱
++ `password`：用户密码
+
+GET参数：无
+
+返回数据示例：
+```json
+{
+    "result": 114514, // 成功返回用户id，错误返回-1
+    "info": "用户已存在"
+}
+
+```
+
+### 用户登录
+url: `/user/login`
+
+说明：用户登录
+
+method: POST
+
+表单参数：
++ `phone`：用户手机号
++ `password`：用户密码
+
+GET参数：无
+
+返回数据示例：
+```json
+{
+    "token": "yyfsmddx",
+    "uid": 114514,
+    "info": "密码错误" // 仅登录失败时返回原因
+}
+```
+
+### 用户登出
+url: `/user/logout`
+
+说明：用户登出
+
+method: POST
+
+表单参数：
++ `token`：交还的token
++ `uid`：对应的uid
+
+返回数据示例：
+```json
+{
+    "result": true // 成功登出时返回true，否则返回false
+}
+```
+
 ## 车辆部分
 ### 获取车辆详细信息
 url: `/car`
@@ -116,6 +242,8 @@ url: `/car/new`
 method: POST
 
 表单参数：
++ uid：用户id
++ token：当前用户token
 + model：车辆类型名称
 + guild_price：指导价格
 + manufacture：生产商
@@ -137,7 +265,8 @@ GET参数：无
 返回数据示例：
 ```json
 {
-    "car_id": 114514 // 返回新车辆的车辆id，如果创建失败返回-1
+    "car_id": 114514, // 返回新车辆的车辆id，如果创建失败返回-1
+    "info": "请登录" // 仅在错误时返回，错误信息提示，“请登录”表示token或uid无效
 }
 ```
 
@@ -151,6 +280,7 @@ method: POST
 
 表单参数：
 + uid：发起创建砍价的用户id
++ token:当前用户token
 + car_id: 砍价车辆id
 + price：砍价价格
 + start_time：砍价开始时间
@@ -161,6 +291,148 @@ GET参数：无
 返回数据示例：
 ```json
 {
-    "result": true // 表明创建成功
+    "result": true, // true表明创建成功，否则返回false
+    "info": "请登录" // 仅在错误时返回，错误信息提示，“请登录”表示token或uid无效
+}
+```
+
+### 查询砍价信息
+url: `/transaction/bargain/query`
+
+说明：查询符合条件的砍价记录
+
+method: GET
+
+表单参数：无
+
+GET参数：
++ id: 当前用户id
++ token：当前用户token
++ uid: 创建砍价的用户的id，可选
++ cid: 对应汽车的id，可选
+
+返回数据示例：
+```json
+{
+    "results": [
+        {
+            "price": 1000,
+            "start_time": "2018-01-01",
+            "end_time": "2019-01-01"
+        },
+         {
+            "price": 2000,
+            "start_time": "2018-01-01",
+            "end_time": "2019-01-01"
+        }
+    ], // 出错时该字段长度为0
+    "info": "请登录" // 仅在出错时返回，当没有权限时返回“请登录”
+}
+```
+
+### 查询成交信息
+url: `/transaction/sale/query`
+
+说明：查询符合条件的成交记录
+
+method: GET
+
+表单参数：无
+
+GET参数：
++ uid：当前用户的id
++ token：当前用户token
++ buyer: 购买用户的id，可选
++ seller: 出售用户的id，可选
+
+
+返回数据示例：
+```json
+{
+    "results": [
+        {
+            "buyer_id": 114,
+            "seller_id": 514,
+            "car_id": 1919,
+            "deal_price": 810,
+            "deal_date": "2013-01-01"
+        }
+    ], // 出错时该字段长度为0
+    "info": "请登录" // 仅在出错时返回，当没有权限时返回“请登录”
+}
+```
+
+### 修改成交信息
+url: `/transaction/sale/modify`
+
+说明：修改已存在的交易的成交信息
+
+method: POST
+
+表单参数：
++ uid：当前用户id
++ token：当前用户token
++ sale_id：成交信息id
++ buyer_id: 购买用户的id，可选
++ seller_id：买家用户id，可选
++ car_id: 成交车辆id，可选
++ deal_price：成交价格，可选
++ deal_date：成交日期，可选
+
+GET参数：无
+
+返回数据示例：
+```json
+{
+    "result": false, // 成功修改返回true，否则返回false
+    "info": "交易不存在" // 失败原因，仅在失败时才返回，当没有权限时返回“请登录”
+}
+```
+
+### 提交成交信息
+url: `/transaction/sale/submit`
+
+说明：提交新的成交
+
+method: POST
+
+表单参数：
++ uid：当前用户id
++ token：当前用户token
++ buyer_id: 购买用户的id
++ seller_id：买家用户id
++ car_id: 成交车辆id
++ deal_price：成交价格
++ deal_date：成交日期
+
+GET参数：无
+
+返回数据示例：
+```json
+{
+    "result": 114514, // 新交易的id，如果失败返回-1
+    "info": "请登录" // 失败原因，仅在失败时才返回，当没有权限时返回“请登录”
+}
+```
+
+### 删除成交信息
+url: `/transaction/sale/delete`
+
+说明：删除成交信息
+
+method: POST
+
+表单参数：
++ uid：当前用户id
++ token：当前用户token
++ sale_id：成交信息id
+
+GET参数：无
+
+返回数据示例：
+```json
+{
+    "result": false, // 成功删除返回true，否则返回false
+    "info": "交易不存在" // 失败原因，仅在失败时才返回，当没有权限时返回“请登录”
 }
 ```
