@@ -7,20 +7,19 @@
  -->
 <template>
   <div>
-    <q-card-section>
+    <q-card-section class="bg-primary text-white">
       <div class="text-h5">预约买车</div>
     </q-card-section>
     <q-card-section>
       <div>
-        <div class="text-subtitle1">买家报价: {{bargain.price}}元</div>
-        <q-slider v-model="bargain.price" :min="price * 0.6" :max="price" snap label/>
+        <div class="text-subtitle1" style="margin-left: 0.25em">买家报价: {{bargain.price}}元</div>
+        <q-slider v-model="bargain.price" :min="price * 0.6" :max="price" snap label style="margin-left: 10%; width: 80%"/>
       </div>
 
       <div style="margin-top: 1em">
-        <div class="text-subtitle1" style="margin-bottom: 1em">请在以下时间范围内联系我：</div>
-        <div class="row">
-          <div class="col-4"/>
-          <div class="col-4">
+        <div class="text-subtitle1" style="margin-bottom: 1em; margin-left: 0.25em">请在以下时间范围内联系我：</div>
+        <div class="row" style="margin-top: 1em">
+          <div style="margin-left: 30%; width: 40%; margin-right: auto">
             <q-date v-model="bargain.time" range/>
           </div>
         </div>

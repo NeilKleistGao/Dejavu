@@ -164,6 +164,7 @@
     <q-dialog v-model="show_dialog" persistent>
       <q-card style="min-width: 40%" bordered>
         <bargain-dialog v-model="bargain_data" :price="car_info.price"/>
+        <q-separator/>
         <q-card-actions align="right">
           <q-btn flat color="primary" v-close-popup label="预约买车"/>
           <q-btn flat color="primary" v-close-popup label="取消"/>
