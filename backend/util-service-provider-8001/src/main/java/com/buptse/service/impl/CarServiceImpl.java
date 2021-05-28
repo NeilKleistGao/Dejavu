@@ -8,6 +8,7 @@ import com.buptse.pojo.Car;
 import com.buptse.service.ICarService;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,6 +21,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements ICarService {
+
+  @Autowired
+  CarMapper carMapper;
 
   @Override
   public List<CarDto> getCarDtoList(List<Car> carList) {
@@ -35,4 +39,12 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements ICarS
   public CarDto getCarDto(Car car) {
     return CarAndcarDtoUtil.car2carDto(car);
   }
+
+  @Override
+  public int insertCarAndGetId(Car car) {
+    carMapper.insertCar(car);
+    return car.getCar_id();
+  }
+
+
 }

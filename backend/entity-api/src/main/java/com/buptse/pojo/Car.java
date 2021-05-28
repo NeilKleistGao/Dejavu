@@ -30,7 +30,7 @@ public class Car implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "car_id")
+    @TableId(value = "car_id",type = IdType.INPUT)
     private Integer car_id;
 
     private String model_name;
