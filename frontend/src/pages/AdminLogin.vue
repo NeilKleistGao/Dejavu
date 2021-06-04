@@ -1,0 +1,48 @@
+<!--
+ * @FileDescription: 管理员登录页面
+ * @Author: NeilKleistGao
+ * @Date: 2021/6/4
+ * @LastEditors: NeilKleistGao
+ * @LastEditTime: 2021/6/4
+ -->
+<template>
+  <q-page class="flex">
+    <div class="row" style="width: 100%; margin-top: 5%">
+      <div class="col-4"/>
+      <div class="col-4">
+        <q-card class="text-center">
+          <q-card-section>
+            <span class="text-h4">登录</span>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section style="margin-left: 10%; width: 80%; margin-right: auto">
+            <q-input v-model="username" label="用户名"/>
+            <br/>
+            <q-input v-model="password" label="密码" type="password"/>
+          </q-card-section>
+
+          <q-card-actions class="flex-center">
+            <q-btn color="primary" size="lg" label="登录" style="padding-left: 1em; padding-right: 1em"/>
+          </q-card-actions>
+        </q-card>
+      </div>
+      <div class="col-4"/>
+    </div>
+  </q-page>
+</template>
+
+<script>
+export default {
+  name: 'AdminLogin',
+  data () {
+    return {
+      username: '',
+      password: ''
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
