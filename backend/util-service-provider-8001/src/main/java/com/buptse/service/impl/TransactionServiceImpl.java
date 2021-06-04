@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.buptse.mapper.TransactionMapper;
 import com.buptse.pojo.Transaction;
 import com.buptse.service.ITransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +18,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionServiceImpl extends ServiceImpl<TransactionMapper, Transaction> implements ITransactionService {
 
+    @Autowired
+    private TransactionMapper transactionMapper;
+
+    @Override
+    public int insertTransactionAndGetId(Transaction transaction) {
+        transactionMapper.insertTransaction(transaction);
+        return transaction.getSale_id();
+    }
 }
