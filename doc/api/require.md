@@ -22,6 +22,34 @@ GET参数：
 }
 ```
 
+### 查询符合条件的用户信息
+url: `/user/info/query_all`
+
+说明：获取满足条件的用户的信息
+
+method: GET
+
+表单参数：无
+
+GET参数：
++ `name`：用户姓名，可选
++ `phone`：用户电话，可选
++ `email`：用户邮箱，可选
+
+返回数据示例：
+```json
+{
+    "result": [
+        {
+            "uid": 114514,
+            "phone": 13910733521,
+            "mail": "takuumi@fujiwara.com",
+            "name": "takuumi fujiwara"
+        }
+    ]
+}
+```
+
 ### 用户信息修改
 url: `/user/info/modify`
 
@@ -318,12 +346,16 @@ GET参数：
         {
             "price": 1000,
             "start_time": "2018-01-01",
-            "end_time": "2019-01-01"
+            "end_time": "2019-01-01",
+            "uid": 1,
+            "cid": 2
         },
          {
             "price": 2000,
             "start_time": "2018-01-01",
-            "end_time": "2019-01-01"
+            "end_time": "2019-01-01",
+            "uid": 1,
+            "cid": 2
         }
     ], // 出错时该字段长度为0
     "info": "请登录" // 仅在出错时返回，当没有权限时返回“请登录”
