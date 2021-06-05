@@ -1,19 +1,20 @@
 package com.buptse.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.buptse.dto.CommonResult;
 import com.buptse.pojo.Bargain;
 import com.buptse.service.IBargainService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 public class BargainController {
   @Autowired
   IBargainService bargainService;
@@ -37,4 +38,28 @@ public class BargainController {
     map.put("result",result);
     return map;
   }
+
+  /**
+   * 根据条件查询砍价记录
+   * TODO  增加token校验
+   * @param uid
+   * @param barginId
+   * @param carID
+   * @return
+   */
+  @PostMapping("/transaction/bargain/query")
+  public CommonResult queryBargain(
+          @RequestParam("id") Integer uid,
+          @RequestParam(value = "uid",required = false) Integer barginId,
+          @RequestParam(value = "cid",required = false) Integer carID){
+    QueryWrapper<Bargain> bargainQueryWrapper = new QueryWrapper<>();
+    if(barginId!=null){bargainQueryWrapper.eq("uid",barginId);}
+    if(carID!=null){bargainQueryWrapper.eq("carid",carID);}
+    List<Bargain> bargains = bargainService.list(bargainQueryWrapper);
+    return CommonResult.success(bargains);
+
+  }
+
+
+
 }

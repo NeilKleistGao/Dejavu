@@ -113,17 +113,17 @@
     </dependencies>
 
 <!--    单独打包测试-->
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <mainClass>com.buptse.UtilServiceProvider_8001</mainClass>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.buptse.UtilServiceProvider_8001</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 

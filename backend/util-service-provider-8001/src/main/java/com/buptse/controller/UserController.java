@@ -4,6 +4,7 @@ package com.buptse.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.buptse.common.util.*;
 import com.buptse.dto.LoginDto;
+import com.buptse.dto.CommonResult;
 import com.buptse.mapper.UserMapper;
 import com.buptse.pojo.Car;
 import com.buptse.pojo.User;
@@ -34,6 +35,7 @@ public class UserController {
     private ICarService carService;
     @Autowired
     IShiroService shiroService;
+
     @GetMapping("/user/get/{uid}")
     public User getUSerById(@PathVariable("uid") Integer uid) {
         User user = service.getById(uid);
@@ -41,9 +43,21 @@ public class UserController {
     }
     @RequiresRoles({"manage"})
     @GetMapping("/car/{id}")
-    public Car getCar(@PathVariable("id") Integer carId){
+    public Car getCar(@PathVariable("id") Integer carId) {
         Car car = carService.getById(carId);
         return car;
+    }
+    @GetMapping("/user/info/query_all")
+    public CommonResult queryAllUser(
+            @RequestParam(value = "name",required = false) String name,
+            @RequestParam(value = "phone",required = false) String phone,
+            @RequestParam(value = "email",required = false) String email){
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        if(name!=null){userQueryWrapper.eq("name",name);}
+        if(phone!=null){userQueryWrapper.eq("phone_number",phone);}
+        if(email!=null){userQueryWrapper.eq("mail",email);}
+        List<User> userList = service.list(userQueryWrapper);
+        return CommonResult.success(userList);
     }
 
     @PostMapping("/user/login")
@@ -63,6 +77,7 @@ public class UserController {
         }
         return result;
     }
+
 
 
 
