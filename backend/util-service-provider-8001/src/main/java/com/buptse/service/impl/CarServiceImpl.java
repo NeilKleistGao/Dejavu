@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements ICarService {
 
-  @Autowired
-  CarMapper carMapper;
 
   @Override
   public List<CarDto> getCarDtoList(List<Car> carList) {
@@ -42,7 +40,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements ICarS
 
   @Override
   public int insertCarAndGetId(Car car) {
-    carMapper.insertCar(car);
+    getBaseMapper().insertCar(car);
     return car.getCar_id();
   }
 

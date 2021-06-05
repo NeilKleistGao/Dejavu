@@ -18,12 +18,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionServiceImpl extends ServiceImpl<TransactionMapper, Transaction> implements ITransactionService {
 
-    @Autowired
-    private TransactionMapper transactionMapper;
 
     @Override
     public int insertTransactionAndGetId(Transaction transaction) {
-        transactionMapper.insertTransaction(transaction);
+        getBaseMapper().insertTransaction(transaction);
         return transaction.getSale_id();
     }
 }
