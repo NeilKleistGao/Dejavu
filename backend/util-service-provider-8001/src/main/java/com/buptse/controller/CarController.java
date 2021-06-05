@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +40,7 @@ public class CarController {
 
     @Autowired
     private ICarService carService;
+    @RequiresRoles({"manage"})
     @GetMapping("/car")
     public CarDto getCarById(@RequestParam Integer id){
         return carService.getCarDto(carService.getById(id));
