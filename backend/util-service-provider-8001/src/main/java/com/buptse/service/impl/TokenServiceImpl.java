@@ -21,12 +21,11 @@ public class TokenServiceImpl implements ITokenService {
   @Override
   public UserToken findUserById(Integer Id) {
     String token = (String) redisUtil.hget("User",String.valueOf(Id));
-    long expire = redisUtil.getExpire(String.valueOf(Id));
     if(token != null ){
       UserToken userToken = new UserToken();
       userToken.setUserId(Id);
       userToken.setToken(token);
-      userToken.setExpireTime(expire);
+      userToken.setExpireTime(expireTime);
       return userToken;
     }
     return null;
@@ -43,8 +42,9 @@ public class TokenServiceImpl implements ITokenService {
 
   @Override
   public boolean deleteToken(String token) {
-    token.split(TokenUtil.TOKEN_SPLITER);
-    redisUtil.del(token);
-    return false;
+    final String[] split = token.split(TokenUtil.TOKEN_SPLITER);
+    if(split.length<2)return false;
+    redisUtil.hdel("User",split[1]);
+    return true;
   }
 }

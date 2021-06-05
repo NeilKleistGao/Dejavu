@@ -39,6 +39,7 @@ public class AuthRealm extends AuthorizingRealm {
      User user = (User)principalCollection.getPrimaryPrincipal();
     final SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
     List<UserRole> userRole = userRoleService.findUserRole(user);
+    simpleAuthorizationInfo.addRole("user");
     for (UserRole role : userRole) {
       simpleAuthorizationInfo.addRole(role.getRole());
     }
@@ -49,7 +50,7 @@ public class AuthRealm extends AuthorizingRealm {
       throws AuthenticationException {
     final String token = (String) authenticationToken.getPrincipal();
     final UserToken userToken = shiroService.findByToken(token);
-    if(userToken == null){
+    if(userToken == null || !token.equals(userToken.getToken())){
       throw new IncorrectCredentialsException("Token 失效，请重新登录");
     }
     final User user = shiroService.findByUserId(userToken.getUserId());

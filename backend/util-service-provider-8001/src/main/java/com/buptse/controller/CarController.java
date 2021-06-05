@@ -21,6 +21,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -150,6 +151,18 @@ public class CarController {
         }
         final List<CarDto> carList = carService.getCarDtoList(carService.list(queryWrapper));
         return carList;
+    }
+    @GetMapping("/car/{id}")
+    /**
+     * @Description: 根据车辆ID获取车的信息
+     * @Param: [carId]
+     * @return: com.buptse.pojo.Car
+     * @Author: gerayking
+     * @Date: 2021/6/5-14:40
+     */
+    public Car getCar(@PathVariable("id") Integer carId) {
+        Car car = carService.getById(carId);
+        return car;
     }
 
 }

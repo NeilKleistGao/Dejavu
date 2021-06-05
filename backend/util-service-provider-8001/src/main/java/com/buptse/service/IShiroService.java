@@ -30,7 +30,7 @@ public interface IShiroService {
    * logout
    * @param token
    */
-  void logout(String token);
+  boolean logout(String token);
 
   /**
    * find token by token

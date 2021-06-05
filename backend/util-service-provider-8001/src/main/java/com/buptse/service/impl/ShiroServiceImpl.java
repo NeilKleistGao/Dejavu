@@ -23,17 +23,25 @@ public class ShiroServiceImpl implements IShiroService {
     return userService.findByName(username);
   }
 
+
   @Override
+  /**
+  * @Description: create a new token when token has expired
+  * @Param: [userId]
+  * @return: java.util.Map<java.lang.String,java.lang.Object>
+  * @Author: gerayking
+  * @Date: 2021/6/5-14:38
+  */
   public Map<String, Object> createToken(Integer userId) {
     Map<String, Object>res = new HashMap<>();
     String token = TokenGenerator.generateValue();
     UserToken userToken = tokenService.findUserById(userId);
     if (null == userToken){
-      final UserToken newUserToken = new UserToken();
-      newUserToken.setExpireTime(EXPIRE);
-      newUserToken.setUserId(userId);
-      newUserToken.setToken(token);
-      tokenService.savaToken(newUserToken);
+       userToken = new UserToken();
+      userToken.setExpireTime(EXPIRE);
+      userToken.setUserId(userId);
+      userToken.setToken(token);
+      tokenService.savaToken(userToken);
     }else{
       userToken.setToken(token);
       userToken.setExpireTime(EXPIRE);
@@ -45,10 +53,17 @@ public class ShiroServiceImpl implements IShiroService {
   }
 
   @Override
-  public void logout(String token) {
-    tokenService.deleteToken(token);
+  public boolean logout(String token) {
+    return tokenService.deleteToken(token);
   }
 
+  /**
+  * @param accessToken Unused.
+  * @return Nothing.
+  * @author gerayking
+  * @date 2021/6/5 14:31
+   * 通过传送过来的token来验证用户的token是否正确，正确返回token，否则返回null
+  */
   @Override
   public UserToken findByToken(String accessToken) {
     final String[] split = accessToken.split(TokenUtil.TOKEN_SPLITER);
@@ -60,11 +75,25 @@ public class ShiroServiceImpl implements IShiroService {
     return userToken;
   }
 
+  /**
+  * @param userId Unused.
+  * @return Nothing.
+  * @author gerayking
+  * @date 2021/6/5 14:33
+   * 通过userId查询redis来获取token
+  */
   @Override
   public User findByUserId(Integer userId) {
     return userService.getById(userId);
   }
 
+  /**
+  * @param phoneNumber Unused.
+  * @return Nothing.
+  * @author gerayking
+  * @date 2021/6/5 14:33
+   * 通过phoneNumber来获取用户资料
+  */
   @Override
   public User findByUserPhone(String phoneNumber) {
     return userService.findByPhoneNumber(phoneNumber);

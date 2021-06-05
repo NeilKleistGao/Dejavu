@@ -30,4 +30,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
   public User findByPhoneNumber(String phoneNumber) {
     return userMapper.findUserByPhoneNumber(phoneNumber);
   }
+
+  @Override
+  public Integer insertUser(User user) {
+    return userMapper.insertUser(user);
+  }
 }

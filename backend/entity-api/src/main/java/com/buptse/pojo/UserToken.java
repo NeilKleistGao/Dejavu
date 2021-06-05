@@ -10,6 +10,6 @@ public class UserToken implements Serializable {
   private String token; //用户Token
   private Long expireTime;
   public String getFullToken(){
-    return token+"&"+userId;
+    return token+"_"+userId;
   }
 }

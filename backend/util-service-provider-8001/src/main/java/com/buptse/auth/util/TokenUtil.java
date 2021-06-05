@@ -7,7 +7,7 @@ public class TokenUtil {
   /**
    * 获取请求的token
    */
-  public static final String TOKEN_SPLITER  = "&";
+  public static final String TOKEN_SPLITER  = "_";
 
   public static String getRequestToken(HttpServletRequest httpRequest) {
 

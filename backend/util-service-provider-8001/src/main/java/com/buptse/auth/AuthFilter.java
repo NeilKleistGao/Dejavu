@@ -66,7 +66,6 @@ public class AuthFilter extends AuthenticatingFilter  {
    */
   @Override
   protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-    final Subject subject = getSubject(request, response);
     if (((HttpServletRequest) request).getMethod().equals(RequestMethod.OPTIONS.name())) {
       return true;
     }
