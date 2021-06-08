@@ -7,7 +7,7 @@
  -->
 
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar class="bg-primary text-white shadow-2" style="padding: 15px 10px">
         <q-toolbar-title @click="goHome">
