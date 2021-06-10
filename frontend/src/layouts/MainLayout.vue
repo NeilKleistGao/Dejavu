@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/5/12
+ * @LastEditTime: 2021/6/10
  -->
 
 <template>
@@ -15,12 +15,26 @@
           Dejavu二手车交易平台
         </q-toolbar-title>
 
-        <q-btn flat class="q-mr-xs" label="我要买车"/>
-        <q-btn flat class="q-mr-xs" label="我要卖车"/>
-        <q-btn flat class="q-mr-xs" :label="'当前城市：' + city"/>
-        <q-separator vertical inset/>
-        <q-btn flat class="q-mr-xs" label="登录"/>
-        <q-btn flat class="q-mr-xs" label="注册"/>
+        <q-btn flat class="q-mr-xs" label="我要买车" @click="goSearch"/>
+        <q-btn flat class="q-mr-xs" label="我要卖车" @click="goSell"/>
+        <q-btn flat class="q-mr-xs" :label="'当前城市：' + city">
+          <q-popup-proxy >
+            <q-card style="width: 600px; min-height: 400px">
+              <q-card-section>
+                <span class="text-h4">选择城市</span>
+              </q-card-section>
+              <q-card-section>
+                <div v-for="pro in provinces" :key="pro">
+                  <div class="text-h5" style="margin-bottom: 0.2em; margin-top: 0.2em">{{pro}}</div>
+                  <q-btn flat color="primary" v-for="ct in cities[pro]" :key="ct" :label="ct" @click="city=ct"/>
+                </div>
+              </q-card-section>
+            </q-card>
+          </q-popup-proxy>
+        </q-btn>
+        <q-separator vertical inset=""/>
+        <q-btn flat class="q-mr-xs" label="登录" @click="goLogin"/>
+        <q-btn flat class="q-mr-xs" label="注册" @click="goRegister"/>
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -36,15 +50,19 @@
         </q-toolbar-title>
       </q-toolbar>
     </div>
+
   </q-layout>
 </template>
 
 <script>
+import CityList from '../../public/city_information/city_list.json'
 export default {
   name: 'MainLayout',
   data () {
     return {
-      city: '北京' // 当前城市名称
+      provinces: CityList.provinces,
+      cities: CityList.cities,
+      city: '' // 当前城市名称
     }
   },
   methods: {
@@ -54,6 +72,37 @@ export default {
      */
     goHome () {
       window.location = '/'
+    },
+    goSell () {
+      window.location = '/#/sell'
+    },
+    goSearch () {
+      window.location = '/#/search'
+    },
+    goLogin () {
+      window.location = '/#/login'
+    },
+    goRegister () {
+      window.location = '/#/register'
+    }
+  },
+  beforeMount () {
+    let city = sessionStorage.getItem('city')
+    if (city === null) {
+      city = '北京市'
+      sessionStorage.setItem('city', '北京市')
+    }
+
+    this.city = city
+  },
+  watch: {
+    city: {
+      handler (newValue, oldValue) {
+        sessionStorage.setItem('city', newValue)
+        if (oldValue !== '') {
+          window.location.reload()
+        }
+      }
     }
   }
 }

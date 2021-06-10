@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/5/13
+ * @LastEditTime: 2021/6/10
  -->
 <template>
   <q-page class="flex-center">
@@ -13,7 +13,7 @@
           <div class="col-8">
             <q-breadcrumbs>
               <q-breadcrumbs-el label="二手车搜索"/>
-              <q-breadcrumbs-el label="北京"/>
+              <q-breadcrumbs-el :label="city"/>
               <q-breadcrumbs-el v-if="brand !== ''" :label="brand"/>
               <q-breadcrumbs-el v-if="body !== ''" :label="body"/>
               <q-breadcrumbs-el v-if="price !== ''" :label="price + '元'"/>
@@ -147,7 +147,8 @@ export default {
       price: '', // 价格筛选
       carList: [], // 车辆信息列表
       current: 1, // 当前页码
-      max_page: 1
+      max_page: 1,
+      city: ''
     }
   },
   methods: {
@@ -190,6 +191,13 @@ export default {
     }
   },
   beforeMount () {
+    let city = sessionStorage.getItem('city')
+    if (city === null) {
+      city = '北京市'
+      sessionStorage.setItem('city', '北京市')
+    }
+    this.city = city
+
     const query = this.$route.query
     if (query.manufacturer !== null && query.manufacturer !== undefined) {
       this.brand = query.manufacturer
