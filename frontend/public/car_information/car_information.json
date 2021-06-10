@@ -332,15 +332,6 @@
       "fuel_type": "汽油",
       "gearbox": "5挡手动",
       "power": "68"
-    },
-    "比亚迪-比亚迪F0-2012款1.0L铉酷型": {
-      "model": "比亚迪F0 2012款 1.0L 铉酷型",
-      "manufacture": "比亚迪",
-      "displacement": 1.0,
-      "body_type": "微型车",
-      "fuel_type": "汽油",
-      "gearbox": "5挡手动",
-      "power": "68"
     }
   }
 }
