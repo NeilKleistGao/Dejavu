@@ -3,36 +3,37 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/4/19
+ * @LastEditTime: 2021/5/13
  -->
 <template>
   <q-page class="flex-center">
-    <!--ADD YOUR VUE CODE HERE-->
-    <div style="width:10px"/>
-    <div class="q-gutter-y-md column" style="width: 100%" >
-      <q-toolbar class="bg-primary text-white rounded-borders">
-        <q-avatar class="gt-xs">
-          <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
-        </q-avatar>
-
-        <q-space />
-
-        <q-input dark dense standout v-model="text" input-class="text-right" class="q-ml-md">
-          <template v-slot:append>
-            <q-icon v-if="text === ''" name="search" />
-            <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
-          </template>
-        </q-input>
-      </q-toolbar>
-    </div>
-    <div style="width: 1%"/>
     <div class="q-pa-md flex-center" >
-      <div class="q-gutter-y-md" style="max-width: 80%">
+      <div class="q-gutter-y-md" style="width: 60%; margin-left: 20%;">
+        <div class="row" style="margin-top: 2em; margin-bottom: -2em">
+          <div class="col-8">
+            <q-breadcrumbs>
+              <q-breadcrumbs-el label="二手车搜索"/>
+              <q-breadcrumbs-el label="北京"/>
+              <q-breadcrumbs-el v-if="brand !== ''" :label="brand"/>
+              <q-breadcrumbs-el v-if="body !== ''" :label="body"/>
+              <q-breadcrumbs-el v-if="price !== ''" :label="price + '元'"/>
+              <q-breadcrumbs-el v-if="text !== ''" :label="'搜索：' + text"/>
+            </q-breadcrumbs>
+          </div>
+          <div class="col-4">
+            <q-input outlined bottom-slots dense label="搜索" v-model="text">
+              <template slot="append">
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+        </div>
         <q-tabs
           v-model="brand"
           inline-label
           class="bg-primary text-white shadow-2"
         >
+          <q-tab name="" label="不限"/>
           <q-tab name="大众" label="大众" />
           <q-tab name="宝马" label="宝马" />
           <q-tab name="奔驰" label="奔驰" />
@@ -57,10 +58,11 @@
           </q-btn-dropdown>
         </q-tabs>
         <q-tabs
-          v-model="model"
+          v-model="body"
           inline-label
           class="bg-primary text-white shadow-2"
         >
+          <q-tab name="" label="不限"/>
           <q-tab name="豪华轿车" label="豪华轿车" />
           <q-tab name="微型车" label="微型车" />
           <q-tab name="箱型车" label="箱型车" />
@@ -69,10 +71,10 @@
           <q-tab name="双门汽车" label="双门汽车" />
           <q-btn-dropdown auto-close stretch flat label="More...">
             <q-list>
-              <q-item clickable @click="brand = '商务车'">
+              <q-item clickable @click="body = '商务车'">
                 <q-item-section>商务车</q-item-section>
               </q-item>
-              <q-item clickable @click="brand = '搅拌车'">
+              <q-item clickable @click="body = '搅拌车'">
                 <q-item-section>搅拌车</q-item-section>
               </q-item>
             </q-list>
@@ -83,18 +85,19 @@
           inline-label
           class="bg-primary text-white shadow-2"
         >
-          <q-tab name="under three" label="3万以下" />
-          <q-tab name="p2" label="3-5万" />
-          <q-tab name="p3" label="5-7万" />
-          <q-tab name="p4" label="7-9万" />
-          <q-tab name="p5" label="9-12万" />
-          <q-tab name="p6" label="12-16万" />
+          <q-tab name="" label="不限"/>
+          <q-tab name="0-30000" label="3万以下" />
+          <q-tab name="30000-50000" label="3-5万" />
+          <q-tab name="50000-70000" label="5-7万" />
+          <q-tab name="70000-90000" label="7-9万" />
+          <q-tab name="90000-120000" label="9-12万" />
+          <q-tab name="120000-160000" label="12-16万" />
           <q-btn-dropdown auto-close stretch flat label="More...">
             <q-list>
-              <q-item clickable @click="price = 'p7'">
+              <q-item clickable @click="price = '160000-200000'">
                 <q-item-section>16-20万</q-item-section>
               </q-item>
-              <q-item clickable @click="price = 'p8'">
+              <q-item clickable @click="price = '200000-'">
                 <q-item-section>20万以上</q-item-section>
               </q-item>
             </q-list>
@@ -102,160 +105,32 @@
         </q-tabs>
       </div>
     </div>
-    <div style="width: 1%"/>
-    <div class="q-pa-md row items-start q-gutter-md flex-center">
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+    <div class="q-pa-md row items-start q-gutter-md" style="width: 60%; margin-left: 20%">
+      <q-card class="my-card" v-for="item in carList" :key="item.car_id" @click="goDetail(item.car_id)">
+        <q-img src="car_details_test_img/1.png">
           <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
+            <div class="text-h6">{{item.manufacturer}} {{item.model_name}}</div>
+            <div class="text-subtitle1">{{item.service_life}}年</div>
+            <div></div>
           </div>
         </q-img>
 
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
+        <q-card-section>
+          <div>
+            <del class="text-h6">{{item.guide_price}}元</del>
+            <span class="text-subtitle1 text-red">{{item.price}}元</span>
           </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/mountains.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
-      </q-card>
-      <q-card class="my-card">
-        <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-          <div class="absolute-bottom">
-            <div class="text-h6">{{carInfo1.message}}</div>
-            <div class="text-subtitle2">{{carInfo1.price}}</div>
-          </div>
-        </q-img>
-
-        <q-card-actions>
-          <q-btn flat>查看详情</q-btn>
-        </q-card-actions>
+        </q-card-section>
       </q-card>
     </div>
     <div class="q-pa-lg flex flex-center">
       <q-pagination
         v-model="current"
         color="blue"
-        :max="10"
-        :max-pages="10"
+        :max="max_page"
+        :max-pages="max_page"
         :boundary-numbers="false"
+        direction-links
       />
     </div>
   </q-page>
@@ -266,16 +141,87 @@ export default {
   name: 'Search',
   data () {
     return {
-      text: '',
-      brand: '大众',
-      model: '豪华轿车',
-      price: 'p1',
-      carInfo1: {
-        message: '奔驰 2019款C200 ',
-        price: '23.88万',
-        img: 'car_details_test_img/1.png'
-      },
-      current: 1
+      text: '', // 搜索文字内容
+      brand: '', // 品牌筛选
+      body: '', // 车型筛选
+      price: '', // 价格筛选
+      carList: [], // 车辆信息列表
+      current: 1, // 当前页码
+      max_page: 1
+    }
+  },
+  methods: {
+    /**
+     * @description: 跳转到车辆详细信息页面
+     * @param {Number} id
+     * @return void
+     */
+    goDetail (id) {
+      window.location = '/#/car/' + id.toString()
+    },
+    /**
+     * @description: 获取满足条件的车辆列表
+     * @return void
+     */
+    getCarsList () {
+      let url = '/api/car/list?'
+      if (this.brand !== '') {
+        url += 'manufacturer=' + this.brand + '&'
+      }
+      if (this.body !== '') {
+        url += 'body=' + this.body + '&'
+      }
+      if (this.price !== '') {
+        const bar = this.price.indexOf('-')
+        const min = this.price.substring(0, bar)
+        const max = bar === this.price.length - 1 ? '' : this.price.substring(bar + 1)
+        url += 'min-price=' + min + '&'
+        if (max !== '') {
+          url += 'max-price=' + max + '&'
+        }
+      }
+
+      url = url.substr(0, url.length - 1)
+      this.$axios.get(url).then(res => {
+        if (res.status === 200) {
+          this.carList = res.data
+        }
+      })
+    }
+  },
+  beforeMount () {
+    const query = this.$route.query
+    if (query.manufacturer !== null && query.manufacturer !== undefined) {
+      this.brand = query.manufacturer
+    }
+    if (query.body !== null && query.body !== undefined) {
+      this.body = query.body
+    }
+    if (query['min-guide-price'] !== null && query['min-guide-price'] !== undefined) {
+      let p = query['min-guide-price'] + '-'
+      if (query['max-guide-price'] !== null && query['max-guide-price'] !== undefined) {
+        p += query['max-guide-price']
+      }
+
+      this.price = p
+    }
+    this.getCarsList()
+  },
+  watch: {
+    brand: {
+      handler () {
+        this.getCarsList()
+      }
+    },
+    body: {
+      handler () {
+        this.getCarsList()
+      }
+    },
+    price: {
+      handler () {
+        this.getCarsList()
+      }
     }
   }
 }
