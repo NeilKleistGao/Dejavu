@@ -2,7 +2,7 @@ package com.buptse.config;
 
 import com.buptse.auth.AuthFilter;
 import com.buptse.auth.AuthRealm;
-import com.buptse.security.UserRealm;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,6 +44,7 @@ public class ShiroConfig {
     filterMap.put("/swagger-ui.html", "anon");
     filterMap.put("/swagger-resources/**", "anon");
     filterMap.put("/doc.html", "anon");
+    filterMap.put("/car/**","anon");
     // 除了以上路径，其他都需要权限验证
     filterMap.put("/**", "auth");
     shiroFilter.setLoginUrl("/user/login");

@@ -6,14 +6,15 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.buptse.common.RESULT;
 import com.buptse.dto.CommonResult;
+import com.buptse.dto.SaleDeleteDto;
+import com.buptse.dto.TransactionQueryDto;
+import com.buptse.dto.TranscationModifyDto;
 import com.buptse.pojo.Transaction;
+import com.buptse.service.ITokenService;
 import com.buptse.service.ITransactionService;
 import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,21 +32,19 @@ public class TransactionController {
     @Autowired
     private ITransactionService service;
 
-    /**
-     * TODO 增加token 验证
-     * @param uid
-     * @param buyerId
-     * @param sellerId
-     * @return
-     */
+    @Autowired
+    private ITokenService tokenService;
+
     @GetMapping("/transaction/sale/query")
     public CommonResult queryTransaction(
-            @RequestParam("uid") Integer uid,
-            @RequestParam(value = "buyer",required = false) Integer buyerId,
-            @RequestParam(value = "seller",required = false) Integer sellerId){
+            @RequestBody TransactionQueryDto transactionQueryDto){
+
+        if(tokenService.findUserById(transactionQueryDto.getUid())==null){
+            return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
+        }
         QueryWrapper<Transaction> transactionQueryWrapper  =new QueryWrapper<>();
-        if(buyerId!=null){transactionQueryWrapper.eq("buyer_id",buyerId);}
-        if(sellerId!=null){transactionQueryWrapper.eq("seller_id",sellerId);}
+        if(transactionQueryDto.getBuyer()!=null){transactionQueryWrapper.eq("buyer_id",transactionQueryDto.getBuyer());}
+        if(transactionQueryDto.getSeller()!=null){transactionQueryWrapper.eq("seller_id",transactionQueryDto.getSeller());}
         List<Transaction> list = service.list(transactionQueryWrapper);
         return CommonResult.success(list);
 
@@ -53,20 +52,17 @@ public class TransactionController {
 
     @PostMapping("/transaction/sale/modify")
     public CommonResult modifyTransaction(
-            @RequestParam("uid") Integer uid,
-            @RequestParam("sale_id") Integer saleId,
-            @RequestParam(value = "buyer_id",required = false) Integer buyerId,
-            @RequestParam(value = "seller_id",required = false) Integer sellerId,
-            @RequestParam(value = "car_id",required = false) Integer carId,
-            @RequestParam(value = "deal_price",required = false) Double dealPrice,
-            @RequestParam(value = "deal_date",required = false)LocalDateTime dealDate){
+            @RequestBody TranscationModifyDto transcationModifyDto){
+        if(tokenService.findUserById(transcationModifyDto.getUid())==null){
+            return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
+        }
         UpdateWrapper<Transaction> transactionWrapper = new UpdateWrapper<>();
-        transactionWrapper.eq("sale_id",saleId);
-        if(buyerId!=null){transactionWrapper.set("buyer_id",buyerId);}
-        if(sellerId!=null){transactionWrapper.set("seller_id",sellerId);}
-        if(carId!=null){transactionWrapper.set("car_id",carId);}
-        if(dealPrice!=null){transactionWrapper.set("deal_price",dealPrice);}
-        if(dealDate!=null){transactionWrapper.set("deal_time",dealDate);}
+        transactionWrapper.eq("sale_id",transcationModifyDto.getSale_id());
+        if(transcationModifyDto.getBuyer_id()!=null){transactionWrapper.set("buyer_id",transcationModifyDto.getBuyer_id());}
+        if(transcationModifyDto.getSeller_id()!=null){transactionWrapper.set("seller_id",transcationModifyDto.getSale_id());}
+        if(transcationModifyDto.getCar_id()!=null){transactionWrapper.set("car_id",transcationModifyDto.getCar_id());}
+        if(transcationModifyDto.getDeal_price()!=null){transactionWrapper.set("deal_price",transcationModifyDto.getDeal_price());}
+        if(transcationModifyDto.getDeal_time()!=null){transactionWrapper.set("deal_time",transcationModifyDto.getDeal_time());}
         if(service.update(transactionWrapper)){
             return CommonResult.success(true);
         }
@@ -76,19 +72,16 @@ public class TransactionController {
 
     @PostMapping("/transaction/sale/submit")
     public CommonResult sumbitTransaction(
-            @RequestParam("uid") Integer uid,
-            @RequestParam("sale_id") Integer saleId,
-            @RequestParam(value = "buyer_id") Integer buyerId,
-            @RequestParam(value = "seller_id") Integer sellerId,
-            @RequestParam(value = "car_id") Integer carId,
-            @RequestParam(value = "deal_price") BigDecimal dealPrice,
-            @RequestParam(value = "deal_date")LocalDateTime dealDate){
+            @RequestBody TranscationModifyDto transcationModifyDto){
+        if(tokenService.findUserById(transcationModifyDto.getUid())==null){
+            return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
+        }
         Transaction transaction = Transaction.builder()
-                .buyer_id(buyerId)
-                .seller_id(sellerId)
-                .car_id(carId)
-                .deal_price(dealPrice)
-                .deal_time(dealDate)
+                .buyer_id(transcationModifyDto.getBuyer_id())
+                .seller_id(transcationModifyDto.getSeller_id())
+                .car_id(transcationModifyDto.getCar_id())
+                .deal_price(transcationModifyDto.getDeal_price())
+                .deal_time(transcationModifyDto.getDeal_time())
                 .build();
         int id = service.insertTransactionAndGetId(transaction);
         return CommonResult.success(id);
@@ -97,12 +90,18 @@ public class TransactionController {
 
     @PostMapping("/transaction/sale/delete")
     public CommonResult deleteTransaction(
-            @RequestParam("uid") Integer uid,
-            @RequestParam("sale_id") Integer saleId){
-        if(service.removeById(uid)){
+            @RequestBody SaleDeleteDto saleDeleteDto){
+
+        if(tokenService.findUserById(saleDeleteDto.getUid())==null){
+            return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
+        }
+
+        if(service.removeById(saleDeleteDto.getSale_id())){
             return CommonResult.success(true);
         }
         return CommonResult.failFast(RESULT.NO_DATA,false);
     }
+
+
 
 }

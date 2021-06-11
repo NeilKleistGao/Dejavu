@@ -20,13 +20,7 @@ import java.util.Map;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ClassName CarController
@@ -41,7 +35,6 @@ public class CarController {
 
     @Autowired
     private ICarService carService;
-    @RequiresRoles({"manage"})
     @GetMapping("/car")
     public CarDto getCarById(@RequestParam Integer id){
         return carService.getCarDto(carService.getById(id));
@@ -56,36 +49,7 @@ public class CarController {
     }
     @PostMapping("/car/new")
     public Map createCar(
-        @RequestParam(value = "model")String model,
-        @RequestParam(value = "guild_price")Float guild_price,
-        @RequestParam(value = "manufactue")String manufactue,
-        @RequestParam(value = "server_life")Float server_life,
-        @RequestParam(value = "mileage")Float mileage,
-        @RequestParam(value = "displacement")Float displacement,
-        @RequestParam(value = "region")String region,
-        @RequestParam(value = "price")Float price,
-        @RequestParam(value = "body_type")String body_type,
-        @RequestParam(value = "fuel_type")String fuel_type,
-        @RequestParam(value = "gearbox")String gearbox,
-        @RequestParam(value = "power")Float power,
-        @RequestParam(value = "not_repaired_damage")String not_repaird_damage,
-        @RequestParam(value = "create_data")Date create_data){
-        Car car = new Car();
-        car.setModel_name(model);
-        if(guild_price!=null) car.setGuide_price(BigDecimal.valueOf(guild_price));
-        car.setManufacturer(manufactue);
-        if(server_life!=null)car.setService_life(BigDecimal.valueOf(server_life));
-        if(mileage!=null)car.setMileage(BigDecimal.valueOf(mileage));
-        if(displacement!=null)car.setDisplacement(BigDecimal.valueOf(displacement));
-        if(region!=null)car.setRegion_code(Integer.valueOf(CityAndCodeUtil.getCodeByCity(region)));
-        if(price!=null)car.setPrice(BigDecimal.valueOf(price));
-        if(body_type!=null)car.setBody_type(bodyAndCodeUtil.getCodeByBody(body_type));
-        if(fuel_type!=null)car.setFuel_type(fuelAndCodeUtil.getCodeByFuel(fuel_type));
-        if(gearbox!=null)car.setGear_box(gearboxAndCodeUtil.getCodeByGear(gearbox));
-        if(power!=null)car.setPrice(BigDecimal.valueOf(power));
-        if(not_repaird_damage!=null)car.setNot_repaired_damage(repairedAndCodeUtil.getCodeByRequired(not_repaird_damage));
-        if(create_data!=null)car.setCreate_date(create_data.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-        else car.setCreate_date(LocalDateTime.now());
+            @RequestBody Car car){
         int id = carService.insertCarAndGetId(car);
         Map res = new HashMap();
         res.put("car_id",id);

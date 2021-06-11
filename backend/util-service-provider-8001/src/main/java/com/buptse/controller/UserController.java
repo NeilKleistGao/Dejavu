@@ -22,11 +22,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 
@@ -61,8 +58,9 @@ public class UserController {
 
     @PostMapping("/user/login")
     public Map<String,Object> loginUser(
-        @RequestParam("phoneNumber")String phoneNumber,
-        @RequestParam("password")String password){
+            @RequestBody LoginDto loginDto){
+        String phoneNumber = loginDto.getPhoneNumber();
+        String password = loginDto.getPassword();
         Map<String,Object> result = new HashMap<>();
         User user = shiroService.findByUserPhone(phoneNumber);
         if(user == null || !user.getPassword().equals(password)){
@@ -77,7 +75,6 @@ public class UserController {
         return result;
     }
 
-    @RequiresRoles({"manager","user"})
     @GetMapping("/user/info/query")
     /**
     * @Description: 获取用户信息

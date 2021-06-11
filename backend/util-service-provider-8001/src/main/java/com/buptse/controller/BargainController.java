@@ -1,6 +1,7 @@
 package com.buptse.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.buptse.common.RESULT;
 import com.buptse.dto.CommonResult;
 import com.buptse.pojo.Bargain;
 import com.buptse.service.IBargainService;
@@ -10,30 +11,26 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import com.buptse.service.ITokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import com.buptse.dto.BarginQueryDto;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class BargainController {
   @Autowired
-  IBargainService bargainService;
+  private IBargainService bargainService;
+
+  @Autowired
+  private ITokenService tokenService;
 
   @PostMapping("/transaction/bargain/new")
-  public Map<String, Boolean> createBargain(
-      @RequestParam(value = "uid")Integer uid,
-      @RequestParam(value = "car_id")Integer car_id,
-      @RequestParam(value = "price")BigDecimal price,
-      @RequestParam(value = "start_time")LocalDateTime start_time,
-      @RequestParam(value = "end_time")LocalDateTime end_time
+  public  Map<String, Boolean> createBargain(
+          @RequestBody Bargain bargainDto
   ){
-    Bargain bargain = new Bargain();
-    bargain.setCar_id(car_id);
-    bargain.setUid(uid);
-    bargain.setPrice(price);
-    bargain.setStart_time(start_time);
-    bargain.setEnd_time(end_time);
-    boolean result = bargainService.save(bargain);
+    boolean result = bargainService.save(bargainDto);
     final HashMap<String, Boolean> map = new HashMap<String, Boolean>();
     map.put("result",result);
     return map;
@@ -41,20 +38,18 @@ public class BargainController {
 
   /**
    * 根据条件查询砍价记录
-   * TODO  增加token校验
-   * @param uid
-   * @param barginId
-   * @param carID
    * @return
    */
   @PostMapping("/transaction/bargain/query")
   public CommonResult queryBargain(
-          @RequestParam("id") Integer uid,
-          @RequestParam(value = "uid",required = false) Integer barginId,
-          @RequestParam(value = "cid",required = false) Integer carID){
+          @RequestBody BarginQueryDto queryDto){
+
+    if(tokenService.findUserById(queryDto.getId())==null){
+      return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
+    }
     QueryWrapper<Bargain> bargainQueryWrapper = new QueryWrapper<>();
-    if(barginId!=null){bargainQueryWrapper.eq("uid",barginId);}
-    if(carID!=null){bargainQueryWrapper.eq("carid",carID);}
+    if(queryDto.getUid()!=null){bargainQueryWrapper.eq("uid",queryDto.getUid());}
+    if(queryDto.getCid()!=null){bargainQueryWrapper.eq("carid",queryDto.getCid());}
     List<Bargain> bargains = bargainService.list(bargainQueryWrapper);
     return CommonResult.success(bargains);
 
