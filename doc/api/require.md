@@ -286,7 +286,7 @@ method: POST
 + power：发动机功率
 + not_repaired_damage：有尚未修复的损坏
 + date：上牌日期
-+ images：车辆图片列表
++ imgs：车辆图片列表
 
 GET参数：无
 
