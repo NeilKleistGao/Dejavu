@@ -25,7 +25,7 @@ GET参数：
 ### 查询符合条件的用户信息
 url: `/user/info/query_all`
 
-说明：获取满足条件的用户的信息
+说明：获取满足条件的用户的信息（管理员）
 
 method: GET
 
@@ -327,7 +327,7 @@ GET参数：无
 ### 查询砍价信息
 url: `/transaction/bargain/query`
 
-说明：查询符合条件的砍价记录
+说明：查询符合条件的砍价记录（管理员可以查询全部，非管理员仅能查询自己）
 
 method: GET
 
@@ -365,7 +365,7 @@ GET参数：
 ### 查询成交信息
 url: `/transaction/sale/query`
 
-说明：查询符合条件的成交记录
+说明：查询符合条件的成交记录（管理员可以查询全部，非管理员仅能查询自己）
 
 method: GET
 
@@ -397,7 +397,7 @@ GET参数：
 ### 修改成交信息
 url: `/transaction/sale/modify`
 
-说明：修改已存在的交易的成交信息
+说明：修改已存在的交易的成交信息（管理员）
 
 method: POST
 
@@ -424,7 +424,7 @@ GET参数：无
 ### 提交成交信息
 url: `/transaction/sale/submit`
 
-说明：提交新的成交
+说明：提交新的成交（管理员）
 
 method: POST
 
@@ -450,7 +450,7 @@ GET参数：无
 ### 删除成交信息
 url: `/transaction/sale/delete`
 
-说明：删除成交信息
+说明：删除成交信息（管理员）
 
 method: POST
 
