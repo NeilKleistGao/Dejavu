@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.buptse.common.util.*;
 import com.buptse.dto.LoginDto;
 import com.buptse.dto.CommonResult;
+import com.buptse.dto.ModifyPasswordDto;
+import com.buptse.dto.ModifyUserInfoDto;
+import com.buptse.dto.UserRegisterDto;
 import com.buptse.mapper.UserMapper;
 import com.buptse.pojo.Car;
 import com.buptse.pojo.User;
@@ -14,6 +17,7 @@ import com.buptse.service.ICarService;
 import com.buptse.service.IShiroService;
 import com.buptse.service.IUserService;
 import java.nio.charset.MalformedInputException;
+import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.shiro.SecurityUtils;
@@ -22,9 +26,11 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
@@ -61,8 +67,9 @@ public class UserController {
 
     @PostMapping("/user/login")
     public Map<String,Object> loginUser(
-        @RequestParam("phoneNumber")String phoneNumber,
-        @RequestParam("password")String password){
+        @RequestBody LoginDto loginDto){
+        String phoneNumber = loginDto.getPhoneNumber();
+        String password = loginDto.getPassword();
         Map<String,Object> result = new HashMap<>();
         User user = shiroService.findByUserPhone(phoneNumber);
         if(user == null || !user.getPassword().equals(password)){
@@ -76,8 +83,6 @@ public class UserController {
         }
         return result;
     }
-
-    @RequiresRoles({"manager","user"})
     @GetMapping("/user/info/query")
     /**
     * @Description: 获取用户信息
@@ -102,11 +107,10 @@ public class UserController {
     * @Date: 2021/6/5-14:40
     */
     public Map modifyUserInfo(
-        @RequestParam(value = "token")String token,
-        @RequestParam(value = "uid")Integer userId,
-        @RequestParam(value = "main",required = false)String mail,
-        @RequestParam(value = "avatar",required = false)String avatar
+        @RequestBody ModifyUserInfoDto modifyUserInfoDto
     ){
+        String token = modifyUserInfoDto.getToken();
+        Integer userId = modifyUserInfoDto.getUserId();
         Map<String, Object> result = new HashMap<>();
         UserToken userToken = shiroService.findByToken(token);
         if(userToken.getUserId() != userId){
@@ -116,14 +120,14 @@ public class UserController {
         }
         User user = new User();
         user.setUid(userId);
-        user.setAvatar(avatar);
-        user.setMail(mail);
+        String avatar = modifyUserInfoDto.getAvatar();
+        if(avatar !=null) user.setAvatar(avatar);
+        String mail = modifyUserInfoDto.getMail();
+        if(mail != null) user.setMail(mail);
         boolean flag = userService.updateById(user);
         result.put("result",flag);
         return result;
     }
-
-    @RequiresRoles({"manage"})
     @PostMapping("/user/info/password")
     /**
     * @Description: 修改用户密码
@@ -133,10 +137,11 @@ public class UserController {
     * @Date: 2021/6/5-14:40
     */
     public Map modifyPassword(
-        @RequestParam(value = "uid")Integer uid,
-        @RequestParam(value = "old")String oldPassword,
-        @RequestParam(value = "new")String newPassword
+        @RequestBody ModifyPasswordDto modifyPasswordDto
     ){
+        Integer uid = modifyPasswordDto.getUid();
+        String oldPassword = modifyPasswordDto.getOldPassword();
+        String newPassword = modifyPasswordDto.getNewPassword();
         Map<String, Object> result = new HashMap<>();
         User user = userService.getById(uid);
         if(user.getPassword() != oldPassword){
@@ -154,7 +159,7 @@ public class UserController {
     @RequiresRoles({"user"})
     @PostMapping("/user/logout")
     public Map logout(
-        @RequestParam("token")String token
+        @RequestBody String token
     ){
         Map<String, Object> result = new HashMap<>();
         boolean flag = shiroService.logout(token);
@@ -163,11 +168,17 @@ public class UserController {
     }
     @PostMapping("/user/register")
     public Map userRegister(
-        @RequestParam("phone")String phoneNumber,
-        @RequestParam("mail")String mail,
-        @RequestParam("password")String password
+        @RequestBody UserRegisterDto userRegisterDto
     ){
         Map<String, Object> result = new HashMap<>();
+        final String phoneNumber = userRegisterDto.getPhoneNumber();
+        final String password = userRegisterDto.getPassword();
+        final String mail = userRegisterDto.getMail();
+        if(null == phoneNumber || null == password || null == mail){
+            result.put("result",-1);
+            result.put("info","参数错误");
+            return result;
+        }
         User user = userService.findByPhoneNumber(phoneNumber);
         if(user != null){
             result.put("result",-1);
@@ -183,8 +194,4 @@ public class UserController {
         result.put("info","注册成功");
         return result;
     }
-
-
-
-
 }

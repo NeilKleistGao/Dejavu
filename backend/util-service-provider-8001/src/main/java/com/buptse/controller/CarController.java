@@ -41,7 +41,6 @@ public class CarController {
 
     @Autowired
     private ICarService carService;
-    @RequiresRoles({"manage"})
     @GetMapping("/car")
     public CarDto getCarById(@RequestParam Integer id){
         return carService.getCarDto(carService.getById(id));

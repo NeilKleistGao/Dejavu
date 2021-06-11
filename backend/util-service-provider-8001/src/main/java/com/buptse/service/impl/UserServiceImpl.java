@@ -35,4 +35,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
   public Integer insertUser(User user) {
     return userMapper.insertUser(user);
   }
+
+  @Override
+  public Boolean isExistPhoneNumber(String phoneNumber) {
+    Integer is = userMapper.IsExitPhoneNumber(phoneNumber);
+    if(is == 1)return true;
+    return false;
+  }
 }
