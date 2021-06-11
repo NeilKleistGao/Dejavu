@@ -61,7 +61,30 @@ public class CarController {
     }
     @PostMapping("/car/new")
     public Map createCar(
-            @RequestBody Car car){
+            @RequestBody CarDto carDto){
+        Car car = Car.builder()
+                .car_id(carDto.getCar_id())
+                .body_type(bodyAndCodeUtil.getCodeByBody(carDto.getBody_type()))
+                .create_date(LocalDateTime.now())
+                .displacement(carDto.getDisplacement())
+                .fuel_type(fuelAndCodeUtil.getCodeByFuel(carDto.getFuel_type()))
+                .gear_box(bodyAndCodeUtil.getCodeByBody(carDto.getGear_box()))
+                .guide_price(carDto.getGuide_price())
+                .manufacturer(carDto.getManufacturer())
+                .mileage(carDto.getMileage())
+                .model_name(carDto.getModel_name())
+                .not_repaired_damage(repairedAndCodeUtil.getCodeByRequired(carDto.getNot_repaired_damage()))
+                .power(carDto.getPower())
+                .price(carDto.getPrice())
+                .region_code(Integer.parseInt(CityAndCodeUtil.getCodeByCity(carDto.getRegion())))
+                .service_life(carDto.getService_life())
+                .state(carDto.getState())
+                .uid(carDto.getUid())
+                .build();
+        List<String> imgs = carDto.getImgs();
+        for (String img : imgs) {
+            carimgService.save(new Carimg(carDto.getCar_id(),img));
+        }
         int id = carService.insertCarAndGetId(car);
         Map res = new HashMap();
         res.put("car_id",id);
