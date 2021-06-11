@@ -246,16 +246,19 @@
                   </div>
                   <div class="field-wrapper">
                     <fieldset>
-                      <legend>车辆所在地</legend>
-                      <p class="field">
-                      </p>
-                    </fieldset>
-                  </div>
-                  <div class="field-wrapper">
-                    <fieldset>
                       <legend>上传图片</legend>
-                      <p class="field">
-                      </p>
+                      <q-file v-model="files"
+                              label="选择文件"
+                              filled
+                              counter
+                              :counter-label="countFileLabel"
+                              :max-files="5"
+                              accept=".jpg, image/*"
+                              multiple>
+                        <template v-slot:prepend>
+                          <q-icon name="attach_file" />
+                        </template>
+                      </q-file>
                     </fieldset>
                   </div>
                   <div style="height: 2vh"/>
@@ -278,6 +281,8 @@ export default {
   name: 'sellContent',
   data: function () {
     return {
+      api_token: '',
+      files: null,
       tab: 'step1_sell',
       splitterModel: 20,
       step: 1,
@@ -462,6 +467,9 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    countFileLabel ({ totalSize, filesNumber, maxFiles }) {
+      return `${filesNumber} / ${maxFiles} 个文件 | 总大小： ${totalSize}`
     }
   }
 }

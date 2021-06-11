@@ -3,24 +3,28 @@
  * @Author: ZoeChou
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/5/12
+ * @LastEditTime: 2021/6/11
  -->
 <template>
   <q-page>
-    <div style="height: 8vh;"></div>
-    <q-form @submit="gotoSearch(null)">
-      <div class="row" id="searchBox">
-        <div class="col-7">
-          <q-input v-model="message" outlined label="请输入关键字" />
+    <div id="searchArea" style="min-height: 300px;" class="flex flex-center">
+      <q-form @submit="gotoSearch(null)" style="width: 100%">
+        <div class="row" id="searchBox">
+          <div class="col-6">
+            <div class="text-h4" style="margin-bottom: 0.5em">Dejavu二手车</div>
+            <q-input v-model="message" filled label-color="grey-10" bg-color="grey-1" label="请输入关键字">
+              <template v-slot:append>
+                <q-btn @click="gotoSearch(null)" type="submit" color="primary" label="搜索" style="font-size: medium"/>
+              </template>
+            </q-input>
+          </div>
+          <div class="col-1">
+          </div>
         </div>
-        <div class="col-1">
-          <q-btn @click="gotoSearch(null)" type="submit" color="primary" label="搜索" class="fill" style="font-size: medium"/>
-        </div>
-      </div>
-    </q-form>
+      </q-form>
+    </div>
 
-    <div style="height: 5vh;"/>
-    <div class="row" id="buySellBox">
+    <div class="row" id="buySellBox" style="margin-top: -5em">
       <div class="col-8">
         <q-card>
           <div class="row">
@@ -198,5 +202,8 @@ export default {
   .fill {
     width: 100%;
     height: 100%;
+  }
+  #searchArea {
+    background-image: linear-gradient(to right, rgba(2, 123, 227, 1), rgba(2, 123, 227, 0.5), rgba(2, 123, 227, 1));
   }
 </style>
