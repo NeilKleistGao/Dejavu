@@ -2,7 +2,6 @@ package com.buptse.config;
 
 import com.buptse.auth.AuthFilter;
 import com.buptse.auth.AuthRealm;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

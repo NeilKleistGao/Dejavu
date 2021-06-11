@@ -24,5 +24,8 @@ public interface UserMapper extends BaseMapper<User> {
       + "values(#{phone_number},#{mail},#{name},#{avatar},#{password})")
   @Options(useGeneratedKeys = true,keyProperty = "uid",keyColumn = "uid")
   Integer insertUser(User user);
+  @Select("select 1 from user where phone_number = #{phoneNumber}")
+  Integer IsExitPhoneNumber(String phoneNumber);
+
 
 }
