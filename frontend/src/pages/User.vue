@@ -42,10 +42,26 @@
               <template>
                 <div class="q-pa-md" style="width: 100%">
                   <q-table
-                    :data="rows"
-                    row-key="信息"
-                    hide-bottom
-                  />
+                    :data="data1"
+                    :columns="columns1"
+                    title="个人信息"
+                    :rows-per-page-options="[]"
+                    row-key="name"
+                  >
+                    <template v-slot:body="props">
+                      <q-tr :props="props">
+                        <q-td key="name" :props="props">
+                          {{ props.row.name }}
+                        </q-td>
+                        <q-td key="value" :props="props">
+                          {{ props.row.value }}
+                          <q-popup-edit v-model.number="props.row.value" buttons>
+                            <q-input v-model.number="props.row.value" dense autofocus />
+                          </q-popup-edit>
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
                 </div>
               </template>
             </q-tab-panel>
@@ -62,6 +78,7 @@
                     hide-header
                     hide-bottom
                   />
+                  <router-link>修改个人信息</router-link>
                 </div>
               </template>
             </q-tab-panel>
@@ -102,30 +119,41 @@
 </template>
 
 <script>
+const columns1 = [
+
+  { name: 'imformation', align: 'center', label: '信息名称', field: 'name' },
+  { name: 'value', align: 'center', label: '值', field: 'value' }
+
+]
+
+const data1 = [
+  {
+    name: '用户ID',
+    value: '23343434'
+  },
+  {
+    name: '电话号码',
+    value: '15220382083'
+  },
+  {
+    name: '邮箱',
+    value: '76079873@qq.com'
+  },
+  {
+    name: '用户名称',
+    value: 'wnn'
+  }
+
+]
+
 export default {
   name: 'User',
   data () {
     return {
       tab: 'mails',
       splitterModel: 20,
-      rows: [
-        {
-          信息: '用户id',
-          值: '1234567'
-        },
-        {
-          信息: '电话号码',
-          值: '15210362956'
-        },
-        {
-          信息: '邮箱',
-          值: '74928394@qq.com'
-        },
-        {
-          信息: '用户名称',
-          值: 'wnn'
-        }
-      ],
+      data1,
+      columns1,
       columns: [
         {
           name: 'desc',
