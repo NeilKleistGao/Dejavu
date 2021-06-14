@@ -102,6 +102,7 @@ method: POST
 + `phone`：用户电话号码
 + `mail`: 用户邮箱
 + `password`：用户密码
++ `name`: 用户昵称
 
 GET参数：无
 
