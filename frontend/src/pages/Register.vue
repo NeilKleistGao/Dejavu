@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors:wnn
- * @LastEditTime: 2021/6/7
+ * @LastEditTime: 2021/6/14
  -->
 <template>
   <q-page class="flex flex-center">
@@ -19,18 +19,16 @@
           v-model="name"
           label="用户名称 *"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || '请输入名称']"
         />
 
         <q-input
           filled
-          type="number"
           v-model="telNumber"
           label="电话号码 *"
           lazy-rules
           :rules="[
-          val => val !== null && val !== '' || 'Please type your password',
-          val => val > 0 && val == 11 || 'Please type a real telephone number'
+          val => val.length > 0 && val.length === 11 || '请输入正确的电话号码'
         ]"
         />
 
@@ -40,36 +38,45 @@
           label="邮箱 *"
           lazy-rules
           :rules="[
-          val => val !== null && val !== '' || 'Please type your password',
-          val => val > 0 && val <200 || 'Please type a real email address'
+          val => val.length > 0 && val.length <200 || '请输入正确的邮箱地址'
         ]"
         />
 
         <q-input
           filled
+          type="password"
           v-model="password"
           label="密码 *"
           lazy-rules
           :rules="[
-          val => val !== null && val !== '' || 'Please type your password',
-          val => val > 0 && val <100 || 'Please type a real password number'
+          val => val.length > 0 && val.length <100 || '请输入密码'
         ]"
         />
 
-        <q-toggle v-model="accept" label="I accept the license and terms" />
+        <q-toggle v-model="accept" label="我已阅读并接受条款" />
 
         <div align="center">
           <q-btn label="注册" type="submit" color="primary"  />
         </div>
         <div align="center">
           <router-link to="/Login">已有账号 去登陆</router-link>
-          <router-view></router-view>
         </div>
       </q-form>
 
+      <q-dialog v-model="alert">
+        <q-card style="min-width: 400px">
+          <q-card-section>
+            <div class="text-h5">提示</div>
+          </q-card-section>
+          <q-card-section>
+            {{hint}}
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat label="确定" @click="alert = false"/>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </q-card>
-
-    <!--ADD YOUR VUE CODE HERE-->
   </q-page>
 </template>
 
@@ -78,11 +85,13 @@ export default {
   name: 'Register',
   data () {
     return {
-      name: null,
-      telNumber: null,
-      email: null,
-      password: null,
-      accept: false
+      name: '',
+      telNumber: '',
+      email: '',
+      password: '',
+      accept: false,
+      alert: false,
+      hint: ''
     }
   },
   methods: {
@@ -91,19 +100,33 @@ export default {
     },
     onSubmit () {
       if (this.accept !== true) {
-        this.$q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: 'You need to accept the license and terms first'
-        })
+        this.hint = '请阅读并接受条款'
+        this.alert = true
       } else {
-        this.$q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: 'Submitted'
+        const self = this
+        this.$axios.post('/api/user/register', {
+          phoneNumber: this.telNumber,
+          mail: this.email,
+          password: this.password,
+          name: this.name
+        }).then(function (response) {
+          console.log(response)
+          if (response.status === 200) {
+            if (response.data.result === -1) {
+              self.hint = '用户已存在'
+              self.alert = true
+            } else {
+              self.$router.push('/Login')
+            }
+          }
         })
+      }
+    },
+    beforeRouteEnter (to, from, next) {
+      if (sessionStorage.getItem('token') !== null) {
+        window.location = '/#/user'
+      } else {
+        next()
       }
     }
   }

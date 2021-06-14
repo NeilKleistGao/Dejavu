@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/6/10
+ * @LastEditTime: 2021/6/14
  -->
 
 <template>
@@ -33,8 +33,17 @@
           </q-popup-proxy>
         </q-btn>
         <q-separator vertical inset=""/>
-        <q-btn flat class="q-mr-xs" label="登录" @click="goLogin"/>
-        <q-btn flat class="q-mr-xs" label="注册" @click="goRegister"/>
+        <div v-if="!hasLogin">
+          <q-btn flat class="q-mr-xs" label="登录" @click="goLogin"/>
+          <q-btn flat class="q-mr-xs" label="注册" @click="goRegister"/>
+        </div>
+        <div v-else>
+          <q-avatar size="32px" @click="goUser">
+            <img src="default-avatar.jpg"/>
+          </q-avatar>
+          <q-btn flat class="q-mr-xs" label="退出" @click="logout"/>
+        </div>
+
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -84,6 +93,26 @@ export default {
     },
     goRegister () {
       window.location = '/#/register'
+    },
+    goUser () {
+      window.location = '/#/user'
+    },
+    logout () {
+      console.log(sessionStorage.getItem('token'))
+      this.$axios.post('/api/user/logout', {
+        uid: sessionStorage.getItem('uid'),
+        token: sessionStorage.getItem('token')
+      }, {
+        headers: {
+          token: sessionStorage.getItem('token')
+        }
+      }).then((response) => {
+        if (response.status === 200) {
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('uid')
+          window.location.reload()
+        }
+      })
     }
   },
   beforeMount () {
@@ -103,6 +132,11 @@ export default {
           window.location.reload()
         }
       }
+    }
+  },
+  computed: {
+    hasLogin () {
+      return sessionStorage.getItem('token') !== null
     }
   }
 }

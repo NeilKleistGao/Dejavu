@@ -41,12 +41,28 @@
               <div class="text-h4 q-mb-md">个人信息</div>
               <template>
                 <div class="q-pa-md" style="width: 40%">
+                  <q-avatar size="128px" style="margin-bottom: 0.2em">
+                    <img :src="user_data.avatar"/>
+                    <q-popup-proxy>
+                      <q-card style="min-width: 200px; min-height: 120px; margin-top: 0.5em">
+                        <q-card-section>
+                          <div class="text-subtitle1">上传头像</div>
+                        </q-card-section>
+                        <q-card-section>
+                          <q-file label="选择文件" v-model="user_data.avatar_file" accept="image/*" outlined/>
+                        </q-card-section>
+                        <q-card-actions align="center">
+                          <q-btn label="上传" @click="upload" color="primary" style="padding-left: 0.5em; padding-right: 0.5em"/>
+                        </q-card-actions>
+                      </q-card>
+                    </q-popup-proxy>
+                  </q-avatar>
                   <q-input label="电话号码" disable v-model="user_data.phone" style="margin-bottom: 0.5em"/>
                   <q-input label="用户名" v-model="user_data.name" style="margin-bottom: 0.5em"/>
                   <q-input label="邮箱" v-model="user_data.mail" style="margin-bottom: 0.5em"/>
 
                   <div>
-                    <q-btn label="修改密码" color="primary" style="margin-right: 0.5em"/>
+                    <q-btn label="修改密码" color="primary" style="margin-right: 0.5em" @click="user_data.password_changing = true"/>
                     <q-btn label="保存修改" color="primary"/>
                   </div>
                 </div>
@@ -102,16 +118,28 @@
 
       </q-splitter>
     </div>
+
+    <q-dialog v-model="user_data.password_changing" persistent>
+      <q-card style="min-width: 400px">
+        <q-card-section>
+          <div class="text-h4">修改密码</div>
+        </q-card-section>
+        <q-card-section>
+          <q-input label="旧密码" v-model="user_data.old_password" type="password"/>
+          <q-input label="新密码" v-model="user_data.new_password" type="password"/>
+          <q-input label="确认密码" v-model="user_data.conform_password" type="password"/>
+        </q-card-section>
+
+        <q-card-actions>
+          <q-btn label="确定" color="positive" @click="modifyPassword"/>
+          <q-btn label="取消" @click="user_data.password_changing = false" color="negative"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-const columns1 = [
-
-  { name: 'imformation', align: 'center', label: '信息名称', field: 'name' },
-  { name: 'value', align: 'center', label: '值', field: 'value' }
-
-]
 
 export default {
   name: 'User',
@@ -120,14 +148,16 @@ export default {
       tab: 'UserInformation',
       splitterModel: 20,
       user_data: {
-        name: 'takuumi fujiwara',
-        mail: 'takuumi@fujiwara.com',
-        phone: '13910733521',
+        name: '',
+        avatar: 'default-avatar.jpg',
+        mail: '',
+        phone: '',
         old_password: '',
         new_password: '',
-        conform_password: ''
+        conform_password: '',
+        password_changing: false,
+        avatar_file: null
       },
-      columns1,
       columns: [
         {
           name: 'desc',
@@ -232,6 +262,90 @@ export default {
           state: '已售出'
         }
       ]
+    }
+  },
+  methods: {
+    upload () {
+      const self = this
+      const file = self.user_data.avatar_file
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onloadend = function (e) {
+        const data = file
+        console.log(data)
+        const formData = new FormData()
+        formData.append('smfile', data)
+        formData.append('Authorization', '')
+        self.$axios.post('/cdn/upload', formData, {
+          headers: {
+            Authorization: ''
+          }
+        }).then((response) => {
+          if (response.status === 200 && response.data.success) {
+            const url = response.data.data.url
+            self.$axios.post('/api/user/info/modify', {
+              uid: sessionStorage.getItem('uid'),
+              token: sessionStorage.getItem('token'),
+              avatar: url
+            }, {
+              headers: { token: sessionStorage.getItem('token') }
+            }).then((response) => {
+              console.log(response)
+              if (response.status === 200 && response.data.result) {
+                window.location.reload()
+              }
+            })
+          }
+        })
+      }
+    },
+    modifyPassword () {
+      if (this.user_data.new_password !== this.user_data.conform_password) {
+        alert('两次密码不一致')
+      } else {
+        const self = this
+        console.log(self.user_data.new_password)
+        this.$axios.post('/api/user/info/password', {
+          uid: sessionStorage.getItem('uid'),
+          token: sessionStorage.getItem('token'),
+          old: self.user_data.old_password,
+          new: self.user_data.new_password
+        }, {
+          headers: { token: sessionStorage.getItem('token') }
+        }).then((response) => {
+          if (response.status === 200 && response.data.result) {
+            self.user_data.password_changing = false
+            alert('修改成功')
+          } else {
+            alert(response.data.info)
+          }
+        })
+      }
+    }
+  },
+  beforeMount () {
+    const self = this
+    this.$axios.get('/api/user/info/query?uid=' + sessionStorage.getItem('uid'), {
+      headers: { token: sessionStorage.getItem('token') }
+    }).then((response) => {
+      if (response.status === 200) {
+        const data = response.data
+        self.user_data.name = data.name
+        self.user_data.mail = data.mail
+        self.user_data.phone = data.phone_number
+
+        if (data.avatar !== null && data.avatar !== undefined && data.avatar !== '') {
+          self.user_data.avatar = data.avatar
+        }
+      }
+    })
+  },
+  beforeRouteEnter (to, from, next) {
+    if (sessionStorage.getItem('token') === null) {
+      window.location = '/#/login'
+      window.location.reload()
+    } else {
+      next()
     }
   }
 }

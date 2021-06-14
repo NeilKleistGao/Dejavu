@@ -165,8 +165,8 @@
       <q-card style="min-width: 40%" bordered>
         <bargain-dialog v-model="bargain_data" :price="car_info.price"/>
         <q-separator/>
-        <q-card-actions align="right">
-          <q-btn flat color="primary" v-close-popup label="预约买车"/>
+        <q-card-actions align="right" v-if="available">
+          <q-btn flat color="primary" v-close-popup label="预约买车" @click="makeAppointment"/>
           <q-btn flat color="primary" v-close-popup label="取消"/>
         </q-card-actions>
       </q-card>
@@ -181,6 +181,7 @@ export default {
   components: { BargainDialog },
   data () {
     return {
+      id: 0,
       car_image_list: ['car_details_test_img/1.png', 'car_details_test_img/2.png',
         'car_details_test_img/3.png', 'car_details_test_img/4.png'], // 车辆照片集
       slide: 1, // 照片集当前下标
@@ -212,12 +213,53 @@ export default {
       } // 砍价数据
     }
   },
+  computed: {
+    available () {
+      return sessionStorage.getItem('uid') !== this.uid
+    }
+  },
+  methods: {
+    makeAppointment () {
+      if (sessionStorage.getItem('token') === null) {
+        window.location = '/#/login'
+        window.location.reload()
+      }
+
+      const self = this
+      this.$axios.post('/api/transaction/bargain/new', {
+        uid: sessionStorage.getItem('uid'),
+        token: sessionStorage.getItem('token'),
+        car_id: self.id,
+        price: self.bargain_data.price,
+        start_time: self.bargain_data.from,
+        end_time: self.bargain_data.to
+      }, {
+        headers: {
+          token: sessionStorage.getItem('token')
+        }
+      }).then((response) => {
+        console.log(response)
+        if (response.status === 200 && response.data.result) {
+          this.$router.push({
+            path: '/user',
+            query: {
+              menu: 'bargain'
+            }
+          })
+        } else {
+          window.location = '/#/login'
+          window.location.reload()
+        }
+      })
+    }
+  },
   beforeMount () {
-    const id = this.$route.params.id
-    this.$axios.get('/api/car?id=' + id).then(res => {
+    this.id = this.$route.params.id
+    this.$axios.get('/api/car?id=' + this.id).then(res => {
       if (res.status === 200 && res.data.model_name !== null && res.data.model_name !== undefined) {
         this.car_info = res.data
         this.car_info.create_date = this.car_info.create_date.substr(0, this.car_info.create_date.indexOf('T'))
+        this.bargain_data.price = res.data.price
       } else {
         window.location = '/car'
       }
