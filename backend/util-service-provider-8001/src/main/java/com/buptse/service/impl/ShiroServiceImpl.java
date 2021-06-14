@@ -52,8 +52,21 @@ public class ShiroServiceImpl implements IShiroService {
     return res;
   }
 
+
   @Override
+  /**
+  * @Description: 登出，判断token是否一致
+  * @Param: [token]
+  * @return: boolean
+  * @Author: gerayking
+  * @Date: 2021/6/14-21:11
+  */
   public boolean logout(String token) {
+    final String[] split = token.split(TokenUtil.TOKEN_SPLITER);
+    final UserToken userToken = tokenService.findUserById(Integer.parseInt(split[1]));
+    if(userToken.getFullToken().equals(token) == false){
+      return false;
+    }
     return tokenService.deleteToken(token);
   }
 

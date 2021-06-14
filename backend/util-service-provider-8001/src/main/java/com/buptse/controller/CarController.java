@@ -11,14 +11,9 @@ import com.buptse.pojo.Car;
 import com.buptse.pojo.Carimg;
 import com.buptse.service.ICarService;
 import com.buptse.service.ICarimgService;
-import com.buptse.service.IUserService;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
