@@ -3,40 +3,33 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors:wnn
- * @LastEditTime: 2021/6/7
+ * @LastEditTime: 2021/6/14
  -->
 <template>
   <q-page class="flex flex-center">
-      <div class="q-pa-md" style="width: 800px">
-
+      <q-card class="q-pa-md" style="width: 40%; min-height: 400px">
         <q-form
           @submit="onSubmit"
-          @register="onRegister"
           class="q-gutter-md"
         >
           <p align="center" style="color: royalblue;font-size: 30px;font-weight: bold " >登录</p>
           <q-input
             filled
-            v-model="name"
-            label="phonenumber *"
-            hint="your telephone number"
+            v-model="phone"
+            label="手机号"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            :rules="[ val => val && val.length > 0 || '请填写手机号']"
           />
 
           <q-input
             filled
-            type="number"
+            type="password"
             v-model="password"
             label="password *"
             lazy-rules
             :rules="[
-          val => val !== null && val !== '' || 'Please type your password',
-          val => val > 0 && val < 100 || 'Please type a real password'
-        ]"
-          />
-
-          <q-toggle v-model="accept" label="I accept the license and terms" />
+            val => val !== null && val !== '' || '请填写密码'
+          ]"/>
 
           <div align="center">
             <q-btn label="登录" type="submit" color="primary"  />
@@ -47,9 +40,7 @@
           </div>
         </q-form>
 
-      </div>
-
-    <!--ADD YOUR VUE CODE HERE-->
+      </q-card>
   </q-page>
 </template>
 
@@ -58,31 +49,39 @@ export default {
   name: 'Login',
   data () {
     return {
-      name: null,
-      password: null,
-      accept: false
+      phone: '',
+      password: ''
     }
   },
   methods: {
     login () {
-      this.$router.push('/Index')
+      this.$router.push('/Register')
     },
     onSubmit () {
-      if (this.accept !== true) {
-        this.$q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: 'You need to accept the license and terms first'
-        })
-      } else {
-        this.$q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: 'Submitted'
-        })
-      }
+      const self = this
+      this.$axios.post('/api/user/login', {
+        phoneNumber: self.phone,
+        password: self.password
+      }).then((response) => {
+        if (response.status === 200) {
+          if (response.data.status !== 200) {
+            alert(response.data.info)
+            self.password = ''
+          } else {
+            sessionStorage.setItem('token', response.data.token)
+            sessionStorage.setItem('uid', response.data.uid)
+            window.location = '/#/user'
+            window.location.reload()
+          }
+        }
+      })
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    if (sessionStorage.getItem('token') !== null) {
+      window.location = '/#/user'
+    } else {
+      next()
     }
   }
 }

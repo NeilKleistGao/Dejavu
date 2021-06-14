@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/5/13
+ * @LastEditTime: 2021/6/10
  -->
 <template>
   <q-page class="flex-center">
@@ -13,7 +13,7 @@
           <div class="col-8">
             <q-breadcrumbs>
               <q-breadcrumbs-el label="二手车搜索"/>
-              <q-breadcrumbs-el label="北京"/>
+              <q-breadcrumbs-el :label="city"/>
               <q-breadcrumbs-el v-if="brand !== ''" :label="brand"/>
               <q-breadcrumbs-el v-if="body !== ''" :label="body"/>
               <q-breadcrumbs-el v-if="price !== ''" :label="price + '元'"/>
@@ -147,7 +147,8 @@ export default {
       price: '', // 价格筛选
       carList: [], // 车辆信息列表
       current: 1, // 当前页码
-      max_page: 1
+      max_page: 1,
+      city: ''
     }
   },
   methods: {
@@ -181,15 +182,37 @@ export default {
         }
       }
 
+      if (this.text !== '') {
+        url += 'key=' + this.text + '&'
+      }
+
+      if (this.current !== 1) {
+        url += 'page=' + this.current.toString() + '&'
+      }
+
       url = url.substr(0, url.length - 1)
       this.$axios.get(url).then(res => {
         if (res.status === 200) {
           this.carList = res.data
         }
       })
+    },
+    getCarListLength () {
+      this.$axios.get('/api/car/pn').then(res => {
+        if (res.status === 200) {
+          this.max_page = (res.data['page-number'] / 20) + 1
+        }
+      })
     }
   },
   beforeMount () {
+    let city = sessionStorage.getItem('city')
+    if (city === null) {
+      city = '北京市'
+      sessionStorage.setItem('city', '北京市')
+    }
+    this.city = city
+
     const query = this.$route.query
     if (query.manufacturer !== null && query.manufacturer !== undefined) {
       this.brand = query.manufacturer
@@ -205,6 +228,11 @@ export default {
 
       this.price = p
     }
+    if (query.message !== null && query.message !== undefined) {
+      this.text = query.message
+    }
+
+    this.getCarListLength()
     this.getCarsList()
   },
   watch: {
@@ -219,6 +247,16 @@ export default {
       }
     },
     price: {
+      handler () {
+        this.getCarsList()
+      }
+    },
+    current: {
+      handler () {
+        this.getCarsList()
+      }
+    },
+    text: {
       handler () {
         this.getCarsList()
       }
