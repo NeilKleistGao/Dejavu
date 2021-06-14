@@ -1,6 +1,5 @@
 package com.buptse.dto;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,6 +45,7 @@ public class CarDto {
 
   private LocalDateTime create_date;
 
+  private List<String> imgs;
 
 
 }
