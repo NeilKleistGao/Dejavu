@@ -37,7 +37,8 @@ public class CarController {
     private ICarService carService;
     @GetMapping("/car")
     public CarDto getCarById(@RequestParam Integer id){
-        return carService.getCarDto(carService.getById(id));
+        final CarDto carDto = carService.getCarDto(carService.getById(id));
+         return carDto;
     }
     @GetMapping("/car/pn")
     public Map getCarLength(){

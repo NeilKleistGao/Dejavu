@@ -172,6 +172,7 @@ public class UserController {
         final String phoneNumber = userRegisterDto.getPhoneNumber();
         final String password = userRegisterDto.getPassword();
         final String mail = userRegisterDto.getMail();
+        final String name = userRegisterDto.getName();
         if(null == phoneNumber || null == password || null == mail){
             result.put("result",-1);
             result.put("info","参数错误");
@@ -184,6 +185,7 @@ public class UserController {
             return result;
         }
         user = new User();
+        user.setName(name);
         user.setPassword(password);
         user.setMail(mail);
         user.setPhone_number(phoneNumber);

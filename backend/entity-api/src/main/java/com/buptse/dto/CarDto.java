@@ -3,6 +3,7 @@ package com.buptse.dto;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +45,7 @@ public class CarDto {
   private String not_repaired_damage;
 
   private LocalDateTime create_date;
+
 
 
 }
