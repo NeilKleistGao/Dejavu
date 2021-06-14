@@ -3,24 +3,24 @@
  * @Author: wnn
  * @Date: 2021/5/28
  * @LastEditors: wnn
- * @LastEditTime: 2021/5/28
+ * @LastEditTime: 2021/6/14
  -->
 <template>
-  <q-page class="flex flex-center">
-    <!--ADD YOUR VUE CODE HERE-->
-    <div style="height:100% ; width: 100%">
+  <q-page class="flex" style="margin-top: 2em; margin-bottom: 1em">
+    <div style="min-height: 600px; width: 100%">
       <q-splitter
         v-model="splitterModel"
         style="height:100%"
       >
-
         <template v-slot:before>
           <q-tabs
             v-model="tab"
             vertical
             class="text-teal"
+            active-color="teal"
+            indicator-color="teal"
           >
-            <q-tab name="UserInfomation" icon="img:icons/gerenxinxi.png" label="用户信息" />
+            <q-tab name="UserInformation" icon="img:icons/gerenxinxi.png" label="用户信息" />
             <q-tab name="Bargain"  icon="img:icons/kanjiashangcheng.png" label="砍价信息" />
             <q-tab name="Transaction" icon="img:icons/jiaoyi.png" label="交易信息"/>
             <q-tab name="CarInfo"  icon="img:icons/cheliangxinxi.png" label="卖车信息" />
@@ -37,31 +37,18 @@
             transition-next="jump-up"
             style="width: auto"
           >
-            <q-tab-panel name="UserInfomation">
+            <q-tab-panel name="UserInformation">
               <div class="text-h4 q-mb-md">个人信息</div>
               <template>
-                <div class="q-pa-md" style="width: 100%">
-                  <q-table
-                    :data="data1"
-                    :columns="columns1"
-                    title="个人信息"
-                    :rows-per-page-options="[]"
-                    row-key="name"
-                  >
-                    <template v-slot:body="props">
-                      <q-tr :props="props">
-                        <q-td key="name" :props="props">
-                          {{ props.row.name }}
-                        </q-td>
-                        <q-td key="value" :props="props">
-                          {{ props.row.value }}
-                          <q-popup-edit v-model.number="props.row.value" buttons>
-                            <q-input v-model.number="props.row.value" dense autofocus />
-                          </q-popup-edit>
-                        </q-td>
-                      </q-tr>
-                    </template>
-                  </q-table>
+                <div class="q-pa-md" style="width: 40%">
+                  <q-input label="电话号码" disable v-model="user_data.phone" style="margin-bottom: 0.5em"/>
+                  <q-input label="用户名" v-model="user_data.name" style="margin-bottom: 0.5em"/>
+                  <q-input label="邮箱" v-model="user_data.mail" style="margin-bottom: 0.5em"/>
+
+                  <div>
+                    <q-btn label="修改密码" color="primary" style="margin-right: 0.5em"/>
+                    <q-btn label="保存修改" color="primary"/>
+                  </div>
                 </div>
               </template>
             </q-tab-panel>
@@ -126,33 +113,20 @@ const columns1 = [
 
 ]
 
-const data1 = [
-  {
-    name: '用户ID',
-    value: '23343434'
-  },
-  {
-    name: '电话号码',
-    value: '15220382083'
-  },
-  {
-    name: '邮箱',
-    value: '76079873@qq.com'
-  },
-  {
-    name: '用户名称',
-    value: 'wnn'
-  }
-
-]
-
 export default {
   name: 'User',
   data () {
     return {
-      tab: 'mails',
+      tab: 'UserInformation',
       splitterModel: 20,
-      data1,
+      user_data: {
+        name: 'takuumi fujiwara',
+        mail: 'takuumi@fujiwara.com',
+        phone: '13910733521',
+        old_password: '',
+        new_password: '',
+        conform_password: ''
+      },
       columns1,
       columns: [
         {

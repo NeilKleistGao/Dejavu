@@ -281,7 +281,7 @@ export default {
   name: 'sellContent',
   data: function () {
     return {
-      api_token: '',
+      api_token: 'unMYs10rZ6yrj8tmp2loxUDPNHn0jdNF',
       files: null,
       tab: 'step1_sell',
       splitterModel: 20,

@@ -182,10 +182,25 @@ export default {
         }
       }
 
+      if (this.text !== '') {
+        url += 'key=' + this.text + '&'
+      }
+
+      if (this.current !== 1) {
+        url += 'page=' + this.current.toString() + '&'
+      }
+
       url = url.substr(0, url.length - 1)
       this.$axios.get(url).then(res => {
         if (res.status === 200) {
           this.carList = res.data
+        }
+      })
+    },
+    getCarListLength () {
+      this.$axios.get('/api/car/pn').then(res => {
+        if (res.status === 200) {
+          this.max_page = (res.data['page-number'] / 20) + 1
         }
       })
     }
@@ -213,6 +228,11 @@ export default {
 
       this.price = p
     }
+    if (query.message !== null && query.message !== undefined) {
+      this.text = query.message
+    }
+
+    this.getCarListLength()
     this.getCarsList()
   },
   watch: {
@@ -227,6 +247,16 @@ export default {
       }
     },
     price: {
+      handler () {
+        this.getCarsList()
+      }
+    },
+    current: {
+      handler () {
+        this.getCarsList()
+      }
+    },
+    text: {
       handler () {
         this.getCarsList()
       }

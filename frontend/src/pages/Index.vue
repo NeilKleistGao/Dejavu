@@ -14,7 +14,7 @@
             <div class="text-h4" style="margin-bottom: 0.5em">Dejavu二手车</div>
             <q-input v-model="message" filled label-color="grey-10" bg-color="grey-1" label="请输入关键字">
               <template v-slot:append>
-                <q-btn @click="gotoSearch(null)" type="submit" color="primary" label="搜索" style="font-size: medium"/>
+                <q-btn @click="gotoSearch('__text__')" type="submit" color="primary" label="搜索" style="font-size: medium"/>
               </template>
             </q-input>
           </div>
@@ -166,6 +166,11 @@ export default {
           path: '/search'
         })
       } else {
+        if (data === '__text__') {
+          data = {
+            message: this.message
+          }
+        }
         this.$router.push({
           path: '/search',
           query: data
