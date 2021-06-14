@@ -95,7 +95,7 @@ public class UserController {
         User user = userService.getById(userId);
         return user;
     }
-    @RequiresRoles({"manager,user"})
+    @RequiresRoles({"manager","user"})
     @PostMapping("/user/info/modify")
     /**
     * @Description: 修改用户信息
@@ -111,7 +111,7 @@ public class UserController {
         Integer userId = modifyUserInfoDto.getUserId();
         Map<String, Object> result = new HashMap<>();
         UserToken userToken = shiroService.findByToken(token);
-        if(userToken.getUserId() != userId){
+        if(!userToken.getUserId().equals(userId)){
             result.put("result","false");
             result.put("info","token认证失败");
             return result;
@@ -142,7 +142,7 @@ public class UserController {
         String newPassword = modifyPasswordDto.getNewPassword();
         Map<String, Object> result = new HashMap<>();
         User user = userService.getById(uid);
-        if(user.getPassword() != oldPassword){
+        if(!user.getPassword().equals(oldPassword)){
             result.put("result",-1);
             result.put("info","密码错误");
         }else{

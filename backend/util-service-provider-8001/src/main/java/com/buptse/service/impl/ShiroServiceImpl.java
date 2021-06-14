@@ -55,7 +55,7 @@ public class ShiroServiceImpl implements IShiroService {
 
   @Override
   /**
-  * @Description: 登出，判断token是否一致
+  * @Description: logout when user token certificated in redis.
   * @Param: [token]
   * @return: boolean
   * @Author: gerayking
@@ -64,14 +64,14 @@ public class ShiroServiceImpl implements IShiroService {
   public boolean logout(String token) {
     final String[] split = token.split(TokenUtil.TOKEN_SPLITER);
     final UserToken userToken = tokenService.findUserById(Integer.parseInt(split[1]));
-    if(userToken.getFullToken().equals(token) == false){
+    if(userToken == null ||!userToken.getFullToken().equals(token)){
       return false;
     }
     return tokenService.deleteToken(token);
   }
 
   /**
-  * @param accessToken Unused.
+  * @param accessToken
   * @return Nothing.
   * @author gerayking
   * @date 2021/6/5 14:31
