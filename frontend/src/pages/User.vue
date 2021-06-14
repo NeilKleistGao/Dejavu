@@ -118,7 +118,6 @@
 
       </q-splitter>
     </div>
-
     <q-dialog v-model="user_data.password_changing" persistent>
       <q-card style="min-width: 400px">
         <q-card-section>
