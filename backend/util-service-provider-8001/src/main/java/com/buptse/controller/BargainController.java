@@ -30,13 +30,17 @@ public class BargainController {
   private ITokenService tokenService;
 
   @PostMapping("/transaction/bargain/new")
-  public  Map<String, Boolean> createBargain(
+  public CommonResult createBargain(
           @RequestBody Bargain bargainDto
   ){
+    final Subject subject = SecurityUtils.getSubject();
+    if(!subject.isAuthenticated()){
+      return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
+    }
     boolean result = bargainService.save(bargainDto);
     final HashMap<String, Boolean> map = new HashMap<String, Boolean>();
     map.put("result",result);
-    return map;
+    return CommonResult.success(map);
   }
 
   /**

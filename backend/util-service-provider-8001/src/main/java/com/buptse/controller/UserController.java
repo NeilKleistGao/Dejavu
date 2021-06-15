@@ -3,6 +3,7 @@ package com.buptse.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
+import com.buptse.common.RESULT;
 import com.buptse.common.util.*;
 import com.buptse.dto.LoginDto;
 import com.buptse.dto.CommonResult;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
@@ -51,6 +53,7 @@ public class UserController {
         User user = service.getById(uid);
         return user;
     }
+    @RequiresRoles({"manager"})
     @GetMapping("/user/info/query_all")
     public CommonResult queryAllUser(
             @RequestParam(value = "name",required = false) String name,
@@ -96,7 +99,7 @@ public class UserController {
         User user = userService.getById(userId);
         return user;
     }
-    @RequiresRoles({"manager","user"})
+    @RequiresRoles(value = {"manager","user"},logical = Logical.OR)
     @PostMapping("/user/info/modify")
     /**
     * @Description: 修改用户信息
@@ -105,27 +108,27 @@ public class UserController {
     * @Author: gerayking
     * @Date: 2021/6/5-14:40
     */
-    public Map modifyUserInfo(
+    public CommonResult modifyUserInfo(
         @RequestBody ModifyUserInfoDto modifyUserInfoDto
     ){
-        String token = modifyUserInfoDto.getToken();
-        Integer userId = modifyUserInfoDto.getUserId();
-        Map<String, Object> result = new HashMap<>();
-        UserToken userToken = shiroService.findByToken(token);
-        if(!userToken.getUserId().equals(userId)){
-            result.put("result","false");
-            result.put("info","token认证失败");
-            return result;
+        final Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
         }
-        User user = new User();
-        user.setUid(userId);
+        User user = (User)subject.getPrincipal();
+        Map<String, Object> result = new HashMap<>();
+        if(!user.getUid().equals(modifyUserInfoDto.getUserId())){
+            result.put("result","false");
+            result.put("info","无法修改其他用户信息");
+            return CommonResult.failFast(RESULT.NO_PERMISSION,result);
+        }
         String avatar = modifyUserInfoDto.getAvatar();
         if(avatar !=null) user.setAvatar(avatar);
         String mail = modifyUserInfoDto.getMail();
         if(mail != null) user.setMail(mail);
         boolean flag = userService.updateById(user);
         result.put("result",flag);
-        return result;
+        return CommonResult.success(result);
     }
     @PostMapping("/user/info/password")
     /**
@@ -138,11 +141,12 @@ public class UserController {
     public Map modifyPassword(
         @RequestBody ModifyPasswordDto modifyPasswordDto
     ){
+        final Subject subject = SecurityUtils.getSubject();
+        final User user = (User) subject.getPrincipal();
         Integer uid = modifyPasswordDto.getUid();
         String oldPassword = modifyPasswordDto.getOldPassword();
         String newPassword = modifyPasswordDto.getNewPassword();
         Map<String, Object> result = new HashMap<>();
-        User user = userService.getById(uid);
         if(!user.getPassword().equals(oldPassword)){
             result.put("result",-1);
             result.put("info","密码错误");
