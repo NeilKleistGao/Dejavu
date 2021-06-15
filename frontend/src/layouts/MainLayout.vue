@@ -39,7 +39,7 @@
         </div>
         <div v-else>
           <q-avatar size="32px" @click="goUser">
-            <img src="default-avatar.jpg"/>
+            <img :src="avatar"/>
           </q-avatar>
           <q-btn flat class="q-mr-xs" label="退出" @click="logout"/>
         </div>
@@ -71,6 +71,7 @@ export default {
     return {
       provinces: CityList.provinces,
       cities: CityList.cities,
+      avatar: 'default-avatar.jpg',
       city: '' // 当前城市名称
     }
   },
@@ -98,7 +99,6 @@ export default {
       window.location = '/#/user'
     },
     logout () {
-      console.log(sessionStorage.getItem('token'))
       this.$axios.post('/api/user/logout', {
         uid: sessionStorage.getItem('uid'),
         token: sessionStorage.getItem('token')
@@ -123,6 +123,19 @@ export default {
     }
 
     this.city = city
+    if (sessionStorage.getItem('token') !== null) {
+      const self = this
+      this.$axios.get('/api/user/info/query?uid=' + sessionStorage.getItem('uid'), {
+        headers: { token: sessionStorage.getItem('token') }
+      }).then((response) => {
+        console.log(response)
+        if (response.status === 200) {
+          if (response.data.avatar !== null && response.data.avatar !== undefined && response.data.avatar !== '') {
+            self.avatar = response.data.avatar
+          }
+        }
+      })
+    }
   },
   watch: {
     city: {

@@ -318,6 +318,7 @@ export default {
             this.$axios.get('/api/car?id=' + this.bargain_data.data[i].car_id, {
               headers: { token: sessionStorage.getItem('token') }
             }).then((response) => {
+              console.log(response)
               if (response.status === 200) {
                 this.$axios.get('/api/user/info/query?uid=' + response.data.uid, {
                   headers: { token: sessionStorage.getItem('token') }
