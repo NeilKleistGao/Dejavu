@@ -228,11 +228,10 @@ export default {
       const self = this
       this.$axios.post('/api/transaction/bargain/new', {
         uid: sessionStorage.getItem('uid'),
-        token: sessionStorage.getItem('token'),
-        car_id: self.id,
+        car_id: self.id.toString(),
         price: self.bargain_data.price,
-        start_time: self.bargain_data.from,
-        end_time: self.bargain_data.to
+        start_time: self.bargain_data.time.from + ' 00:00:00',
+        end_time: self.bargain_data.time.to + ' 00:00:00'
       }, {
         headers: {
           token: sessionStorage.getItem('token')

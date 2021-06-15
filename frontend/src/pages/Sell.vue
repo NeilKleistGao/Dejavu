@@ -3,11 +3,10 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: ZoeChou
- * @LastEditTime: 2021/5/21
+ * @LastEditTime: 2021/6/15
  -->
 <template>
   <q-page>
-    <!--ADD YOUR VUE CODE HERE-->
     <div class="row" id="sellValuateBox" style="height: 80vh">
       <div class="col-2"/>
       <div class="col-8">

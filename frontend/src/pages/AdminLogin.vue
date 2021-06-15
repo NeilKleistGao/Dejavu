@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/6/4
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/6/4
+ * @LastEditTime: 2021/6/15
  -->
 <template>
   <q-page class="flex">
@@ -22,7 +22,7 @@
           </q-card-section>
 
           <q-card-actions class="flex-center">
-            <q-btn color="primary" size="lg" label="登录" style="padding-left: 1em; padding-right: 1em"/>
+            <q-btn color="primary" size="lg" label="登录" style="padding-left: 1em; padding-right: 1em" @click="login"/>
           </q-card-actions>
         </q-card>
       </div>
@@ -38,6 +38,34 @@ export default {
     return {
       username: '',
       password: ''
+    }
+  },
+  methods: {
+    login () {
+      const self = this
+      this.$axios.post('/api/user/login', {
+        phoneNumber: self.username,
+        password: self.password
+      }).then((response) => {
+        if (response.status === 200) {
+          if (response.data.status !== 200) {
+            alert(response.data.info)
+            self.password = ''
+          } else {
+            sessionStorage.setItem('token', response.data.token)
+            sessionStorage.setItem('uid', response.data.uid)
+            window.location = '/#/admin/dashboard'
+            window.location.reload()
+          }
+        }
+      })
+    }
+  },
+  beforeRouteEnter (from, to, next) {
+    if (sessionStorage.getItem('token') !== null) {
+      window.location = '/#/admin/dashboard'
+    } else {
+      next()
     }
   }
 }

@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/6/4
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/6/4
+ * @LastEditTime: 2021/6/15
  -->
 <template>
   <q-page class="flex">
@@ -35,21 +35,22 @@
                    :pagination.sync="users_data.pagination"
                    :data="users_data.data">
             <template v-slot:top-right>
-              <q-input borderless dense debounce="300" placeholder="用户姓名" style="margin-right: 1em">
+              <q-input borderless dense debounce="300" placeholder="用户姓名" style="margin-right: 1em" v-model="users_data.search_name">
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
               </q-input>
-              <q-input borderless dense debounce="300" placeholder="用户电话" style="margin-right: 1em">
+              <q-input borderless dense debounce="300" placeholder="用户电话" style="margin-right: 1em" v-model="users_data.search_phone">
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
               </q-input>
-              <q-input borderless dense debounce="300" placeholder="用户邮箱" style="margin-right: 1em">
+              <q-input borderless dense debounce="300" placeholder="用户邮箱" style="margin-right: 1em" v-model="users_data.search_email">
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
               </q-input>
+              <q-btn label="查询" @click="getUsersData" text-color="primary"/>
             </template>
           </q-table>
         </q-tab-panel>
@@ -64,7 +65,7 @@
             <template v-slot:body="props">
               <q-tr :props="props">
                 <q-td key="id" :props="props">
-                  {{ props.row.id }}
+                  {{ props.row.bargain_id }}
                   <q-popup-proxy>
                     <div style="margin: 0.5em 0.5em">
                       <q-btn flat color="primary" label="标记为成交"/>
@@ -78,46 +79,21 @@
                   {{ props.row.end_time }}
                 </q-td>
                 <q-td key="cid" :props="props">
-                  <q-btn :label="'编号' + props.row.cid" color="primary" flat @click="jump(props.row.cid)"/>
+                  <q-btn :label="'编号' + props.row.car_id" color="primary" flat @click="jump(props.row.car_id)"/>
                 </q-td>
                 <q-td key="price" :props="props">
                   {{ props.row.price }}
                 </q-td>
                 <q-td key="seller" :props="props">
-                  <q-badge v-if="props.row.seller" color="positive">已联系</q-badge>
-                  <q-badge v-else color="negative">
-                    未联系
-                  </q-badge>
-                  <q-popup-proxy>
-                    <div style="margin: 0.5em 0.5em">
-                      <span class="text-subtitle2">卖家姓名：{{bargain_data.current_seller.name}}</span>
-                      <br/>
-                      <span class="text-subtitle2">卖家电话：{{bargain_data.current_seller.phone}}</span>
-                      <br/>
-                      <q-btn v-if="!props.row.seller" flat color="primary" label="标记为已联系"/>
-                    </div>
-                  </q-popup-proxy>
+                  {{props.row.seller}}
                 </q-td>
                 <q-td key="buyer" :props="props">
-                  <q-badge v-if="props.row.buyer" color="positive">已联系</q-badge>
-                  <q-badge v-else color="negative">
-                    未联系
-                  </q-badge>
-                  <q-popup-proxy>
-                    <div style="margin: 0.5em 0.5em">
-                      <span class="text-subtitle2">卖家姓名：{{bargain_data.current_buyer.name}}</span>
-                      <br/>
-                      <span class="text-subtitle2">卖家电话：{{bargain_data.current_buyer.phone}}</span>
-                      <br/>
-                      <q-btn v-if="!props.row.buyer" flat color="primary" label="标记为已联系"/>
-                    </div>
-                  </q-popup-proxy>
+                  {{props.row.buyer}}
                 </q-td>
               </q-tr>
             </template>
 
             <template v-slot:top-right class="row">
-              <q-btn label="刷新" push text-color="primary" style="margin-right: 1em"/>
               <span style="margin-right: 1em">搜索关键字：</span>
               <q-btn-toggle v-model="bargain_data.key_word"
                             toggle-color="primary"
@@ -131,6 +107,7 @@
                   <q-icon name="search" />
                 </template>
               </q-input>
+              <q-btn label="搜索" push text-color="primary" style="margin-right: 1em"/>
             </template>
           </q-table>
         </q-tab-panel>
@@ -213,13 +190,13 @@ export default {
   name: 'Admin',
   data () {
     return {
-      tab: 'bargain',
+      tab: 'user',
       users_data: {
         column: [
-          { name: 'id', label: '用户id', align: 'left', required: true, sortable: true, field: 'id' },
+          { name: 'id', label: '用户id', align: 'left', required: true, sortable: true, field: 'uid' },
           { name: 'name', label: '姓名', align: 'left', required: true, sortable: true, field: 'name' },
-          { name: 'phone', label: '电话', align: 'left', required: true, sortable: true, field: 'phone' },
-          { name: 'email', label: '邮箱', align: 'left', required: true, sortable: true, field: 'email' }
+          { name: 'phone', label: '电话', align: 'left', required: true, sortable: true, field: 'phone_number' },
+          { name: 'email', label: '邮箱', align: 'left', required: true, sortable: true, field: 'mail' }
         ],
         data: [],
         pagination: {
@@ -227,17 +204,20 @@ export default {
           descending: false,
           page: 1,
           rowsPerPage: 5
-        }
+        },
+        search_name: '',
+        search_phone: '',
+        search_email: ''
       },
       bargain_data: {
         column: [
-          { name: 'id', label: '编号', align: 'left', required: true, sortable: true, field: 'id' },
+          { name: 'id', label: '编号', align: 'left', required: true, sortable: true, field: 'bargain_id' },
           { name: 'start_time', label: '砍价开始时间', align: 'left', required: true, sortable: true, field: 'start_time' },
           { name: 'end_time', label: '砍价结束时间', align: 'left', required: true, sortable: true, field: 'end_time' },
-          { name: 'cid', label: '砍价车辆', align: 'left', required: true, sortable: true, field: 'cid' },
+          { name: 'cid', label: '砍价车辆', align: 'left', required: true, sortable: true, field: 'car_id' },
           { name: 'price', label: '买家报价', align: 'left', required: true, sortable: true, field: 'price' },
-          { name: 'seller', label: '是否已联系卖家', align: 'left', required: true, sortable: true, field: 'seller' },
-          { name: 'buyer', label: '是否已联系买家', align: 'left', required: true, sortable: true, field: 'buyer' }
+          { name: 'seller', label: '卖家', align: 'left', required: true, sortable: true, field: 'seller' },
+          { name: 'buyer', label: '买家', align: 'left', required: true, sortable: true, field: 'buyer' }
         ],
         pagination: {
           sortBy: 'desc',
@@ -256,7 +236,7 @@ export default {
           name: 'fujiwara takuumi',
           phone: 1919810
         },
-        key_word: null,
+        key_word: 'uid',
         value: ''
       },
       transaction_data: {
@@ -281,6 +261,95 @@ export default {
   methods: {
     jump (id) {
       window.open('/#/car/' + id)
+    },
+    getUsersData () {
+      let url = '/api/user/info/query_all?'
+      if (this.users_data.search_name !== '') {
+        url += 'name=' + this.users_data.search_name + '&'
+      }
+      if (this.users_data.search_phone !== '') {
+        url += 'phone=' + this.users_data.search_phone + '&'
+      }
+      if (this.users_data.search_email !== '') {
+        url += 'email=' + this.users_data.search_email + '&'
+      }
+
+      const self = this
+      url = url.substring(0, url.length - 1)
+      this.$axios.get(url, {
+        headers: {
+          token: sessionStorage.getItem('token')
+        }
+      }).then((response) => {
+        if (response.status === 200 && response.data.errCode === 0) {
+          console.log(response.data)
+          self.users_data.data = response.data.result
+        } else {
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('uid')
+          window.location = '/#/admin/login'
+          window.location.reload()
+        }
+      })
+    },
+    getBargainData () {
+      const arg = {}
+      if (this.bargain_data.value !== '') {
+        arg[this.bargain_data.key_word] = this.bargain_data.value
+      }
+
+      this.$axios.post('/api/transaction/bargain/query', arg, {
+        headers: {
+          token: sessionStorage.getItem('token')
+        }
+      }).then((response) => {
+        console.log(response)
+        if (response.status === 200 && response.data.errCode === 0) {
+          this.bargain_data.data = response.data.result
+          for (let i = 0; i < this.bargain_data.data.length; ++i) {
+            this.$axios.get('/api/user/info/query?uid=' + this.bargain_data.data[i].uid, {
+              headers: { token: sessionStorage.getItem('token') }
+            }).then((response) => {
+              if (response.status === 200) {
+                this.bargain_data.data[i].buyer = response.data.name + ', ' + response.data.phone_number
+              }
+            })
+
+            this.$axios.get('/api/car?id=' + this.bargain_data.data[i].car_id, {
+              headers: { token: sessionStorage.getItem('token') }
+            }).then((response) => {
+              if (response.status === 200) {
+                this.$axios.get('/api/user/info/query?uid=' + response.data.uid, {
+                  headers: { token: sessionStorage.getItem('token') }
+                }).then((response) => {
+                  if (response.status === 200) {
+                    this.bargain_data.data[i].seller = response.data.name + ', ' + response.data.phone_number
+                  }
+                })
+              }
+            })
+          }
+        } else {
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('uid')
+          window.location = '/#/admin/login'
+          window.location.reload()
+        }
+      })
+    }
+  },
+  beforeMount () {
+    this.getUsersData()
+    this.getBargainData()
+  },
+  beforeRouteEnter (from, to, next) {
+    if (sessionStorage.getItem('token') === null) {
+      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('uid')
+      window.location = '/#/admin/login'
+      window.location.reload()
+    } else {
+      next()
     }
   }
 }

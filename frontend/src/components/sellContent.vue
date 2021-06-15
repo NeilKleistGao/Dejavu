@@ -446,8 +446,8 @@ export default {
         this.not_repaired_damage = false
       }
       this.$axios.post('api/car/new?', {
-        uid: this.$route.params.id,
-        token: this.$route.prams.token, // 待改
+        uid: sessionStorage.getItem('uid'),
+        token: sessionStorage.getItem('token'), // 待改
         model: this.series + '-' + this.type,
         guild_price: 0, // 待改
         manufacture: this.manufacture,
@@ -460,6 +460,10 @@ export default {
         power: carInformation[carName].power,
         not_repaired_damage: this.not_repaired_damage,
         images: '' // 待改
+      }, {
+        headers: {
+          token: sessionStorage.getItem('token')
+        }
       })
         .then(function (response) {
           console.log(response)
