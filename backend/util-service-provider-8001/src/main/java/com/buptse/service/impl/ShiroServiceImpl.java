@@ -61,13 +61,9 @@ public class ShiroServiceImpl implements IShiroService {
   * @Author: gerayking
   * @Date: 2021/6/14-21:11
   */
-  public boolean logout(String token) {
-    final String[] split = token.split(TokenUtil.TOKEN_SPLITER);
-    final UserToken userToken = tokenService.findUserById(Integer.parseInt(split[1]));
-    if(userToken == null ||!userToken.getFullToken().equals(token)){
-      return false;
-    }
-    return tokenService.deleteToken(token);
+  public boolean logout(Integer userId) {
+    final UserToken userToken = tokenService.findUserById(userId);
+    return tokenService.deleteToken(userToken.getFullToken());
   }
 
   /**

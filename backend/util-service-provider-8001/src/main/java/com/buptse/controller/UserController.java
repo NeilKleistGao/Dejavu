@@ -24,6 +24,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -156,11 +157,15 @@ public class UserController {
 
     @RequiresRoles({"user"})
     @PostMapping("/user/logout")
-    public Map logout(
-        @RequestBody String token
-    ){
-        Map<String, Object> result = new HashMap<>();
-        boolean flag = shiroService.logout(token);
+    public Map logout(){
+        Map result = new HashMap();
+        final Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            result.put("result",false);
+            result.put("info","未登录");
+        }
+        final User user = (User)subject.getPrincipal();
+        boolean flag = shiroService.logout(user.getUid());
         result.put("result",flag);
         return result;
     }

@@ -28,9 +28,9 @@ public interface IShiroService {
 
   /**
    * logout
-   * @param token
+   * @param userId
    */
-  boolean logout(String token);
+  boolean logout(Integer userId);
 
   /**
    * find token by token

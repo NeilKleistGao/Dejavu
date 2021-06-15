@@ -11,8 +11,8 @@ public enum RESULT {
 
     SUCCESS(0,"success"),
     USER_NOT_LOGIN(-1,"user not login"),
-    NO_DATA(-2,"no data");
-
+    NO_DATA(-2,"no data"),
+    NO_PERMISSION(-3,"refuce aceess permission");
     private Integer errorCode;
     private String msg;
 
