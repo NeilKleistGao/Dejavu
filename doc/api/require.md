@@ -303,7 +303,7 @@ GET参数：无
 ### 创建新的砍价
 url: `/transaction/bargain/new`
 
-说明：创建新的砍价记录
+说明：创建新的砍价记录，并修改车辆的状态
 
 method: POST
 
@@ -377,6 +377,7 @@ GET参数：
 + token：当前用户token
 + buyer: 购买用户的id，可选
 + seller: 出售用户的id，可选
++ date: 成交时间，可选
 
 
 返回数据示例：
@@ -425,7 +426,7 @@ GET参数：无
 ### 提交成交信息
 url: `/transaction/sale/submit`
 
-说明：提交新的成交（管理员）
+说明：提交新的成交，并修改车辆的状态（管理员）
 
 method: POST
 
@@ -451,7 +452,7 @@ GET参数：无
 ### 删除成交信息
 url: `/transaction/sale/delete`
 
-说明：删除成交信息（管理员）
+说明：删除成交信息，并修改车辆的状态（管理员）
 
 method: POST
 
