@@ -13,6 +13,8 @@
           <q-icon class="iconfont icon-drifting"></q-icon>
           Dejavu二手车交易平台-管理端
         </q-toolbar-title>
+
+        <q-btn flat class="q-mr-xs" label="退出" @click="logout"/>
       </q-toolbar>
     </q-header>
 
@@ -24,7 +26,25 @@
 
 <script>
 export default {
-  name: 'AdminLayout'
+  name: 'AdminLayout',
+  methods: {
+    logout () {
+      this.$axios.post('/api/user/logout', {
+        uid: sessionStorage.getItem('uid'),
+        token: sessionStorage.getItem('token')
+      }, {
+        headers: {
+          token: sessionStorage.getItem('token')
+        }
+      }).then((response) => {
+        if (response.status === 200) {
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('uid')
+          window.location.reload()
+        }
+      })
+    }
+  }
 }
 </script>
 

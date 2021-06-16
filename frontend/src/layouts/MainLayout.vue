@@ -18,7 +18,7 @@
         <q-btn flat class="q-mr-xs" label="我要买车" @click="goSearch"/>
         <q-btn flat class="q-mr-xs" label="我要卖车" @click="goSell"/>
         <q-btn flat class="q-mr-xs" :label="'当前城市：' + city">
-          <q-popup-proxy >
+          <q-popup-proxy>
             <q-card style="width: 600px; min-height: 400px">
               <q-card-section>
                 <span class="text-h4">选择城市</span>

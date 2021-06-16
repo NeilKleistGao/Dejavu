@@ -64,7 +64,7 @@
               <span class="text-h6">车主报价：{{car_info.price}}</span>
             </div>
           </div>
-          <div style="margin-top: 8em">
+          <div style="margin-top: 8em" v-if="bargain_enable">
             <q-btn push color="primary" size="lg" label="我要预约" style="margin-right: 2em" @click="show_dialog = true"/>
             <q-btn push color="primary" size="lg" label="车型对比"/>
           </div>
@@ -165,7 +165,7 @@
       <q-card style="min-width: 40%" bordered>
         <bargain-dialog v-model="bargain_data" :price="car_info.price"/>
         <q-separator/>
-        <q-card-actions align="right" v-if="available">
+        <q-card-actions align="right">
           <q-btn flat color="primary" v-close-popup label="预约买车" @click="makeAppointment"/>
           <q-btn flat color="primary" v-close-popup label="取消"/>
         </q-card-actions>
@@ -210,12 +210,8 @@ export default {
           from: '', // 开始时间
           to: '' // 结束时间
         } // 联系时间区间
-      } // 砍价数据
-    }
-  },
-  computed: {
-    available () {
-      return sessionStorage.getItem('uid') !== this.uid
+      }, // 砍价数据
+      bargain_enable: true
     }
   },
   methods: {
@@ -237,7 +233,6 @@ export default {
           token: sessionStorage.getItem('token')
         }
       }).then((response) => {
-        console.log(response)
         if (response.status === 200 && response.data.result) {
           this.$router.push({
             path: '/user',
@@ -259,8 +254,11 @@ export default {
         this.car_info = res.data
         this.car_info.create_date = this.car_info.create_date.substr(0, this.car_info.create_date.indexOf('T'))
         this.bargain_data.price = res.data.price
+
+        this.bargain_enable = sessionStorage.getItem('uid') !== this.car_info.uid.toString()
       } else {
-        window.location = '/car'
+        window.location = '/#/car'
+        window.location.reload()
       }
     })
   }

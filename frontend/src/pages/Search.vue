@@ -107,7 +107,7 @@
     </div>
     <div class="q-pa-md row items-start q-gutter-md" style="width: 60%; margin-left: 20%">
       <q-card class="my-card" v-for="item in carList" :key="item.car_id" @click="goDetail(item.car_id)">
-        <q-img src="car_details_test_img/1.png">
+        <q-img :src="getCover(item.imgs)">
           <div class="absolute-bottom">
             <div class="text-h6">{{item.manufacturer}} {{item.model_name}}</div>
             <div class="text-subtitle1">{{item.service_life}}年</div>
@@ -194,6 +194,7 @@ export default {
       this.$axios.get(url).then(res => {
         if (res.status === 200) {
           this.carList = res.data
+          console.log(res.data)
         }
       })
     },
@@ -203,6 +204,13 @@ export default {
           this.max_page = (res.data['page-number'] / 20) + 1
         }
       })
+    },
+    getCover (img) {
+      if (img == null) {
+        return 'car_details_test_img/1.png'
+      }
+
+      return img
     }
   },
   beforeMount () {
