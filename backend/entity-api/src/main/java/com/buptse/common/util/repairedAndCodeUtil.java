@@ -21,7 +21,7 @@ public class repairedAndCodeUtil {
     return repairedKeyMap.get(body);
   }
   public static String getRequiredByCode(Integer code){
-    if(codeKeyMap.containsKey(code) == false){
+    if(!codeKeyMap.containsKey(code)){
       return "无法确认损坏";
     }
     return codeKeyMap.get(code);

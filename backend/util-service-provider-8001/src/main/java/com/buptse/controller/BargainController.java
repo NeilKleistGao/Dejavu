@@ -2,10 +2,13 @@ package com.buptse.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.buptse.common.RESULT;
+import com.buptse.common.util.CarStateAndCodeUtile;
 import com.buptse.dto.CommonResult;
 import com.buptse.pojo.Bargain;
+import com.buptse.pojo.Car;
 import com.buptse.pojo.User;
 import com.buptse.service.IBargainService;
+import com.buptse.service.ICarService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -27,6 +30,9 @@ public class BargainController {
   private IBargainService bargainService;
 
   @Autowired
+  private ICarService carService;
+
+  @Autowired
   private ITokenService tokenService;
 
   @PostMapping("/transaction/bargain/new")
@@ -38,9 +44,13 @@ public class BargainController {
       return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
     }
     boolean result = bargainService.save(bargainDto);
+    final Integer car_id = bargainDto.getCar_id();
+    final Car car = carService.getById(car_id);
+    car.setState(CarStateAndCodeUtile.getCodeByBody("议价"));
+    final boolean isSuccess = carService.updateById(car);
     final HashMap<String, Boolean> map = new HashMap<String, Boolean>();
-    map.put("result",result);
-    return CommonResult.success(map);
+    result &= isSuccess;
+    return CommonResult.success(result);
   }
 
   /**

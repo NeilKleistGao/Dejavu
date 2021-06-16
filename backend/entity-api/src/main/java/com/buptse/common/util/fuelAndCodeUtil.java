@@ -25,13 +25,13 @@ public class fuelAndCodeUtil {
     codeKeyMap.put(-1,"未知动力类型");
   }
   public static Integer getCodeByFuel(String body){
-    if(fuelKeyMap.containsKey(body) == false){
+    if(!fuelKeyMap.containsKey(body)){
       return -1;
     }
     return fuelKeyMap.get(body);
   }
   public static String getFuelByCode(Integer code){
-    if(codeKeyMap.containsKey(code) == false){
+    if(!codeKeyMap.containsKey(code)){
       return "未知动力类型";
     }
     return codeKeyMap.get(code);

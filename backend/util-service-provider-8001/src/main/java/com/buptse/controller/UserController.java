@@ -118,17 +118,14 @@ public class UserController {
         User user = (User)subject.getPrincipal();
         Map<String, Object> result = new HashMap<>();
         if(!user.getUid().equals(modifyUserInfoDto.getUserId())){
-            result.put("result","false");
-            result.put("info","无法修改其他用户信息");
-            return CommonResult.failFast(RESULT.NO_PERMISSION,result);
+            return CommonResult.failFast(RESULT.NO_PERMISSION,"无法修改其他用户信息");
         }
         String avatar = modifyUserInfoDto.getAvatar();
         if(avatar !=null) user.setAvatar(avatar);
         String mail = modifyUserInfoDto.getMail();
         if(mail != null) user.setMail(mail);
         boolean flag = userService.updateById(user);
-        result.put("result",flag);
-        return CommonResult.success(result);
+        return CommonResult.success(flag);
     }
     @PostMapping("/user/info/password")
     /**
