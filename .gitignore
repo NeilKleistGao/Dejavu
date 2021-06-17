@@ -3,7 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+### 8001 ###
+/backend/util-service-provider-8001/src/main/resources/application.yml
 ### STS ###
 .apt_generated
 .classpath

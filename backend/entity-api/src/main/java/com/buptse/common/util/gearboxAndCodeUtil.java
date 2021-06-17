@@ -11,7 +11,19 @@ public class gearboxAndCodeUtil {
     codeKeyMap.put(0,"手动");
     gearKeyMap.put("自动",1);
     codeKeyMap.put(1,"自动");
+    gearKeyMap.put("未知动力档位",-1);
+    codeKeyMap.put(-1,"未知动力档位");
   }
-  public static Integer getCodeByGear(String body){ return gearKeyMap.get(body); }
-  public static String getGearByCode(Integer code){ return codeKeyMap.get(code); }
+  public static Integer getCodeByGear(String body){
+    if(!gearKeyMap.containsKey(body)){
+      return -1;
+    }
+    return gearKeyMap.get(body);
+  }
+  public static String getGearByCode(Integer code){
+    if(!codeKeyMap.containsKey(code)){
+      return "未知动力档位";
+    }
+    return codeKeyMap.get(code);
+  }
 }

@@ -12,5 +12,8 @@ import com.buptse.pojo.User;
  * @since 2021-04-23
  */
 public interface IUserService extends IService<User> {
-
+  User findByName(String username);
+  User findByPhoneNumber(String phoneNumber);
+  Integer insertUser(User user);
+  Boolean isExistPhoneNumber(String phoneNumber);
 }
