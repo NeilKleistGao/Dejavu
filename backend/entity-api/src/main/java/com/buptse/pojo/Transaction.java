@@ -4,10 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -23,6 +22,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@Builder
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,6 +37,7 @@ public class Transaction implements Serializable {
 
     private LocalDateTime deal_time;
 
+    @TableId(value = "sale_id",type = IdType.INPUT)
     private Integer sale_id;
 
 

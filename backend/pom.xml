@@ -27,7 +27,7 @@
     <name>Dejavu</name>
     <description>Demo project for Spring Boot</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>8</java.version>
     </properties>
    <dependencyManagement>
        <dependencies>
@@ -58,7 +58,6 @@
                <artifactId>mybatis-spring-boot-starter</artifactId>
                <version>2.1.1</version>
            </dependency>
-
            <!--junit-->
            <dependency>
                <groupId>junit</groupId>

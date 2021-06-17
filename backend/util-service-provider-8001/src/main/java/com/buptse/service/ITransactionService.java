@@ -13,4 +13,5 @@ import com.buptse.pojo.Transaction;
  */
 public interface ITransactionService extends IService<Transaction> {
 
+    int insertTransactionAndGetId(Transaction transaction);
 }

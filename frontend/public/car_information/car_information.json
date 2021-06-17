@@ -1,0 +1,337 @@
+{
+  "car_information": {
+    "大众-捷达-2019款梦想版1.5L手动时尚型": {
+      "model_name": "捷达 2019款 梦想版 1.5L 手动时尚型",
+      "manufacture": "大众",
+      "displacement": 1.5,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "手动",
+      "power": "110"
+    },
+    "大众-捷达-2019款梦想版1.5L自动时尚型": {
+      "model": "捷达 2019款 梦想版 1.5L 自动时尚型",
+      "manufacture": "大众",
+      "displacement": 1.5,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "自动",
+      "power": "110"
+    },
+    "大众-桑塔纳-2018款1.5L自动风尚版": {
+      "model": "桑塔纳 2018款 1.5L 自动风尚版",
+      "manufacture": "大众",
+      "displacement": 1.5,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "自动",
+      "power": "110"
+    },
+    "大众-桑塔纳-2018款1.5L自动舒适版": {
+      "model": "桑塔纳 2018款 1.5L 自动风尚版",
+      "manufacture": "大众",
+      "displacement": 1.5,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "自动",
+      "power": "110"
+    },
+    "宝马-宝马1系-2016款118i领先型(进口)": {
+      "model": "宝马1系 2016款 118i 领先型(进口)",
+      "manufacture": "宝马",
+      "displacement": 1.5,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "8挡手自一体",
+      "power": "136"
+    },
+    "宝马-宝马1系-2013款改款116i领先型(进口)": {
+      "model": "宝马1系 2013款 改款 116i 领先型(进口)",
+      "manufacture": "宝马",
+      "displacement": 1.6,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "8挡手自一体",
+      "power": "136"
+    },
+    "宝马-宝马3系-2017款320Li时尚型": {
+      "model": "宝马3系 2013款 改款 116i 领先型(进口)",
+      "manufacture": "宝马",
+      "displacement": 2.0,
+      "body_type": "中型车",
+      "fuel_type": "汽油",
+      "gearbox": "8挡手自一体",
+      "power": "184"
+    },
+    "宝马-宝马3系-2012款320i豪华型": {
+      "model": "宝马3系 2012款 320i 豪华型",
+      "manufacture": "宝马",
+      "displacement": 2.0,
+      "body_type": "中型车",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手自一体",
+      "power": "152"
+    },
+    "奔驰-奔驰CLK级-2006款CLK200K双门轿跑车(进口)": {
+      "model": "奔驰CLK级 2006款 CLK 200K 双门轿跑车(进口)",
+      "manufacture": "奔驰",
+      "displacement": 1.8,
+      "body_type": "跑车",
+      "fuel_type": "汽油",
+      "gearbox": "5挡手自一体",
+      "power": "184"
+    },
+    "奔驰-奔驰CLK级-2006款CLK200K敞篷跑车(进口)": {
+      "model": "奔驰CLK级 2006款 CLK 200K 敞篷跑车(进口)",
+      "manufacture": "奔驰",
+      "displacement": 1.8,
+      "body_type": "跑车",
+      "fuel_type": "汽油",
+      "gearbox": "5挡手自一体",
+      "power": "184"
+    },
+    "奔驰-奔驰CLS级-2020款CLS300动感型(进口)": {
+      "model": "奔驰CLS级 2020款 CLS 300 动感型(进口)",
+      "manufacture": "奔驰",
+      "displacement": 2.0,
+      "body_type": "中大型车",
+      "fuel_type": "汽油",
+      "gearbox": "9挡手自一体",
+      "power": "258"
+    },
+    "奔驰-奔驰CLS级-2018款CLS300动感型(进口)": {
+      "model": "奔驰CLS级 2020款 CLS 300 动感型(进口)",
+      "manufacture": "奔驰",
+      "displacement": 2.0,
+      "body_type": "中大型车",
+      "fuel_type": "汽油",
+      "gearbox": "9挡手自一体",
+      "power": "258"
+    },
+    "丰田-汉兰达-2009款2.7L两驱7座豪华版": {
+      "model": "汉兰达 2009款 2.7L 两驱7座豪华版",
+      "manufacture": "丰田",
+      "displacement": 2.7,
+      "body_type": "中型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手自一体",
+      "power": "190"
+    },
+    "丰田-汉兰达-2015款2.0T四驱豪华版 7座": {
+      "model": "汉兰达 2015款 2.0T 四驱豪华版 7座",
+      "manufacture": "丰田",
+      "displacement": 2.0,
+      "body_type": "中型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手自一体",
+      "power": "220"
+    },
+    "丰田-普拉多-2016款3.5L自动TX-L": {
+      "model": "普拉多 2016款 3.5L 自动TX-L",
+      "manufacture": "丰田",
+      "displacement": 3.5,
+      "body_type": "中大型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手自一体",
+      "power": "280"
+    },
+    "丰田-普拉多-2016款2.7L自动标准版": {
+      "model": "普拉多 2016款 2.7L 自动标准版",
+      "manufacture": "丰田",
+      "displacement": 2.7,
+      "body_type": "中大型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手自一体",
+      "power": "163"
+    },
+    "本田-本田CRV-2016款2.0L两驱都市版": {
+      "model": "本田C-RV 2016款 2.0L 两驱都市版",
+      "manufacture": "丰田",
+      "displacement": 2.0,
+      "body_type": "紧凑型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "CVT无级变速",
+      "power": "155"
+    },
+    "本田-本田CRV-2013款2.0L两驱经典版": {
+      "model": "本田C-RV 2013款 2.0L 两驱经典版",
+      "manufacture": "丰田",
+      "displacement": 2.0,
+      "body_type": "紧凑型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "5挡自动",
+      "power": "155"
+    },
+    "本田-思域-2016款220TURBOCVT豪华版": {
+      "model": "本田C-RV 2016款 220TURBO CVT豪华版",
+      "manufacture": "丰田",
+      "displacement": 1.5,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "CVT无级变速",
+      "power": "177"
+    },
+    "奥迪-奥迪A5-2016款Sportback45TFSI(进口)": {
+      "model": "奥迪A5 2016款 Sportback 45 TFSI(进口)",
+      "manufacture": "奥迪",
+      "displacement": 2.0,
+      "body_type": "中型车",
+      "fuel_type": "汽油",
+      "gearbox": "CVT无级变速(模拟8挡)",
+      "power": "224"
+    },
+    "奥迪-奥迪A5-2017款Sportback45TFSIquattro运动型(进口)": {
+      "model": "奥迪A5 2017款 Sportback 45 TFSI quattro 运动型(进口)",
+      "manufacture": "奥迪",
+      "displacement": 2.0,
+      "body_type": "中型车",
+      "fuel_type": "汽油",
+      "gearbox": "手动(7挡双离合)",
+      "power": "252"
+    },
+    "奥迪-奥迪A6-2018款3.0Tallroadquattro(进口)": {
+      "model": "奥迪A6 2018款 3.0T allroad quattro(进口)",
+      "manufacture": "奥迪",
+      "displacement": 3.0,
+      "body_type": "中大型车",
+      "fuel_type": "汽油",
+      "gearbox": "手动(7挡双离合)",
+      "power": "333"
+    },
+    "奥迪-奥迪A6-2017款Avant40TFSI运动型(进口)": {
+      "model": "奥迪A6 2017款 Avant 40 TFSI 运动型(进口)",
+      "manufacture": "奥迪",
+      "displacement": 2.0,
+      "body_type": "中大型车",
+      "fuel_type": "汽油",
+      "gearbox": "手动(7挡双离合)",
+      "power": "252"
+    },
+    "现代-途胜-2015款1.6T双离合两驱智能型": {
+      "model": "途胜 2015款 1.6T 双离合两驱智能型",
+      "manufacture": "现代",
+      "displacement": 1.6,
+      "body_type": "紧凑型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "手动(7挡双离合)",
+      "power": "177"
+    },
+    "现代-途胜-2018款1.6T双离合两驱15周年特别版": {
+      "model": "途胜 2018款 1.6T 双离合两驱15周年特别版",
+      "manufacture": "现代",
+      "displacement": 1.6,
+      "body_type": "紧凑型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "手动(7挡双离合)",
+      "power": "177"
+    },
+    "现代-ix35-2018款 2.0L 自动两驱智勇·畅享版": {
+      "model": "ix35 2018款 2.0L 自动两驱智勇·畅享版",
+      "manufacture": "现代",
+      "displacement": 2.0,
+      "body_type": "紧凑型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手自一体",
+      "power": "160"
+    },
+    "现代-ix35-2013款2.0L自动两驱智能型GLS国IV": {
+      "model": "ix35 2013款 2.0L 自动两驱智能型GLS 国IV",
+      "manufacture": "现代",
+      "displacement": 2.0,
+      "body_type": "紧凑型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手自一体",
+      "power": "165"
+    },
+    "马自达-马自达3-2012款1.6L自动经典特惠型": {
+      "model": "马自达3 2012款 1.6L 自动经典特惠型",
+      "manufacture": "现代",
+      "displacement": 1.6,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "4挡手自一体",
+      "power": "107"
+    },
+    "马自达-马自达3-2007款1.6L手动标准型": {
+      "model": "马自达3 2007款 1.6L 手动标准型",
+      "manufacture": "现代",
+      "displacement": 1.6,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "5挡手动",
+      "power": "107"
+    },
+    "马自达-马自达6-2011款2.0L自动时尚型": {
+      "model": "马自达6 2011款 2.0L 自动时尚型",
+      "manufacture": "现代",
+      "displacement": 2.0,
+      "body_type": "中型车",
+      "fuel_type": "汽油",
+      "gearbox": "5挡手自一体",
+      "power": "146"
+    },
+    "马自达-马自达6-2007款2.0L手动型": {
+      "model": "马自达6 2007款 2.0L 手动型",
+      "manufacture": "现代",
+      "displacement": 2.0,
+      "body_type": "中型车",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手动",
+      "power": "146"
+    },
+    "哈弗-哈弗H6-2013款运动版1.5T手动两驱精英型": {
+      "model": "哈弗H6 2013款 运动版 1.5T 手动两驱精英型",
+      "manufacture": "哈弗",
+      "displacement": 1.5,
+      "body_type": "紧凑型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手动",
+      "power": "150"
+    },
+    "哈弗-哈弗H6-2020款1.5GDIT自动铂金豪华版": {
+      "model": "哈弗H6 2020款 1.5GDIT 自动铂金豪华版",
+      "manufacture": "哈弗",
+      "displacement": 1.5,
+      "body_type": "紧凑型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "手动(7挡双离合)",
+      "power": "169"
+    },
+    "哈弗-哈弗H6-2018款红标1.5T双离合两驱豪华型": {
+      "model": "哈弗H2 2018款 红标 1.5T 双离合两驱豪华型",
+      "manufacture": "哈弗",
+      "displacement": 1.5,
+      "body_type": "小型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "手动(7挡双离合)",
+      "power": "150"
+    },
+    "哈弗-哈弗H6-2016款红标1.5T手动两驱精英型": {
+      "model": "哈弗H2 2016款 红标 1.5T 手动两驱精英型",
+      "manufacture": "哈弗",
+      "displacement": 1.5,
+      "body_type": "小型SUV",
+      "fuel_type": "汽油",
+      "gearbox": "6挡手动",
+      "power": "150"
+    },
+    "比亚迪-比亚迪F3-2016款红标1.5T手动两驱精英型": {
+      "model": "比亚迪F3 2016款 红标 1.5T 手动两驱精英型",
+      "manufacture": "比亚迪",
+      "displacement": 1.5,
+      "body_type": "紧凑型车",
+      "fuel_type": "汽油",
+      "gearbox": "5挡手动",
+      "power": "109"
+    },
+    "比亚迪-比亚迪F0-2012款1.0L铉酷型": {
+      "model": "比亚迪F0 2012款 1.0L 铉酷型",
+      "manufacture": "比亚迪",
+      "displacement": 1.0,
+      "body_type": "微型车",
+      "fuel_type": "汽油",
+      "gearbox": "5挡手动",
+      "power": "68"
+    }
+  }
+}

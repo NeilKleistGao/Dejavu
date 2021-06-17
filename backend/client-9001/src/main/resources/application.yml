@@ -6,8 +6,7 @@ eureka:
   client:
     register-with-eureka: false # 不向Eureka注册自己
     service-url:
-      defaultZone: http://eureka-server-01.com:7100/eureka,http://eureka-server-02.com:7200/eureka,http://eureka-server-03.com:7300/eureka
-
+      defaultZone: http://localhost:7100/eureka
 ## Resilience4j 配置
 #resilience4j:
 #  # 配置断路器

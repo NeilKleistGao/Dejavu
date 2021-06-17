@@ -23,9 +23,19 @@ public class bodyAndCodeUtil {
     codeKeyMap.put(6,"商务车");
     bodyKeyMap.put("搅拌车",7);
     codeKeyMap.put(7,"搅拌车");
+    bodyKeyMap.put("未知车型",-1);
+    codeKeyMap.put(-1,"未知车型");
   }
-  public static Integer getCodeByBody(String body){ return bodyKeyMap.get(body); }
+  public static Integer getCodeByBody(String body){
+    if(!bodyKeyMap.containsKey(body)){
+      return -1;
+    }
+    return bodyKeyMap.get(body);
+  }
   public static String getBodyByCode(Integer code){
+    if(!codeKeyMap.containsKey(code)){
+      return "未知车型";
+    }
     return codeKeyMap.get(code);
   }
 }

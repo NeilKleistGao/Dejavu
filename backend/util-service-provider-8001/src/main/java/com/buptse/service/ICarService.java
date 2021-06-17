@@ -16,4 +16,5 @@ import java.util.List;
 public interface ICarService extends IService<Car> {
   List<CarDto> getCarDtoList(List<Car> carList);
   CarDto getCarDto(Car car);
+  int insertCarAndGetId(Car car);
 }

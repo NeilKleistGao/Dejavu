@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.buptse.mapper.UserMapper;
 import com.buptse.pojo.User;
 import com.buptse.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +18,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
+  @Autowired
+  UserMapper userMapper;
+
+  @Override
+  public User findByName(String username) {
+    return userMapper.findUserByName(username);
+  }
+
+  @Override
+  public User findByPhoneNumber(String phoneNumber) {
+    return userMapper.findUserByPhoneNumber(phoneNumber);
+  }
+
+  @Override
+  public Integer insertUser(User user) {
+    return userMapper.insertUser(user);
+  }
+
+  @Override
+  public Boolean isExistPhoneNumber(String phoneNumber) {
+    Integer is = userMapper.IsExitPhoneNumber(phoneNumber);
+    if(is == 1)return true;
+    return false;
+  }
 }

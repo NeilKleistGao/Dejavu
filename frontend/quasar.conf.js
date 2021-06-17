@@ -78,11 +78,23 @@ module.exports = function (/* ctx */) {
       open: false, // opens browser window automatically
       proxy: {
         '/api': {
-          target: '',
+          target: 'http://124.70.47.227:8001/',
           ws: true,
           changeOrigin: true,
           pathRewrite: {
             '^/api': ''
+          }
+        },
+        '/cdn': {
+          target: 'https://sm.ms/api/v2/',
+          ws: true,
+          changeOrigin: true,
+          secure: false,
+          pathRewrite: {
+            '^/cdn': ''
+          },
+          headers: {
+            Referer: 'https://sm.ms'
           }
         }
       }

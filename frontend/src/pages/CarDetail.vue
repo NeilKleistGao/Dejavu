@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/5/12
+ * @LastEditTime: 2021/6/17
  -->
 <template>
   <q-page class="flex">
@@ -51,8 +51,8 @@
               <tbody>
                 <tr>
                   <td>{{car_info.create_date}}</td>
-                  <td>{{car_info.mileage}}</td>
-                  <td>{{car_info.displacement}}</td>
+                  <td>{{car_info.mileage}}万英里</td>
+                  <td>{{car_info.displacement}}L</td>
                   <td>{{car_info.gear_box}}</td>
                 </tr>
               </tbody>
@@ -64,8 +64,8 @@
               <span class="text-h6">车主报价：{{car_info.price}}</span>
             </div>
           </div>
-          <div style="margin-top: 8em">
-            <q-btn push color="primary" size="lg" label="我要预约" style="margin-right: 2em"/>
+          <div style="margin-top: 8em" v-if="bargain_enable">
+            <q-btn push color="primary" size="lg" label="我要预约" style="margin-right: 2em" @click="show_dialog = true"/>
             <q-btn push color="primary" size="lg" label="车型对比"/>
           </div>
         </q-card>
@@ -111,7 +111,7 @@
               <tbody>
                 <tr>
                   <th class="text-subtitle2">排量</th>
-                  <th class="text-subtitle2">{{car_info.displacement}}</th>
+                  <th class="text-subtitle2">{{car_info.displacement}}L</th>
                 </tr>
                 <tr>
                   <th class="text-subtitle2">车身类型</th>
@@ -123,7 +123,7 @@
                 </tr>
                 <tr>
                   <th class="text-subtitle2">变速箱</th>
-                  <th class="text-subtitle2">{{car_info.displacement}}</th>
+                  <th class="text-subtitle2">{{car_info.gear_box}}</th>
                 </tr>
                 <tr>
                   <th class="text-subtitle2">马力</th>
@@ -144,7 +144,7 @@
                 </tr>
                 <tr>
                   <th class="text-subtitle2">里程数</th>
-                  <th class="text-subtitle2">{{car_info.mileage}}</th>
+                  <th class="text-subtitle2">{{car_info.mileage}}万英里</th>
                 </tr>
                 <tr>
                   <th class="text-subtitle2">是否修复</th>
@@ -160,14 +160,28 @@
         </div>
       </q-card>
     </div>
+
+    <q-dialog v-model="show_dialog" persistent>
+      <q-card style="min-width: 40%" bordered>
+        <bargain-dialog v-model="bargain_data" :price="car_info.price"/>
+        <q-separator/>
+        <q-card-actions align="right">
+          <q-btn flat color="primary" v-close-popup label="预约买车" @click="makeAppointment"/>
+          <q-btn flat color="primary" v-close-popup label="取消"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
+import BargainDialog from 'components/BargainDialog'
 export default {
   name: 'CarDetail',
+  components: { BargainDialog },
   data () {
     return {
+      id: 0, // 当前车辆id
       car_image_list: ['car_details_test_img/1.png', 'car_details_test_img/2.png',
         'car_details_test_img/3.png', 'car_details_test_img/4.png'], // 车辆照片集
       slide: 1, // 照片集当前下标
@@ -188,18 +202,69 @@ export default {
         power: 0, // 马力
         not_repaired_damage: '', // 是否有修复过
         create_date: '' // 上牌日期
-      } // 车辆详细信息
+      }, // 车辆详细信息
+      show_dialog: false, // 是否显示对话框
+      bargain_data: {
+        price: 0, // 买家报价
+        time: {
+          from: '', // 开始时间
+          to: '' // 结束时间
+        } // 联系时间区间
+      }, // 砍价数据
+      bargain_enable: true // 用户是否可以议价（自己不能对自己售出的车进行砍价操作）
+    }
+  },
+  methods: {
+    /**
+     * 预约看车
+     */
+    makeAppointment () {
+      if (sessionStorage.getItem('token') === null) {
+        window.location = '/#/login'
+        window.location.reload()
+      }
+
+      const self = this
+      this.$axios.post('/api/transaction/bargain/new', {
+        car_id: self.id.toString(),
+        price: self.bargain_data.price,
+        start_time: self.bargain_data.time.from + ' 00:00:00',
+        end_time: self.bargain_data.time.to + ' 00:00:00'
+      }, {
+        headers: {
+          token: sessionStorage.getItem('token')
+        }
+      }).then((response) => {
+        if (response.status === 200 && response.data.result) {
+          this.$router.push({
+            path: '/user',
+            query: {
+              menu: 'bargain'
+            }
+          })
+        } else {
+          console.log(response)
+        }
+      })
     }
   },
   beforeMount () {
-    const id = this.$route.params.id
-    this.$axios.get('/api/car?id=' + id).then(res => {
+    this.id = this.$route.params.id
+    this.$axios.get('/api/car?id=' + this.id).then(res => {
       if (res.status === 200 && res.data.model_name !== null && res.data.model_name !== undefined) {
         this.car_info = res.data
-        this.car_info.create_date = this.car_info.create_date.substr(0, this.car_info.create_date.indexOf('T'))
+        this.car_info.create_date = this.car_info.create_date.substr(0, this.car_info.create_date.indexOf(' '))
+        this.bargain_data.price = res.data.price
+        this.car_image_list = res.data.imgs
+
+        this.bargain_enable = sessionStorage.getItem('uid') !== this.car_info.uid.toString()
       } else {
-        window.location = '/car'
+        window.location = '/#/car'
+        window.location.reload()
       }
+    }).catch(() => {
+      window.location = '/#/car'
+      window.location.reload()
     })
   }
 }
