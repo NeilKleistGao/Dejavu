@@ -36,11 +36,14 @@ export default {
   name: 'AdminLogin',
   data () {
     return {
-      username: '',
-      password: ''
+      username: '', // 用户名
+      password: '' // 密码
     }
   },
   methods: {
+    /**
+     * 登录
+     */
     login () {
       const self = this
       this.$axios.post('/api/user/login', {

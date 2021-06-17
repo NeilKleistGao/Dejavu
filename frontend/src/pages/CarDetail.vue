@@ -3,7 +3,7 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/5/12
+ * @LastEditTime: 2021/6/17
  -->
 <template>
   <q-page class="flex">
@@ -181,7 +181,7 @@ export default {
   components: { BargainDialog },
   data () {
     return {
-      id: 0,
+      id: 0, // 当前车辆id
       car_image_list: ['car_details_test_img/1.png', 'car_details_test_img/2.png',
         'car_details_test_img/3.png', 'car_details_test_img/4.png'], // 车辆照片集
       slide: 1, // 照片集当前下标
@@ -211,10 +211,13 @@ export default {
           to: '' // 结束时间
         } // 联系时间区间
       }, // 砍价数据
-      bargain_enable: true
+      bargain_enable: true // 用户是否可以议价（自己不能对自己售出的车进行砍价操作）
     }
   },
   methods: {
+    /**
+     * 预约看车
+     */
     makeAppointment () {
       if (sessionStorage.getItem('token') === null) {
         window.location = '/#/login'
@@ -241,6 +244,8 @@ export default {
             }
           })
         } else {
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('uid')
           window.location = '/#/login'
           window.location.reload()
         }
@@ -254,6 +259,7 @@ export default {
         this.car_info = res.data
         this.car_info.create_date = this.car_info.create_date.substr(0, this.car_info.create_date.indexOf('T'))
         this.bargain_data.price = res.data.price
+        this.car_image_list = res.data.imgs
 
         this.bargain_enable = sessionStorage.getItem('uid') !== this.car_info.uid.toString()
       } else {

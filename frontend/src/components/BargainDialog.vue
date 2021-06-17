@@ -39,7 +39,7 @@ export default {
     price: {
       type: Number,
       required: true
-    }
+    } // 车主报价，根据该价格进行砍价
   },
   data () {
     return {

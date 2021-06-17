@@ -28,6 +28,9 @@
 export default {
   name: 'AdminLayout',
   methods: {
+    /**
+     * 帐号登出
+     */
     logout () {
       this.$axios.post('/api/user/logout', {
         uid: sessionStorage.getItem('uid'),

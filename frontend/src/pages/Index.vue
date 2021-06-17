@@ -160,6 +160,10 @@ export default {
   },
 
   methods: {
+    /**
+     * 跳转到搜索页面
+     * @param data 搜索的内容
+     */
     gotoSearch (data) {
       if (data === null) {
         this.$router.push({
@@ -177,6 +181,9 @@ export default {
         })
       }
     },
+    /**
+     * 跳转到出售页面
+     */
     gotoSell () {
       this.$router.push({
         path: '/sell'

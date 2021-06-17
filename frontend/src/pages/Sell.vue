@@ -67,7 +67,7 @@ export default {
   components: { SellContent },
   data: function () {
     return {
-      sellAppointment: false
+      sellAppointment: false // 是否显示预约卖车控件
     }
   }
 }

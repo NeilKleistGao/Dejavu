@@ -36,7 +36,6 @@
           </div>
           <div align="center">
             <router-link to="/Register">没有账号 去注册</router-link>
-            <router-view></router-view>
           </div>
         </q-form>
 
@@ -49,14 +48,14 @@ export default {
   name: 'Login',
   data () {
     return {
-      phone: '',
-      password: ''
+      phone: '', // 电话号码
+      password: '' // 密码
     }
   },
   methods: {
-    login () {
-      this.$router.push('/Register')
-    },
+    /**
+     * 提交登录表单
+     */
     onSubmit () {
       const self = this
       this.$axios.post('/api/user/login', {

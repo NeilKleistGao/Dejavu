@@ -62,7 +62,7 @@
 
                   <div>
                     <q-btn label="修改密码" color="primary" style="margin-right: 0.5em" @click="user_data.password_changing = true"/>
-                    <q-btn label="保存修改" color="primary"/>
+                    <q-btn label="保存修改" color="primary" @click="modifyInformation"/>
                   </div>
                 </div>
               </template>
@@ -108,9 +108,31 @@
                   :data=trans_data
                   :columns="trans"
                   row-key="name"
-                  hide-header
                   hide-bottom
-                />
+                >
+                  <template v-slot:body="props">
+                    <q-tr :props="props">
+                      <q-td key="sale_id" :props="props">
+                        {{ props.row.sale_id }}
+                      </q-td>
+                      <q-td key="car_id" :props="props">
+                        <a :href="'/#/car/' + props.row.car_id">
+                          {{ props.row.car_info }}
+                        </a>
+                      </q-td>
+                      <q-td>
+                        <q-badge v-if="props.row.buyer_id.toString() === currentUID" label="买家"/>
+                        <q-badge v-else label="卖家"/>
+                      </q-td>
+                      <q-td key="deal_price" :props="props">
+                        {{ props.row.deal_price }}
+                      </q-td>
+                      <q-td key="deal_time" :props="props">
+                        {{ props.row.deal_time }}
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
               </div>
             </q-tab-panel>
           </q-tab-panels>
@@ -145,90 +167,48 @@ export default {
   name: 'User',
   data () {
     return {
-      tab: 'UserInformation',
-      splitterModel: 20,
+      tab: 'UserInformation', // tab控件标签
+      splitterModel: 20, // 分隔栏比例
       user_data: {
-        name: '',
-        avatar: 'default-avatar.jpg',
-        mail: '',
-        phone: '',
-        old_password: '',
-        new_password: '',
-        conform_password: '',
-        password_changing: false,
-        avatar_file: null
-      },
+        name: '', // 用户昵称
+        avatar: 'default-avatar.jpg', // 用户头像链接
+        mail: '', // 用户邮箱
+        phone: '', // 用户手机号
+        old_password: '', // 旧密码
+        new_password: '', // 新密码
+        conform_password: '', // 确认密码
+        password_changing: false, // 是否显示修改密码
+        avatar_file: null // 头像文件
+      }, // 用户数据
       columns: [
         { name: 'name', label: '车辆', field: 'name', sortable: true },
         { name: 'price', label: '价格', field: 'price', sortable: true },
         { name: 'state', label: '状态', field: 'state', sortable: true }
-      ],
-      bargain_data: [],
+      ], // 砍价记录表格表头
+      bargain_data: [], // 用户砍价数据
       trans: [
-        {
-          name: 'desc',
-          required: true,
-          label: 'Dessert',
-          align: 'left',
-          field: row => row.name,
-          format: val => `${val}`,
-          sortable: true
-        },
-        { name: 'sale_id', align: 'center', lable: 'sale_id', field: 'sale_id' },
-        { name: 'buyer_id', align: 'center', label: 'buyer_id', field: 'buyer_id' },
-        { name: 'seller_id', align: 'center', label: 'seller_id', field: 'seller_id' },
-        { name: 'car_id', align: 'center', label: 'car_id', field: 'car_id' },
-        { name: 'deal_price', align: 'center', label: 'deal_price', field: 'deal_price', sortable: true },
-        { name: 'deal_time', align: 'center', label: 'deal_time', field: 'deal_time', sortable: true }
-      ],
-      trans_data: [
-        {
-          name: 1,
-          sale_id: 202104211605,
-          buyer_id: 1018472973,
-          seller_id: 1020472973,
-          carId: 11111111,
-          deal_price: 23,
-          deal_time: '2020/04/21 16:05'
-        },
-        {
-          name: 2,
-          sale_id: 202104211605,
-          buyer_id: 1018472973,
-          seller_id: 1020472973,
-          carId: 11111111,
-          deal_price: 23,
-          deal_time: '2020/04/21 16:05'
-        }
-      ],
-      sales: [
-        {
-          name: 'sales',
-          required: true,
-          label: 'sales',
-          align: 'left',
-          field: row => row.name,
-          format: val => `${val}`,
-          sortable: true
-        },
-        { name: 'carID', label: 'carId', field: 'carId', sortable: true },
-        { name: 'state', label: 'state', field: 'state', sortable: true }
-      ],
-      sale_data: [
-        {
-          name: 1,
-          carID: 534234632,
-          state: '未售出'
-        },
-        {
-          name: 2,
-          carID: 3457845786,
-          state: '已售出'
-        }
-      ]
+        { name: 'sale_id', align: 'center', label: '成交ID', field: 'sale_id', sortable: true },
+        { name: 'car_id', align: 'center', label: '车辆信息', field: 'car_info', sortable: true },
+        { name: 'char', align: 'left', label: '您的角色', field: 'buyer' },
+        { name: 'deal_price', align: 'center', label: '成交价格', field: 'deal_price', sortable: true },
+        { name: 'deal_time', align: 'center', label: '成交时间', field: 'deal_time', sortable: true }
+      ], // 用户交易表格表头
+      trans_data: [] // 交易数据
     }
   },
   methods: {
+    /**
+     * 要求用户重新登录
+     */
+    reLogin () {
+      sessionStorage.removeItem('uid')
+      sessionStorage.removeItem('token')
+      window.location = '/#/login'
+      window.location.reload()
+    },
+    /**
+     * 上传用户头像
+     */
     upload () {
       const self = this
       const file = self.user_data.avatar_file
@@ -236,7 +216,6 @@ export default {
       reader.readAsDataURL(file)
       reader.onloadend = function (e) {
         const data = file
-        console.log(data)
         const formData = new FormData()
         formData.append('smfile', data)
         formData.append('Authorization', '')
@@ -255,7 +234,6 @@ export default {
             }, {
               headers: { token: sessionStorage.getItem('token') }
             }).then((response) => {
-              console.log(response)
               if (response.status === 200 && response.data.result) {
                 window.location.reload()
               }
@@ -264,12 +242,14 @@ export default {
         })
       }
     },
+    /**
+     * 修改用户密码
+     */
     modifyPassword () {
       if (this.user_data.new_password !== this.user_data.conform_password) {
         alert('两次密码不一致')
       } else {
         const self = this
-        console.log(self.user_data.new_password)
         this.$axios.post('/api/user/info/password', {
           uid: sessionStorage.getItem('uid'),
           token: sessionStorage.getItem('token'),
@@ -287,6 +267,27 @@ export default {
         })
       }
     },
+    /**
+     * 修改用户基本信息
+     */
+    modifyInformation () {
+      this.$axios.post('/api/user/info/modify', {
+        userId: Number.parseInt(sessionStorage.getItem('uid')),
+        token: sessionStorage.getItem('token'),
+        avatar: this.user_data.avatar,
+        mail: this.user_data.mail,
+        name: this.user_data.name
+      }, {
+        headers: { token: sessionStorage.getItem('token') }
+      }).then((response) => {
+        if (response.status === 200 && response.data.result) {
+          window.location.reload()
+        }
+      })
+    },
+    /**
+     * 获取用户砍价记录列表
+     */
     getBargainList () {
       const id = sessionStorage.getItem('uid')
       const token = sessionStorage.getItem('token')
@@ -297,11 +298,9 @@ export default {
           token: token
         }
       }).then((response) => {
-        console.log(response.data)
         if (response.status === 200 && response.data.errCode === 0) {
           this.bargain_data = response.data.result
           const self = this
-          console.log(this.bargain_data)
           for (let i = 0; i < this.bargain_data.length; ++i) {
             this.$axios.get('/api/car?id=' + this.bargain_data[i].car_id).then((response) => {
               if (response.status === 200) {
@@ -325,31 +324,60 @@ export default {
             }
           }
         } else {
-          sessionStorage.removeItem('uid')
-          sessionStorage.removeItem('token')
-          window.location = '/#/login'
-          window.location.reload()
+          this.reLogin()
         }
       })
     },
+    /**
+     * 获取用户交易记录列表
+     */
     getTransactionList () {
       const id = sessionStorage.getItem('uid')
       const token = sessionStorage.getItem('token')
-      this.$axios.get('/api/transaction/sale/query?uid=' + id + '&token=' + token + '&buyer=' + id + '&seller=' + id, {
+      this.$axios.post('/api/transaction/sale/query', {
+        buyer: id
+      }, {
         headers: {
           token: token
         }
       }).then((response) => {
         console.log(response)
-        if (response.status === 200 && response.data.status === 200) {
-          this.trans_data = response.data
+        if (response.status === 200 && response.data.errCode === 0) {
+          this.trans_data = this.trans_data.concat(response.data.result)
         } else {
-          sessionStorage.removeItem('uid')
-          sessionStorage.removeItem('token')
-          window.location = '/#/login'
-          window.location.reload()
+          this.reLogin()
         }
       })
+
+      this.$axios.post('/api/transaction/sale/query', {
+        seller: id
+      }, {
+        headers: {
+          token: token
+        }
+      }).then((response) => {
+        console.log(response)
+        if (response.status === 200 && response.data.errCode === 0) {
+          this.trans_data = this.trans_data.concat(response.data.result)
+          for (let i = 0; i < this.trans_data.length; ++i) {
+            this.$axios.get('/api/car?id=' + this.trans_data[i].car_id).then(res => {
+              if (res.status === 200 && res.data.model_name !== null && res.data.model_name !== undefined) {
+                this.trans_data[i].car_info = res.data.model_name
+                console.log(res.data)
+              } else {
+                this.trans_data[i].car_info = '未知车辆'
+              }
+            })
+          }
+        } else {
+          this.reLogin()
+        }
+      })
+    }
+  },
+  computed: {
+    currentUID () {
+      return sessionStorage.getItem('uid')
     }
   },
   beforeMount () {
@@ -368,10 +396,7 @@ export default {
           self.user_data.avatar = data.avatar
         }
       } else {
-        sessionStorage.removeItem('uid')
-        sessionStorage.removeItem('token')
-        window.location = '/#/login'
-        window.location.reload()
+        this.reLogin()
       }
     })
 

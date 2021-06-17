@@ -10,13 +10,13 @@
   <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar class="bg-primary text-white shadow-2" style="padding: 15px 10px">
-        <q-toolbar-title @click="goHome">
+        <q-toolbar-title @click="go('/#/')">
           <q-icon class="iconfont icon-drifting"></q-icon>
           Dejavu二手车交易平台
         </q-toolbar-title>
 
-        <q-btn flat class="q-mr-xs" label="我要买车" @click="goSearch"/>
-        <q-btn flat class="q-mr-xs" label="我要卖车" @click="goSell"/>
+        <q-btn flat class="q-mr-xs" label="我要买车" @click="go('/#/search')"/>
+        <q-btn flat class="q-mr-xs" label="我要卖车" @click="go('/#/sell')"/>
         <q-btn flat class="q-mr-xs" :label="'当前城市：' + city">
           <q-popup-proxy>
             <q-card style="width: 600px; min-height: 400px">
@@ -34,11 +34,11 @@
         </q-btn>
         <q-separator vertical inset=""/>
         <div v-if="!hasLogin">
-          <q-btn flat class="q-mr-xs" label="登录" @click="goLogin"/>
-          <q-btn flat class="q-mr-xs" label="注册" @click="goRegister"/>
+          <q-btn flat class="q-mr-xs" label="登录" @click="go('/#/login')"/>
+          <q-btn flat class="q-mr-xs" label="注册" @click="go('/#/register')"/>
         </div>
         <div v-else>
-          <q-avatar size="32px" @click="goUser">
+          <q-avatar size="32px" @click="go('/#/user')">
             <img :src="avatar"/>
           </q-avatar>
           <q-btn flat class="q-mr-xs" label="退出" @click="logout"/>
@@ -51,7 +51,7 @@
     </q-page-container>
     <div>
       <q-toolbar class="bg-primary text-white shadow-2" style="padding: 15px 10px">
-        <q-toolbar-title @click="goHome">
+        <q-toolbar-title @click="go('/#/')">
           <q-icon class="iconfont icon-drifting"></q-icon>
           <span class="text-h6">Dejavu二手车交易平台</span>
           <br/>
@@ -77,27 +77,16 @@ export default {
   },
   methods: {
     /**
-     * @description: 重定向回主页
-     * @return void
+     * 重定向页面
+     * @param url 重定向目标url
      */
-    goHome () {
-      window.location = '/'
+    go (url) {
+      window.location = url
+      window.location.reload()
     },
-    goSell () {
-      window.location = '/#/sell'
-    },
-    goSearch () {
-      window.location = '/#/search'
-    },
-    goLogin () {
-      window.location = '/#/login'
-    },
-    goRegister () {
-      window.location = '/#/register'
-    },
-    goUser () {
-      window.location = '/#/user'
-    },
+    /**
+     * 用户登出
+     */
     logout () {
       this.$axios.post('/api/user/logout', {
         uid: sessionStorage.getItem('uid'),
@@ -148,6 +137,10 @@ export default {
     }
   },
   computed: {
+    /**
+     * 用户是否已经登录
+     * @returns {boolean} true表示已经登录，反之返回false
+     */
     hasLogin () {
       return sessionStorage.getItem('token') !== null
     }

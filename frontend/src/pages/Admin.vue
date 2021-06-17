@@ -210,25 +210,25 @@ export default {
   name: 'Admin',
   data () {
     return {
-      tab: 'user',
+      tab: 'user', // tab栏标签
       users_data: {
         column: [
           { name: 'id', label: '用户id', align: 'left', required: true, sortable: true, field: 'uid' },
           { name: 'name', label: '姓名', align: 'left', required: true, sortable: true, field: 'name' },
           { name: 'phone', label: '电话', align: 'left', required: true, sortable: true, field: 'phone_number' },
           { name: 'email', label: '邮箱', align: 'left', required: true, sortable: true, field: 'mail' }
-        ],
-        data: [],
+        ], // 用户信息表格表头数据
+        data: [], // 用户信息数据
         pagination: {
-          sortBy: 'desc',
-          descending: false,
-          page: 1,
-          rowsPerPage: 5
-        },
-        search_name: '',
-        search_phone: '',
-        search_email: ''
-      },
+          sortBy: 'id', // 排序关键字
+          descending: false, // 是否降序
+          page: 1, // 当前页
+          rowsPerPage: 5 // 每页数量
+        }, // 翻页器数据
+        search_name: '', // 搜索的名称
+        search_phone: '', // 搜索的电话号码
+        search_email: '' // 搜索的邮箱
+      }, // 用户信息面板数据
       bargain_data: {
         column: [
           { name: 'id', label: '编号', align: 'left', required: true, sortable: true, field: 'bargain_id' },
@@ -238,19 +238,17 @@ export default {
           { name: 'price', label: '买家报价', align: 'left', required: true, sortable: true, field: 'price' },
           { name: 'seller', label: '卖家', align: 'left', required: true, sortable: true, field: 'seller' },
           { name: 'buyer', label: '买家', align: 'left', required: true, sortable: true, field: 'buyer' }
-        ],
+        ], // 议价信息表格表头数据
         pagination: {
-          sortBy: 'desc',
-          descending: false,
-          page: 1,
-          rowsPerPage: 5
-        },
-        data: [
-          { id: '1', start_time: '2021-6-1', end_time: '2021-7-1', cid: '114514', uid: '1919810', seller: false, buyer: true, price: 1000 }
-        ],
-        key_word: 'uid',
-        value: ''
-      },
+          sortBy: 'id', // 排序关键字
+          descending: false, // 是否为降序
+          page: 1, // 当前页码
+          rowsPerPage: 5 // 每页数量
+        }, // 翻页器数据
+        data: [], // 议价数据
+        key_word: 'uid', // 搜索关键字
+        value: '' // 搜索值
+      }, // 议价面板数据
       transaction_data: {
         column: [
           { name: 'sale_id', label: '编号', align: 'left', required: true, sortable: true, field: 'sale_id' },
@@ -259,23 +257,39 @@ export default {
           { name: 'seller_id', label: '卖家用户id', align: 'left', required: true, sortable: true, field: 'seller_id' },
           { name: 'car_id', label: '砍价车辆', align: 'left', required: true, sortable: true, field: 'car_id:' },
           { name: 'deal_price', label: '成交价格', align: 'left', required: true, sortable: true, field: 'deal_price' }
-        ],
+        ], // 成交表格表头数据
         pagination: {
-          sortBy: 'desc',
-          descending: false,
-          page: 1,
-          rowsPerPage: 5
-        },
-        data: [],
-        key_word: 'uid',
-        value: ''
-      }
+          sortBy: 'sale_id', // 排序关键字
+          descending: false, // 是否为降序
+          page: 1, // 当前页码
+          rowsPerPage: 5 // 每页数量
+        }, // 翻页器数据
+        data: [], // 成交数据
+        key_word: 'uid', // 搜索关键字
+        value: '' // 搜索值
+      } // 成交信息面板数据
     }
   },
   methods: {
+    /**
+     * 打开车辆信息页面
+     * @param id 车辆id
+     */
     jump (id) {
       window.open('/#/car/' + id)
     },
+    /**
+     * 要求用户重新进行登录操作
+     */
+    reLogin () {
+      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('uid')
+      window.location = '/#/admin/login'
+      window.location.reload()
+    },
+    /**
+     * 读取用户数据
+     */
     getUsersData () {
       let url = '/api/user/info/query_all?'
       if (this.users_data.search_name !== '') {
@@ -298,13 +312,13 @@ export default {
         if (response.status === 200 && response.data.errCode === 0) {
           self.users_data.data = response.data.result
         } else {
-          sessionStorage.removeItem('token')
-          sessionStorage.removeItem('uid')
-          window.location = '/#/admin/login'
-          window.location.reload()
+          this.reLogin()
         }
       })
     },
+    /**
+     * 读取议价数据
+     */
     getBargainData () {
       const arg = {}
       if (this.bargain_data.value !== '') {
@@ -343,13 +357,13 @@ export default {
             })
           }
         } else {
-          sessionStorage.removeItem('token')
-          sessionStorage.removeItem('uid')
-          window.location = '/#/admin/login'
-          window.location.reload()
+          this.reLogin()
         }
       })
     },
+    /**
+     * 读取成交数据
+     */
     getTransaction () {
       const data = {}
       if (this.transaction_data.value !== '') {
@@ -365,13 +379,17 @@ export default {
         if (response.status === 200 && response.data.errCode === 0) {
           this.transaction_data.data = response.data.result
         } else {
-          sessionStorage.removeItem('token')
-          sessionStorage.removeItem('uid')
-          window.location = '/#/admin/login'
-          window.location.reload()
+          this.reLogin()
         }
       })
     },
+    /**
+     * 提交新的成交信息
+     * @param buyer 购买用户id
+     * @param seller 出售用户id
+     * @param car 车辆id
+     * @param price 成交价格
+     */
     submitTransaction (buyer, seller, car, price) {
       this.$axios.post('/api/transaction/sale/submit', {
         uid: sessionStorage.getItem('uid'),
@@ -380,7 +398,7 @@ export default {
         seller_id: seller,
         car_id: car,
         deal_price: price,
-        deal_date: new Date().format('yyyy-MM-dd hh:mm:ss')
+        deal_time: new Date().format('yyyy/MM/dd hh:mm:ss')
       }, {
         headers: {
           token: sessionStorage.getItem('token')
@@ -388,15 +406,17 @@ export default {
       }).then((response) => {
         if (response.status === 200 && response.data.result !== -1) {
           alert('添加交易成功')
+          window.location.reload()
           this.tab = 'transaction'
         } else {
-          sessionStorage.removeItem('token')
-          sessionStorage.removeItem('uid')
-          window.location = '/#/admin/login'
-          window.location.reload()
+          this.reLogin()
         }
       })
     },
+    /**
+     * 删除成交信息
+     * @param id 成交id
+     */
     deleteTransaction (id) {
       this.$axios.post('/api/transaction/sale/delete', {
         sale_id: id
@@ -407,14 +427,22 @@ export default {
       }).then((response) => {
         if (response.status === 200 && response.data.result) {
           alert('删除成功')
-        } else {
-          sessionStorage.removeItem('token')
-          sessionStorage.removeItem('uid')
-          window.location = '/#/admin/login'
           window.location.reload()
+          this.tab = 'transaction'
+        } else {
+          this.reLogin()
         }
       })
     },
+    /**
+     * 修改成交信息
+     * @param saleId 成交信息id
+     * @param buyerId 购买用户的id
+     * @param sellerId 出售用户的id
+     * @param carId 车辆id
+     * @param price 成交价格
+     * @param date 成交时间
+     */
     modifyTransaction (saleId, buyerId, sellerId, carId, price, date) {
       console.log(saleId, buyerId, sellerId, carId, price, date)
       this.$axios.post('/api/transaction/sale/modify', {
@@ -431,11 +459,10 @@ export default {
       }).then((response) => {
         if (response.status === 200 && response.data.result) {
           alert('修改成功')
-        } else {
-          sessionStorage.removeItem('token')
-          sessionStorage.removeItem('uid')
-          window.location = '/#/admin/login'
           window.location.reload()
+          this.tab = 'transaction'
+        } else {
+          this.reLogin()
         }
       })
     }
@@ -467,10 +494,7 @@ export default {
   },
   beforeRouteEnter (from, to, next) {
     if (sessionStorage.getItem('token') === null) {
-      sessionStorage.removeItem('token')
-      sessionStorage.removeItem('uid')
-      window.location = '/#/admin/login'
-      window.location.reload()
+      this.reLogin()
     } else {
       next()
     }

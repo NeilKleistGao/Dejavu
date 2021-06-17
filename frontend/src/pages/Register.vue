@@ -85,19 +85,19 @@ export default {
   name: 'Register',
   data () {
     return {
-      name: '',
-      telNumber: '',
-      email: '',
-      password: '',
-      accept: false,
-      alert: false,
-      hint: ''
+      name: '', // 用户昵称
+      telNumber: '', // 电话号码
+      email: '', // 电子邮箱
+      password: '', // 密码
+      accept: false, // 是否接受用户协议（然而并没有用户协议）
+      alert: false, // 是否显示提示信息
+      hint: '' // 提示信息内容
     }
   },
   methods: {
-    register () {
-      this.$router.push('/Index')
-    },
+    /**
+     * 提交注册表单
+     */
     onSubmit () {
       if (this.accept !== true) {
         this.hint = '请阅读并接受条款'
