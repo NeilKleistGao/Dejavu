@@ -43,6 +43,7 @@ export default {
         if (response.status === 200) {
           sessionStorage.removeItem('token')
           sessionStorage.removeItem('uid')
+          window.location = '/#/admin/login'
           window.location.reload()
         }
       })

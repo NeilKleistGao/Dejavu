@@ -117,11 +117,14 @@ export default {
       this.$axios.get('/api/user/info/query?uid=' + sessionStorage.getItem('uid'), {
         headers: { token: sessionStorage.getItem('token') }
       }).then((response) => {
-        console.log(response)
         if (response.status === 200) {
           if (response.data.avatar !== null && response.data.avatar !== undefined && response.data.avatar !== '') {
             self.avatar = response.data.avatar
           }
+        } else {
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('uid')
+          this.$forceUpdate()
         }
       })
     }

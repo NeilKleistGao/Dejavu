@@ -163,7 +163,7 @@ export default {
      * @description: 获取满足条件的车辆列表
      */
     getCarsList () {
-      let url = '/api/car/list?city=' + this.city + '&'
+      let url = '/api/car/list?region=' + this.city + '&'
       if (this.brand !== '') {
         url += 'manufacturer=' + this.brand + '&'
       }
@@ -200,7 +200,7 @@ export default {
      * 获取列表长度
      */
     getCarListLength () {
-      let url = '/api/car/pn?city=' + this.city + '&'
+      let url = '/api/car/pn?region=' + this.city + '&'
       if (this.brand !== '') {
         url += 'manufacturer=' + this.brand + '&'
       }
@@ -243,7 +243,7 @@ export default {
         return 'car_details_test_img/1.png'
       }
 
-      return img
+      return img[0]
     }
   },
   beforeMount () {

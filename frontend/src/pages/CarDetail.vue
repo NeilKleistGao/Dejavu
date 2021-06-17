@@ -51,8 +51,8 @@
               <tbody>
                 <tr>
                   <td>{{car_info.create_date}}</td>
-                  <td>{{car_info.mileage}}</td>
-                  <td>{{car_info.displacement}}</td>
+                  <td>{{car_info.mileage}}万英里</td>
+                  <td>{{car_info.displacement}}L</td>
                   <td>{{car_info.gear_box}}</td>
                 </tr>
               </tbody>
@@ -111,7 +111,7 @@
               <tbody>
                 <tr>
                   <th class="text-subtitle2">排量</th>
-                  <th class="text-subtitle2">{{car_info.displacement}}</th>
+                  <th class="text-subtitle2">{{car_info.displacement}}L</th>
                 </tr>
                 <tr>
                   <th class="text-subtitle2">车身类型</th>
@@ -123,7 +123,7 @@
                 </tr>
                 <tr>
                   <th class="text-subtitle2">变速箱</th>
-                  <th class="text-subtitle2">{{car_info.displacement}}</th>
+                  <th class="text-subtitle2">{{car_info.gear_box}}</th>
                 </tr>
                 <tr>
                   <th class="text-subtitle2">马力</th>
@@ -144,7 +144,7 @@
                 </tr>
                 <tr>
                   <th class="text-subtitle2">里程数</th>
-                  <th class="text-subtitle2">{{car_info.mileage}}</th>
+                  <th class="text-subtitle2">{{car_info.mileage}}万英里</th>
                 </tr>
                 <tr>
                   <th class="text-subtitle2">是否修复</th>
@@ -226,7 +226,6 @@ export default {
 
       const self = this
       this.$axios.post('/api/transaction/bargain/new', {
-        uid: sessionStorage.getItem('uid'),
         car_id: self.id.toString(),
         price: self.bargain_data.price,
         start_time: self.bargain_data.time.from + ' 00:00:00',
@@ -244,10 +243,7 @@ export default {
             }
           })
         } else {
-          sessionStorage.removeItem('token')
-          sessionStorage.removeItem('uid')
-          window.location = '/#/login'
-          window.location.reload()
+          console.log(response)
         }
       })
     }
@@ -257,7 +253,7 @@ export default {
     this.$axios.get('/api/car?id=' + this.id).then(res => {
       if (res.status === 200 && res.data.model_name !== null && res.data.model_name !== undefined) {
         this.car_info = res.data
-        this.car_info.create_date = this.car_info.create_date.substr(0, this.car_info.create_date.indexOf('T'))
+        this.car_info.create_date = this.car_info.create_date.substr(0, this.car_info.create_date.indexOf(' '))
         this.bargain_data.price = res.data.price
         this.car_image_list = res.data.imgs
 
@@ -266,6 +262,9 @@ export default {
         window.location = '/#/car'
         window.location.reload()
       }
+    }).catch(() => {
+      window.location = '/#/car'
+      window.location.reload()
     })
   }
 }

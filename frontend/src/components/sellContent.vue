@@ -230,8 +230,8 @@
                     <fieldset>
                       <legend>有尚未修复的损坏</legend>
                       <div style="height: 1vh"/>
-                      <q-radio v-model="not_repaired_damage" label="是" :val="true"/>
-                      <q-radio v-model="not_repaired_damage" label="否" :val="false"/>
+                      <q-radio v-model="not_repaired_damage" label="是" :val="'有尚未修复的损坏'"/>
+                      <q-radio v-model="not_repaired_damage" label="否" :val="'无尚未修复的损坏'"/>
                     </fieldset>
                   </div>
                   <div class="field-wrapper">
@@ -279,6 +279,7 @@
 
 <script>
 import carInformationJson from '../../public/car_information/car_information.json'
+// eslint-disable-next-line no-unused-vars
 const carInformation = carInformationJson.car_information
 export default {
   name: 'sellContent',
@@ -454,20 +455,22 @@ export default {
       this.checkSellForm()
       const carName = this.manufacture + '-' + this.series + '-' + this.type
 
+      console.log(this.not_repaired_damage)
+
       this.$axios.post('api/car/new', {
         uid: sessionStorage.getItem('uid'),
         token: sessionStorage.getItem('token'),
         region: this.city,
         model_name: this.series + ' ' + this.type,
-        guide_price: 10000000, // 待改
-        manufacture: this.manufacture,
+        guide_price: 4000000, // 待改
+        manufacturer: this.manufacture,
         service_life: Number.parseInt(this.server_life),
         mileage: Number.parseInt(this.mileage),
         price: Number.parseInt(this.price),
-        displacement: 42,
+        displacement: 2.0,
         body_type: carInformation[carName].body_type,
         fuel_type: carInformation[carName].fuel_type,
-        gearbox: carInformation[carName].gearbox,
+        gear_box: carInformation[carName].gearbox,
         power: Number.parseInt(carInformation[carName].power),
         not_repaired_damage: this.not_repaired_damage,
         imgs: this.images,
@@ -524,7 +527,11 @@ export default {
             self.uploadImage(index + 1)
           } else {
             alert('图片上传失败，请重试')
+            self.images = []
           }
+        }).catch(() => {
+          alert('图片上传失败，请重试')
+          self.images = []
         })
       }
     }
