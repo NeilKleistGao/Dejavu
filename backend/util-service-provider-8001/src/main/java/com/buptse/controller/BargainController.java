@@ -9,18 +9,13 @@ import com.buptse.pojo.Car;
 import com.buptse.pojo.User;
 import com.buptse.service.IBargainService;
 import com.buptse.service.ICarService;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import com.buptse.service.ITokenService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import com.buptse.dto.BarginQueryDto;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,12 +38,19 @@ public class BargainController {
     if(!subject.isAuthenticated()){
       return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
     }
+    final Integer carId = bargainDto.getCar_id();
+    final Car car = carService.getById(carId);
+    final User user = (User)subject.getPrincipal();
+    bargainDto.setUid(user.getUid());
+    if(user.getUid().equals(car.getUid())){
+      return CommonResult.failFast(RESULT.CAN_NOT_BUY_YOURSELF_CAR);
+    }
+    if(car.getState()  == 2){
+      return CommonResult.failFast(RESULT.CAN_NOT_BARGAIN_WITH_SELLED_CAR);
+    }
     boolean result = bargainService.save(bargainDto);
-    final Integer car_id = bargainDto.getCar_id();
-    final Car car = carService.getById(car_id);
-    car.setState(CarStateAndCodeUtile.getCodeByBody("议价"));
+    car.setState(CarStateAndCodeUtile.getCodeByState("议价"));
     final boolean isSuccess = carService.updateById(car);
-    final HashMap<String, Boolean> map = new HashMap<String, Boolean>();
     result &= isSuccess;
     return CommonResult.success(result);
   }

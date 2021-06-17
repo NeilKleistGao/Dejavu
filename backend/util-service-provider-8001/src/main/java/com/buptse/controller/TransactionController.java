@@ -7,21 +7,19 @@ import com.buptse.common.util.CarStateAndCodeUtile;
 import com.buptse.dto.CommonResult;
 import com.buptse.dto.SaleDeleteDto;
 import com.buptse.dto.TransactionQueryDto;
-import com.buptse.dto.TranscationModifyDto;
+import com.buptse.dto.TransactionModifyDto;
 import com.buptse.pojo.Car;
 import com.buptse.pojo.Transaction;
 import com.buptse.pojo.User;
 import com.buptse.service.ICarService;
 import com.buptse.service.ITokenService;
 import com.buptse.service.ITransactionService;
-import java.text.Format;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -78,14 +76,19 @@ public class TransactionController {
     @RequiresRoles({"manager"})
     @PostMapping("/transaction/sale/modify")
     public CommonResult modifyTransaction(
-            @RequestBody TranscationModifyDto transcationModifyDto){
+            @RequestBody TransactionModifyDto transactionModifyDto){
         UpdateWrapper<Transaction> transactionWrapper = new UpdateWrapper<>();
-        transactionWrapper.eq("sale_id",transcationModifyDto.getSale_id());
-        if(transcationModifyDto.getBuyer_id()!=null){transactionWrapper.set("buyer_id",transcationModifyDto.getBuyer_id());}
-        if(transcationModifyDto.getSeller_id()!=null){transactionWrapper.set("seller_id",transcationModifyDto.getSale_id());}
-        if(transcationModifyDto.getCar_id()!=null){transactionWrapper.set("car_id",transcationModifyDto.getCar_id());}
-        if(transcationModifyDto.getDeal_price()!=null){transactionWrapper.set("deal_price",transcationModifyDto.getDeal_price());}
-        if(transcationModifyDto.getDeal_time()!=null){transactionWrapper.set("deal_time",transcationModifyDto.getDeal_time());}
+        transactionWrapper.eq("sale_id", transactionModifyDto.getSale_id());
+        if(transactionModifyDto.getBuyer_id()!=null){transactionWrapper.set("buyer_id",
+            transactionModifyDto.getBuyer_id());}
+        if(transactionModifyDto.getSeller_id()!=null){transactionWrapper.set("seller_id",
+            transactionModifyDto.getSale_id());}
+        if(transactionModifyDto.getCar_id()!=null){transactionWrapper.set("car_id",
+            transactionModifyDto.getCar_id());}
+        if(transactionModifyDto.getDeal_price()!=null){transactionWrapper.set("deal_price",
+            transactionModifyDto.getDeal_price());}
+        if(transactionModifyDto.getDeal_time()!=null){transactionWrapper.set("deal_time",
+            transactionModifyDto.getDeal_time());}
         if(transactionService.update(transactionWrapper)){
             return CommonResult.success(true);
         }
@@ -95,30 +98,34 @@ public class TransactionController {
     @RequiresRoles({"manager"})
     @PostMapping("/transaction/sale/submit")
     public CommonResult sumbitTransaction(
-            @RequestBody TranscationModifyDto transcationModifyDto){
-        final Car car = carService.getById(transcationModifyDto.getCar_id());
+            @RequestBody TransactionModifyDto transactionModifyDto){
+        final Car car = carService.getById(transactionModifyDto.getCar_id());
         Transaction transaction = Transaction.builder()
-                .buyer_id(transcationModifyDto.getBuyer_id())
-                .seller_id(transcationModifyDto.getSeller_id())
-                .car_id(transcationModifyDto.getCar_id())
-                .deal_price(transcationModifyDto.getDeal_price())
-                .deal_time(transcationModifyDto.getDeal_time())
+                .buyer_id(transactionModifyDto.getBuyer_id())
+                .seller_id(transactionModifyDto.getSeller_id())
+                .car_id(transactionModifyDto.getCar_id())
+                .deal_price(transactionModifyDto.getDeal_price())
+                .deal_time(transactionModifyDto.getDeal_time())
                 .build();
         int id = transactionService.insertTransactionAndGetId(transaction);
-        car.setState(CarStateAndCodeUtile.getCodeByBody("已售"));
+        car.setState(CarStateAndCodeUtile.getCodeByState("已售"));
         carService.updateById(car);
         return CommonResult.success(id);
     }
-
     @RequiresRoles({"manager"})
     @PostMapping("/transaction/sale/delete")
     public CommonResult deleteTransaction(
             @RequestBody SaleDeleteDto saleDeleteDto){
         final Integer sale_id = saleDeleteDto.getSale_id();
         final Transaction transaction = transactionService.getById(sale_id);
+        if(transaction == null){
+            return CommonResult.failFast(RESULT.NO_DATA);
+        }
         final Car car = carService.getById(transaction.getCar_id());
-        car.setState(CarStateAndCodeUtile.getCodeByBody("待售"));
-        carService.updateById(car);
+        if(car != null) {
+            car.setState(CarStateAndCodeUtile.getCodeByState("待售"));
+            carService.updateById(car);
+        }
         if(transactionService.removeById(saleDeleteDto.getSale_id())){
             return CommonResult.success(true);
         }

@@ -15,7 +15,7 @@ public class repairedAndCodeUtil {
     codeKeyMap.put(-1,"无法确定损坏");
   }
   public static Integer getCodeByRequired(String body){
-    if(repairedKeyMap.containsKey(body)){
+    if(!repairedKeyMap.containsKey(body)){
       return -1;
     }
     return repairedKeyMap.get(body);

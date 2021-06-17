@@ -1,6 +1,7 @@
 package com.buptse.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.buptse.common.util.CarWrapperUtil;
 import com.buptse.common.util.CityAndCodeUtil;
 import com.buptse.common.util.bodyAndCodeUtil;
 import com.buptse.common.util.fuelAndCodeUtil;
@@ -14,6 +15,7 @@ import com.buptse.service.ICarimgService;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,21 +41,38 @@ public class CarController {
         QueryWrapper<Carimg> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("car_id",id);
         List<Carimg> list = carimgService.list(queryWrapper);
-        List<String> imglist = new LinkedList<>();
-        for (Carimg carimg : list) {
-            imglist.add(carimg.getImg());
-        }
-        carDto.setImgs(imglist);
+        final List<String> imgs = list.stream().map(Carimg::getImg).collect(Collectors.toList());
+        carDto.setImgs(imgs);
         return carDto;
     }
     @GetMapping("/car/pn")
-    public Map getCarLength(){
-        QueryWrapper<Car> queryWrapper = new QueryWrapper<>();
-        Integer count = carService.count();
+    public Map getCarLength(
+        @RequestParam(value = "region",required = false) String region,
+        @RequestParam(value = "model",required = false)String model,
+        @RequestParam(value = "min-guide-price",required = false) Integer minGuidePrice,
+        @RequestParam(value = "max-guide-price",required = false) Integer maxGuidePrice,
+        @RequestParam(value = "manufacturer",required = false) String manufacturer,
+        @RequestParam(value = "server",required = false) Integer server,
+        @RequestParam(value = "mileage",required = false) Integer mileage,
+        @RequestParam(value = "displacement",required = false)Integer displacement,
+        @RequestParam(value = "min-price",required = false)Integer minPrice,
+        @RequestParam(value = "max-price",required = false)Integer maxPrice,
+        @RequestParam(value = "body",required = false)String body,
+        @RequestParam(value = "fuel",required = false)String fuel,
+        @RequestParam(value = "gear",required = false)String gear,
+        @RequestParam(value = "order-by",required = false)String orderBy,
+        @RequestParam(value = "order",required = false)Boolean order,
+        @RequestParam(value = "key",required = false)String key
+    ){
+        QueryWrapper<Car> queryWrapper = CarWrapperUtil.CarQueryWrapper(region, model, minGuidePrice, maxGuidePrice, manufacturer, server,
+            mileage,
+            displacement, minPrice, maxPrice, body, fuel, gear, orderBy, order, key);
+        Integer count = carService.count(queryWrapper);
         HashMap<String, Integer> map = new HashMap<>();
         map.put("page-number",count);
         return map;
     }
+
     @PostMapping("/car/new")
     public Map createCar(
             @RequestBody CarDto carDto){
@@ -63,7 +82,7 @@ public class CarController {
                 .create_date(LocalDateTime.now())
                 .displacement(carDto.getDisplacement())
                 .fuel_type(fuelAndCodeUtil.getCodeByFuel(carDto.getFuel_type()))
-                .gear_box(bodyAndCodeUtil.getCodeByBody(carDto.getGear_box()))
+                .gear_box(gearboxAndCodeUtil.getCodeByGear(carDto.getGear_box()))
                 .guide_price(carDto.getGuide_price())
                 .manufacturer(carDto.getManufacturer())
                 .mileage(carDto.getMileage())
@@ -75,12 +94,15 @@ public class CarController {
                 .service_life(carDto.getService_life())
                 .state(carDto.getState())
                 .uid(carDto.getUid())
+                .state(0)
                 .build();
         List<String> imgs = carDto.getImgs();
-        for (String img : imgs) {
-            carimgService.save(new Carimg(carDto.getCar_id(),img));
-        }
         int id = carService.insertCarAndGetId(car);
+        if(imgs!=null) {
+            for (String img : imgs) {
+                carimgService.save(new Carimg(id, img));
+            }
+        }
         Map res = new HashMap();
         res.put("car_id",id);
         return res;
@@ -103,46 +125,9 @@ public class CarController {
         @RequestParam(value = "order-by",required = false)String orderBy,
         @RequestParam(value = "order",required = false)Boolean order,
         @RequestParam(value = "key",required = false)String key){
-        final QueryWrapper<Car> queryWrapper = new QueryWrapper<>();
-        if(region!=null){
-            String cityCode = CityAndCodeUtil.getCodeByCity(region);
-            queryWrapper.eq("region_code",cityCode);
-        }
-        if(model!=null)queryWrapper.eq("model",model);
-        if(minGuidePrice!=null)queryWrapper.ge("guide_price",minGuidePrice);
-        if(maxGuidePrice!=null)queryWrapper.le("guide_price",maxGuidePrice);
-        if(manufacturer!=null)queryWrapper.eq("manufacturer",manufacturer);
-        if(server!=null)queryWrapper.eq("service_life",server);
-        if(mileage!=null)queryWrapper.le("mileage",mileage);
-        if(displacement!=null)queryWrapper.eq("dispalcement",displacement);
-        if(minPrice!=null)queryWrapper.ge("price", minPrice);
-        if(maxPrice!=null)queryWrapper.le("price",maxPrice);
-        if(body!=null){
-            // 获取枚举类的编号
-            final Integer codeByBody = bodyAndCodeUtil.getCodeByBody(body);
-            queryWrapper.eq("body_type",codeByBody);
-        }
-        if(fuel!=null) {
-            // 获取映射类编号
-            final Integer codeByFuel = fuelAndCodeUtil.getCodeByFuel(fuel);
-            queryWrapper.eq("fuel_type",codeByFuel);
-        }
-        if(gear!=null){
-            // 获取映射编号
-            final Integer codeByGear = gearboxAndCodeUtil.getCodeByGear(gear);
-            queryWrapper.eq("gearbox",codeByGear);
-        }
-        if(orderBy!=null){
-            // 根据那个进行order
-            if(order){
-                queryWrapper.orderByAsc(orderBy);
-            }else{
-                queryWrapper.orderByDesc(orderBy);
-            }
-        }
-        if(key!=null){
-            queryWrapper.like("model_name",key);
-        }
+        final QueryWrapper<Car> queryWrapper = CarWrapperUtil.CarQueryWrapper(region, model, minGuidePrice,
+            maxGuidePrice, manufacturer, server,
+            mileage, displacement, minPrice, maxPrice, body, fuel, gear, orderBy, order, key);
         final List<CarDto> carList = carService.getCarDtoList(carService.list(queryWrapper));
         return carList;
     }

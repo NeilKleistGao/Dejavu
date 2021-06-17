@@ -17,6 +17,7 @@ import com.buptse.pojo.UserToken;
 import com.buptse.service.ICarService;
 import com.buptse.service.IShiroService;
 import com.buptse.service.IUserService;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.MalformedInputException;
 import java.sql.PreparedStatement;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,12 +51,26 @@ public class UserController {
     @Autowired
     IUserService userService;
     @GetMapping("/user/get/{uid}")
+    /**
+    * @Description: get userinformation by userId
+    * @Param: [uid]
+    * @return: com.buptse.pojo.User
+    * @Author: gerayking
+    * @Date: 2021/6/17-16:33
+    */
     public User getUSerById(@PathVariable("uid") Integer uid) {
         User user = service.getById(uid);
         return user;
     }
     @RequiresRoles({"manager"})
     @GetMapping("/user/info/query_all")
+    /**
+    * @Description: query all user info
+    * @Param: [name, phone, email]
+    * @return: com.buptse.dto.CommonResult
+    * @Author: gerayking
+    * @Date: 2021/6/17-16:33
+    */
     public CommonResult queryAllUser(
             @RequestParam(value = "name",required = false) String name,
             @RequestParam(value = "phone",required = false) String phone,
@@ -70,9 +86,17 @@ public class UserController {
     @PostMapping("/user/login")
     public Map<String,Object> loginUser(
         @RequestBody LoginDto loginDto){
+        Map<String,Object> result = new HashMap<>();
         String phoneNumber = loginDto.getPhoneNumber();
         String password = loginDto.getPassword();
-        Map<String,Object> result = new HashMap<>();
+        try {
+            password = PasswordUtil.encrypt2MD5(password);
+        } catch (UnsupportedEncodingException e) {
+            result.put("status",-1);
+            result.put("info","密码加密错误");
+            e.printStackTrace();
+            return result;
+        }
         User user = shiroService.findByUserPhone(phoneNumber);
         if(user == null || !user.getPassword().equals(password)){
             result.put("status",400);
@@ -137,20 +161,28 @@ public class UserController {
     */
     public Map modifyPassword(
         @RequestBody ModifyPasswordDto modifyPasswordDto
-    ){
+    ) {
+        Map<String, Object> result = new HashMap<>();
         final Subject subject = SecurityUtils.getSubject();
         final User user = (User) subject.getPrincipal();
-        Integer uid = modifyPasswordDto.getUid();
-        String oldPassword = modifyPasswordDto.getOldPassword();
-        String newPassword = modifyPasswordDto.getNewPassword();
-        Map<String, Object> result = new HashMap<>();
+        String oldPassword = null;
+        String newPassword = null;
+        try {
+            oldPassword = DigestUtils.md5DigestAsHex(modifyPasswordDto.getOldPassword().getBytes("utf-8"));
+            newPassword = DigestUtils.md5DigestAsHex(modifyPasswordDto.getNewPassword().getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            result.put("result",-1);
+            result.put("info","密码加密错误");
+            e.printStackTrace();
+            return result;
+        }
         if(!user.getPassword().equals(oldPassword)){
             result.put("result",-1);
             result.put("info","密码错误");
         }else{
             user.setPassword(newPassword);
             userService.updateById(user);
-            result.put("result",uid);
+            result.put("result",user.getUid());
             result.put("info","密码修改成功");
         }
         return result;
@@ -176,7 +208,15 @@ public class UserController {
     ){
         Map<String, Object> result = new HashMap<>();
         final String phoneNumber = userRegisterDto.getPhoneNumber();
-        final String password = userRegisterDto.getPassword();
+        final String password;
+        try {
+            password = PasswordUtil.encrypt2MD5(userRegisterDto.getPassword());
+        } catch (UnsupportedEncodingException e) {
+            result.put("result",-1);
+            result.put("info","密码加密错误");
+            e.printStackTrace();
+            return  result;
+        }
         final String mail = userRegisterDto.getMail();
         final String name = userRegisterDto.getName();
         if(null == phoneNumber || null == password || null == mail){

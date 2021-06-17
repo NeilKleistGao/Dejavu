@@ -14,13 +14,13 @@ public class CarStateAndCodeUtile {
     bodyKeyMap.put("已售",2);
     codeKeyMap.put(2,"已售");
   }
-  public static Integer getCodeByBody(String body){
+  public static Integer getCodeByState(String body){
     if(!bodyKeyMap.containsKey(body)){
       return -1;
     }
     return bodyKeyMap.get(body);
   }
-  public static String getBodyByCode(Integer code){
+  public static String getStateByCode(Integer code){
     if(!codeKeyMap.containsKey(code)){
       return "未知状态";
     }
