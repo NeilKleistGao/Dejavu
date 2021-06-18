@@ -15,6 +15,7 @@ import com.buptse.pojo.User;
 import com.buptse.pojo.UserToken;
 import com.buptse.service.ICarService;
 import com.buptse.service.IShiroService;
+import com.buptse.service.IUserRoleService;
 import com.buptse.service.IUserService;
 import java.nio.charset.MalformedInputException;
 import java.sql.PreparedStatement;
@@ -45,6 +46,10 @@ public class UserController {
     IShiroService shiroService;
     @Autowired
     IUserService userService;
+
+    @Autowired
+    private IUserRoleService userRoleService;
+
     @GetMapping("/user/get/{uid}")
     public User getUSerById(@PathVariable("uid") Integer uid) {
         User user = service.getById(uid);
@@ -157,13 +162,15 @@ public class UserController {
     @RequiresRoles({"user"})
     @PostMapping("/user/logout")
     public Map logout(
-        @RequestBody String token
+        @RequestParam String token
     ){
         Map<String, Object> result = new HashMap<>();
         boolean flag = shiroService.logout(token);
         result.put("result",flag);
         return result;
     }
+
+
     @PostMapping("/user/register")
     public Map userRegister(
         @RequestBody UserRegisterDto userRegisterDto
@@ -189,6 +196,7 @@ public class UserController {
         user.setPassword(password);
         user.setMail(mail);
         user.setPhone_number(phoneNumber);
+
         Integer uid = userService.insertUser(user);
         result.put("result",uid);
         result.put("info","注册成功");
