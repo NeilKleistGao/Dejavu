@@ -1,5 +1,6 @@
 package com.buptse.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -29,8 +30,8 @@ public class Bargain implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "bargin_id",type = IdType.INPUT)
-    private Integer bargin_id;
+    @TableId(value = "bargain_id",type = IdType.AUTO)
+    private Integer bargain_id;
 
     private Integer uid;
 
@@ -38,12 +39,12 @@ public class Bargain implements Serializable {
 
     private BigDecimal price;
 
+
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss",timezone = "GMT+8")
     private LocalDateTime start_time;
 
+
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss",timezone = "GMT+8")
     private LocalDateTime end_time;
-
-    private Integer is_contact_buyer;
-
-    private Integer is_contact_seller;
 
 }

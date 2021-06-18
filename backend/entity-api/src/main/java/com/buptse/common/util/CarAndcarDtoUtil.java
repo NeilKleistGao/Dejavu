@@ -2,8 +2,12 @@ package com.buptse.common.util;
 
 import com.buptse.dto.CarDto;
 import com.buptse.pojo.Car;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class CarAndcarDtoUtil {
+
   public  static CarDto car2carDto(Car car){
     CarDto carDto = new CarDto();
     carDto.setCar_id(car.getCar_id());

@@ -15,13 +15,13 @@ public class gearboxAndCodeUtil {
     codeKeyMap.put(-1,"未知动力档位");
   }
   public static Integer getCodeByGear(String body){
-    if(gearKeyMap.containsKey(body) == false){
+    if(!gearKeyMap.containsKey(body)){
       return -1;
     }
     return gearKeyMap.get(body);
   }
   public static String getGearByCode(Integer code){
-    if(codeKeyMap.containsKey(code) == false){
+    if(!codeKeyMap.containsKey(code)){
       return "未知动力档位";
     }
     return codeKeyMap.get(code);

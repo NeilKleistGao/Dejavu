@@ -27,13 +27,13 @@ public class bodyAndCodeUtil {
     codeKeyMap.put(-1,"未知车型");
   }
   public static Integer getCodeByBody(String body){
-    if(bodyKeyMap.containsKey(body) == false){
+    if(!bodyKeyMap.containsKey(body)){
       return -1;
     }
     return bodyKeyMap.get(body);
   }
   public static String getBodyByCode(Integer code){
-    if(codeKeyMap.containsKey(code) == false){
+    if(!codeKeyMap.containsKey(code)){
       return "未知车型";
     }
     return codeKeyMap.get(code);

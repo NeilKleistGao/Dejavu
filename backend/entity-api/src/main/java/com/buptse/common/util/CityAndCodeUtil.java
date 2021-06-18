@@ -702,14 +702,14 @@ public class CityAndCodeUtil {
     }
 
     public static String getCodeByCity(String city){
-        if(cityKeyMap.containsKey(city)){
-            return "未知区域";
+        if(!cityKeyMap.containsKey(city)){
+            return "-1";
         }
         return cityKeyMap.get(city);
     }
     public static String getCityByCode(Integer code){
-        if(codeKeyMap.containsKey(String.valueOf(code)) == false){
-            return "-1";
+        if(!codeKeyMap.containsKey(String.valueOf(code))){
+            return "未知区域";
         }
         return codeKeyMap.get(String.valueOf(code));
     }

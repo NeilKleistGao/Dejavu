@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SaleDeleteDto {
 
-    private Integer uid;
-
     private Integer sale_id;
 
 }

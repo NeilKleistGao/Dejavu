@@ -3,6 +3,7 @@ package com.buptse.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
+import com.buptse.common.RESULT;
 import com.buptse.common.util.*;
 import com.buptse.dto.LoginDto;
 import com.buptse.dto.CommonResult;
@@ -17,15 +18,19 @@ import com.buptse.service.ICarService;
 import com.buptse.service.IShiroService;
 import com.buptse.service.IUserRoleService;
 import com.buptse.service.IUserService;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.MalformedInputException;
 import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,11 +56,26 @@ public class UserController {
     private IUserRoleService userRoleService;
 
     @GetMapping("/user/get/{uid}")
+    /**
+    * @Description: get userinformation by userId
+    * @Param: [uid]
+    * @return: com.buptse.pojo.User
+    * @Author: gerayking
+    * @Date: 2021/6/17-16:33
+    */
     public User getUSerById(@PathVariable("uid") Integer uid) {
         User user = service.getById(uid);
         return user;
     }
+    @RequiresRoles({"manager"})
     @GetMapping("/user/info/query_all")
+    /**
+    * @Description: query all user info
+    * @Param: [name, phone, email]
+    * @return: com.buptse.dto.CommonResult
+    * @Author: gerayking
+    * @Date: 2021/6/17-16:33
+    */
     public CommonResult queryAllUser(
             @RequestParam(value = "name",required = false) String name,
             @RequestParam(value = "phone",required = false) String phone,
@@ -71,9 +91,17 @@ public class UserController {
     @PostMapping("/user/login")
     public Map<String,Object> loginUser(
         @RequestBody LoginDto loginDto){
+        Map<String,Object> result = new HashMap<>();
         String phoneNumber = loginDto.getPhoneNumber();
         String password = loginDto.getPassword();
-        Map<String,Object> result = new HashMap<>();
+        try {
+            password = PasswordUtil.encrypt2MD5(password);
+        } catch (UnsupportedEncodingException e) {
+            result.put("status",-1);
+            result.put("info","密码加密错误");
+            e.printStackTrace();
+            return result;
+        }
         User user = shiroService.findByUserPhone(phoneNumber);
         if(user == null || !user.getPassword().equals(password)){
             result.put("status",400);
@@ -100,7 +128,7 @@ public class UserController {
         User user = userService.getById(userId);
         return user;
     }
-    @RequiresRoles({"manager,user"})
+    @RequiresRoles(value = {"manager","user"},logical = Logical.OR)
     @PostMapping("/user/info/modify")
     /**
     * @Description: 修改用户信息
@@ -109,27 +137,24 @@ public class UserController {
     * @Author: gerayking
     * @Date: 2021/6/5-14:40
     */
-    public Map modifyUserInfo(
+    public CommonResult modifyUserInfo(
         @RequestBody ModifyUserInfoDto modifyUserInfoDto
     ){
-        String token = modifyUserInfoDto.getToken();
-        Integer userId = modifyUserInfoDto.getUserId();
-        Map<String, Object> result = new HashMap<>();
-        UserToken userToken = shiroService.findByToken(token);
-        if(userToken.getUserId() != userId){
-            result.put("result","false");
-            result.put("info","token认证失败");
-            return result;
+        final Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            return CommonResult.failFast(RESULT.USER_NOT_LOGIN);
         }
-        User user = new User();
-        user.setUid(userId);
+        User user = (User)subject.getPrincipal();
+        Map<String, Object> result = new HashMap<>();
+        if(!user.getUid().equals(modifyUserInfoDto.getUserId())){
+            return CommonResult.failFast(RESULT.NO_PERMISSION,"无法修改其他用户信息");
+        }
         String avatar = modifyUserInfoDto.getAvatar();
         if(avatar !=null) user.setAvatar(avatar);
         String mail = modifyUserInfoDto.getMail();
         if(mail != null) user.setMail(mail);
         boolean flag = userService.updateById(user);
-        result.put("result",flag);
-        return result;
+        return CommonResult.success(flag);
     }
     @PostMapping("/user/info/password")
     /**
@@ -141,19 +166,28 @@ public class UserController {
     */
     public Map modifyPassword(
         @RequestBody ModifyPasswordDto modifyPasswordDto
-    ){
-        Integer uid = modifyPasswordDto.getUid();
-        String oldPassword = modifyPasswordDto.getOldPassword();
-        String newPassword = modifyPasswordDto.getNewPassword();
+    ) {
         Map<String, Object> result = new HashMap<>();
-        User user = userService.getById(uid);
-        if(user.getPassword() != oldPassword){
+        final Subject subject = SecurityUtils.getSubject();
+        final User user = (User) subject.getPrincipal();
+        String oldPassword = null;
+        String newPassword = null;
+        try {
+            oldPassword = DigestUtils.md5DigestAsHex(modifyPasswordDto.getOldPassword().getBytes("utf-8"));
+            newPassword = DigestUtils.md5DigestAsHex(modifyPasswordDto.getNewPassword().getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            result.put("result",-1);
+            result.put("info","密码加密错误");
+            e.printStackTrace();
+            return result;
+        }
+        if(!user.getPassword().equals(oldPassword)){
             result.put("result",-1);
             result.put("info","密码错误");
         }else{
             user.setPassword(newPassword);
             userService.updateById(user);
-            result.put("result",uid);
+            result.put("result",user.getUid());
             result.put("info","密码修改成功");
         }
         return result;
@@ -164,8 +198,14 @@ public class UserController {
     public Map logout(
         @RequestParam String token
     ){
-        Map<String, Object> result = new HashMap<>();
-        boolean flag = shiroService.logout(token);
+        Map result = new HashMap();
+        final Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            result.put("result",false);
+            result.put("info","未登录");
+        }
+        final User user = (User)subject.getPrincipal();
+        boolean flag = shiroService.logout(user.getUid());
         result.put("result",flag);
         return result;
     }
@@ -177,7 +217,15 @@ public class UserController {
     ){
         Map<String, Object> result = new HashMap<>();
         final String phoneNumber = userRegisterDto.getPhoneNumber();
-        final String password = userRegisterDto.getPassword();
+        final String password;
+        try {
+            password = PasswordUtil.encrypt2MD5(userRegisterDto.getPassword());
+        } catch (UnsupportedEncodingException e) {
+            result.put("result",-1);
+            result.put("info","密码加密错误");
+            e.printStackTrace();
+            return  result;
+        }
         final String mail = userRegisterDto.getMail();
         final String name = userRegisterDto.getName();
         if(null == phoneNumber || null == password || null == mail){

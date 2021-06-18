@@ -52,13 +52,22 @@ public class ShiroServiceImpl implements IShiroService {
     return res;
   }
 
+
   @Override
-  public boolean logout(String token) {
-    return tokenService.deleteToken(token);
+  /**
+  * @Description: logout when user token certificated in redis.
+  * @Param: [token]
+  * @return: boolean
+  * @Author: gerayking
+  * @Date: 2021/6/14-21:11
+  */
+  public boolean logout(Integer userId) {
+    final UserToken userToken = tokenService.findUserById(userId);
+    return tokenService.deleteToken(userToken.getFullToken());
   }
 
   /**
-  * @param accessToken Unused.
+  * @param accessToken
   * @return Nothing.
   * @author gerayking
   * @date 2021/6/5 14:31
