@@ -34,3 +34,7 @@ build/
 .vscode/
 
 .mvn/
+
+### PyCharm ###
+temp*.csv
+dm/venv
