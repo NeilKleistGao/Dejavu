@@ -73,7 +73,12 @@
                     </div>
                     <div class="col-6" style="display:flex; align-content: center; align-items: center">
                       <div style="width: 65%; height: 28%">
-                        <q-btn unelevated color="primary" label="估价" style="width: 100%; height: 100%; font-size: medium; font-weight: bold"/>
+                        <q-btn @click="evaluate = true" unelevated color="primary" label="估价" style="width: 100%; height: 100%; font-size: medium; font-weight: bold"/>
+                        <div>
+                          <q-dialog v-model="evaluate">
+                            <evaluate-content/>
+                          </q-dialog>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -122,13 +127,15 @@
 
 <script>
 import SellContent from 'components/sellContent'
+import EvaluateContent from 'components/evaluateContent'
 export default {
   name: 'PageIndex',
-  components: { SellContent },
+  components: { EvaluateContent, SellContent },
   data () {
     return {
       message: '', // 搜索信息
       sellAppointment: false, // 是否点击预约买车按钮
+      evaluate: false, // 是否点击估计按钮
       manufacturerGroup: [ // 生产商信息列表
         { label: '大众', value: { manufacturer: '大众' } },
         { label: '宝马', value: { manufacturer: '宝马' } },

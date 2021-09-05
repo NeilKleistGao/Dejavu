@@ -25,7 +25,12 @@
           </div>
           <div class="col-6" style="display:flex; justify-content: center; align-content: center; align-items: center">
             <div style="width: 50%; height: 25%">
-              <q-btn unelevated color="primary" label="估价" style="width: 100%; height: 100%; font-size: medium; font-weight: bold"/>
+              <q-btn @click="evaluate = true" color="primary" label="估价" style="width: 100%; height: 100%; font-size: medium; font-weight: bold"/>
+              <div>
+                <q-dialog v-model="evaluate">
+                  <evaluate-content/>
+                </q-dialog>
+              </div>
             </div>
           </div>
         </div>
@@ -62,12 +67,14 @@
 
 <script>
 import SellContent from 'components/sellContent'
+import EvaluateContent from 'components/evaluateContent'
 export default {
   name: 'Sell',
-  components: { SellContent },
+  components: { EvaluateContent, SellContent },
   data: function () {
     return {
-      sellAppointment: false // 是否显示预约卖车控件
+      sellAppointment: false, // 是否显示预约卖车控件
+      evaluate: false
     }
   }
 }
