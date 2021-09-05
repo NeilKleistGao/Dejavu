@@ -696,13 +696,21 @@ public class CityAndCodeUtil {
         codeKeyMap.put("1301","石家庄市");
         cityKeyMap.put("宣城市","3418");
         codeKeyMap.put("3418","宣城市");
+        cityKeyMap.put("-1","未知区域");
+        codeKeyMap.put("未知区域","-1");
 
     }
 
     public static String getCodeByCity(String city){
+        if(!cityKeyMap.containsKey(city)){
+            return "-1";
+        }
         return cityKeyMap.get(city);
     }
     public static String getCityByCode(Integer code){
-        return codeKeyMap.get(code);
+        if(!codeKeyMap.containsKey(String.valueOf(code))){
+            return "未知区域";
+        }
+        return codeKeyMap.get(String.valueOf(code));
     }
 }

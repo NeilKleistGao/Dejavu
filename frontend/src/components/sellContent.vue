@@ -1,3 +1,10 @@
+<!--
+ * @FileDescription: 填写卖车信息，预约卖车
+ * @Author: ZoeChou
+ * @Date: 2021/4/19
+ * @LastEditors: NeilKleistGao
+ * @LastEditTime: 2021/6/15
+ -->
 <template>
   <q-card style="width: 812px; max-width: 80vw;">
     <div class="column">
@@ -19,7 +26,7 @@
               v-model="tab"
               vertical
               class="bg-white text-primary"
-              style="width: 12.5vw"
+              style="width: 10vw"
             >
               <q-tab name="step1_sell" label="第1步 选择品牌车系" />
               <q-tab name="step2_sell" label="第2步 填写爱车车况" />
@@ -161,11 +168,6 @@
                       {{manufacture}}
                     </div>
                     <q-option-group
-                      :options="options"
-                      type="radio"
-                      v-model="series"
-                    />
-                    <q-option-group
                       v-model="series"
                       :options="seriesOfManufacturers[manufacture]"
                       color="primary"
@@ -200,7 +202,7 @@
               </q-tab-panel>
 
               <q-tab-panel name="step2_sell">
-                <q-form @submit="onSubmit" class="q-gutter-md">
+                <q-form @submit="uploadImage(0)" class="q-gutter-md">
                   <div class="text-h6" style="display: flex; align-items: center">
                     <img :src="require('../../public/icons/'+manufacture+'.png')" height="27" width="27"/>
                     <div style="width: 5px"/>
@@ -211,14 +213,14 @@
                       <p class="field field-text">
                         <label for="server">使用时长</label>
                         <span class="field-suffixed">
-                          <input aria-describedby="server-suffix" name="server" id="server" type="number" min="0" step="1" required/>
+                          <input aria-describedby="server-suffix" name="server" id="server" type="number" min="0" step="1" v-model="server_life" required/>
                           <span class="field-suffix" id="server-suffix">年</span>
                         </span>
                       </p>
                       <p class="field field-text">
                         <label for="mileage">行驶里程</label>
                         <span class="field-suffixed">
-                          <input aria-describedby="mileage-suffix" name="mileage" id="mileage" type="number" min="0" step="1" required/>
+                          <input aria-describedby="mileage-suffix" name="mileage" id="mileage" type="number" min="0" step="1" v-model="mileage" required/>
                           <span class="field-suffix" id="mileage-suffix">万英里</span>
                         </span>
                       </p>
@@ -228,12 +230,8 @@
                     <fieldset>
                       <legend>有尚未修复的损坏</legend>
                       <div style="height: 1vh"/>
-                      <p class="field">
-                        <label><input name="not_repaired_demage" type="radio" value="yes" required />Yes</label>
-                      </p>
-                      <p class="field">
-                        <label><input name="not_repaired_demage" type="radio" value="false" required />No</label>
-                      </p>
+                      <q-radio v-model="not_repaired_damage" label="是" :val="'有尚未修复的损坏'"/>
+                      <q-radio v-model="not_repaired_damage" label="否" :val="'无尚未修复的损坏'"/>
                     </fieldset>
                   </div>
                   <div class="field-wrapper">
@@ -242,6 +240,11 @@
                       <p class="field">
                         <q-date v-model="date" minimal/>
                       </p>
+                    </fieldset>
+                  </div>
+                  <div class="field-wrapper">
+                    <fieldset>
+                      <q-input label="报价" type="number" v-model="price"/>
                     </fieldset>
                   </div>
                   <div class="field-wrapper">
@@ -276,25 +279,27 @@
 
 <script>
 import carInformationJson from '../../public/car_information/car_information.json'
+// eslint-disable-next-line no-unused-vars
 const carInformation = carInformationJson.car_information
 export default {
   name: 'sellContent',
   data: function () {
     return {
-      api_token: 'unMYs10rZ6yrj8tmp2loxUDPNHn0jdNF',
-      files: null,
-      tab: 'step1_sell',
-      splitterModel: 20,
-      step: 1,
-      manufacture: '大众',
-      series: '捷达',
-      type: '2019款梦想版1.5L自动时尚型',
-      server: null,
-      mileage: null,
-      region: null,
-      not_repaired_damage: null,
-      date: null,
-      images: null,
+      api_token: '', // 图床API密钥
+      files: null, // 上传文件列表
+      tab: 'step1_sell', // tab标签
+      splitterModel: 20, // 分隔栏比例
+      step: 1, // 步进控件当前步骤
+      manufacture: '大众', // 汽车厂商
+      series: '捷达', // 汽车系列
+      type: '2019款梦想版1.5L自动时尚型', // 汽车类型
+      mileage: 0, // 里程数
+      city: sessionStorage.getItem('city'), // 当前城市
+      not_repaired_damage: null, // 是否有未修复损伤
+      date: null, // 上牌日期
+      images: [], // 图片链接
+      server_life: 0, // 使用年限
+      price: 0, // 车主报价
       seriesOfManufacturers: {
         大众: [
           { label: '捷达', value: '捷达' },
@@ -336,7 +341,7 @@ export default {
           { label: '比亚迪F3', value: '比亚迪F3' },
           { label: '比亚迪F0', value: '比亚迪F0' }
         ]
-      },
+      }, // 厂商 -> 系列映射
       typesOfSeries: {
         捷达: [
           { label: '2019款 梦想版 1.5L 手动时尚型', value: '2019款梦想版1.5L手动时尚型' },
@@ -417,10 +422,13 @@ export default {
           { label: '2012款 1.0L 铉酷型', value: '2012款1.0L铉酷型' },
           { label: '2011款 尚酷版 1.0L 悦酷型', value: '2011款尚酷版1.0L悦酷型' }
         ]
-      }
+      } // 系列 -> 车辆名称映射
     }
   },
   methods: {
+    /**
+     * 进入第二步填写
+     */
     toSellStep2 () {
       if (this.manufacture && this.series && this.type) {
         this.tab = 'step2_sell'
@@ -428,6 +436,9 @@ export default {
         alert('请先完成第一步的填写！')
       }
     },
+    /**
+     * 表单数据检查
+     */
     checkSellForm () {
       /* 检查所有变量是否都有值 */
       if (document.forms[0].checkValidity()) {
@@ -437,39 +448,92 @@ export default {
         return false
       }
     },
+    /**
+     * 提交车辆信息
+     */
     onSubmit () {
       this.checkSellForm()
       const carName = this.manufacture + '-' + this.series + '-' + this.type
-      if (this.not_repaired_damage === 'yes') {
-        this.not_repaired_damage = true
-      } else {
-        this.not_repaired_damage = false
-      }
-      this.$axios.post('api/car/new?', {
-        uid: this.$route.params.id,
-        token: this.$route.prams.token, // 待改
-        model: this.series + '-' + this.type,
-        guild_price: 0, // 待改
-        manufacture: this.manufacture,
-        server_life: this.server_life,
-        mileage: this.mileage,
-        price: 0, // 待改
+
+      console.log(this.not_repaired_damage)
+
+      this.$axios.post('api/car/new', {
+        uid: sessionStorage.getItem('uid'),
+        token: sessionStorage.getItem('token'),
+        region: this.city,
+        model_name: this.series + ' ' + this.type,
+        guide_price: 4000000, // 待改
+        manufacturer: this.manufacture,
+        service_life: Number.parseInt(this.server_life),
+        mileage: Number.parseInt(this.mileage),
+        price: Number.parseInt(this.price),
+        displacement: 2.0,
         body_type: carInformation[carName].body_type,
         fuel_type: carInformation[carName].fuel_type,
-        gearbox: carInformation[carName].gearbox,
-        power: carInformation[carName].power,
+        gear_box: carInformation[carName].gearbox,
+        power: Number.parseInt(carInformation[carName].power),
         not_repaired_damage: this.not_repaired_damage,
-        images: '' // 待改
+        imgs: this.images,
+        date: this.date + ' 00:00:00',
+        stat: '待售'
+      }, {
+        headers: {
+          token: sessionStorage.getItem('token')
+        }
       })
         .then(function (response) {
-          console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error)
+          if (response.status === 200 && response.data.car_id !== '-1') {
+            window.location = '/#/car/' + response.data.car_id
+            window.location.reload()
+          }
         })
     },
+    /**
+     * 返回图片上传提示文字
+     * @param totalSize 总大小
+     * @param filesNumber 文件数量
+     * @param maxFiles 文件总数
+     * @returns {string} 提示文字
+     */
     countFileLabel ({ totalSize, filesNumber, maxFiles }) {
       return `${filesNumber} / ${maxFiles} 个文件 | 总大小： ${totalSize}`
+    },
+    /**
+     * 递归上传图片文件
+     * @param index 上传的文件下标
+     */
+    uploadImage (index) {
+      if (index >= this.files.length) {
+        this.onSubmit()
+        return
+      }
+
+      const file = this.files[index]
+      const self = this
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onloadend = function (e) {
+        const formData = new FormData()
+        const data = file
+        formData.append('smfile', data)
+        formData.append('Authorization', 'Ofarf02h3SOyeNsU3TSsq3XTqEmG1GSz')
+        self.$axios.post('/cdn/upload', formData, {
+          headers: {
+            Authorization: 'Ofarf02h3SOyeNsU3TSsq3XTqEmG1GSz'
+          }
+        }).then((response) => {
+          if (response.status === 200 && response.data.success) {
+            self.images.push(response.data.data.url)
+            self.uploadImage(index + 1)
+          } else {
+            alert('图片上传失败，请重试')
+            self.images = []
+          }
+        }).catch(() => {
+          alert('图片上传失败，请重试')
+          self.images = []
+        })
+      }
     }
   }
 }

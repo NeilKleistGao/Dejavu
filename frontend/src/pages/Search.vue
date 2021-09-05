@@ -107,7 +107,7 @@
     </div>
     <div class="q-pa-md row items-start q-gutter-md" style="width: 60%; margin-left: 20%">
       <q-card class="my-card" v-for="item in carList" :key="item.car_id" @click="goDetail(item.car_id)">
-        <q-img src="car_details_test_img/1.png">
+        <q-img :src="getCover(item.imgs)">
           <div class="absolute-bottom">
             <div class="text-h6">{{item.manufacturer}} {{item.model_name}}</div>
             <div class="text-subtitle1">{{item.service_life}}年</div>
@@ -147,25 +147,23 @@ export default {
       price: '', // 价格筛选
       carList: [], // 车辆信息列表
       current: 1, // 当前页码
-      max_page: 1,
-      city: ''
+      max_page: 1, // 页面数量
+      city: '' // 当前城市
     }
   },
   methods: {
     /**
      * @description: 跳转到车辆详细信息页面
      * @param {Number} id
-     * @return void
      */
     goDetail (id) {
       window.location = '/#/car/' + id.toString()
     },
     /**
      * @description: 获取满足条件的车辆列表
-     * @return void
      */
     getCarsList () {
-      let url = '/api/car/list?'
+      let url = '/api/car/list?region=' + this.city + '&'
       if (this.brand !== '') {
         url += 'manufacturer=' + this.brand + '&'
       }
@@ -194,15 +192,58 @@ export default {
       this.$axios.get(url).then(res => {
         if (res.status === 200) {
           this.carList = res.data
+          console.log(res.data)
         }
       })
     },
+    /**
+     * 获取列表长度
+     */
     getCarListLength () {
-      this.$axios.get('/api/car/pn').then(res => {
+      let url = '/api/car/pn?region=' + this.city + '&'
+      if (this.brand !== '') {
+        url += 'manufacturer=' + this.brand + '&'
+      }
+      if (this.body !== '') {
+        url += 'body=' + this.body + '&'
+      }
+      if (this.price !== '') {
+        const bar = this.price.indexOf('-')
+        const min = this.price.substring(0, bar)
+        const max = bar === this.price.length - 1 ? '' : this.price.substring(bar + 1)
+        url += 'min-price=' + min + '&'
+        if (max !== '') {
+          url += 'max-price=' + max + '&'
+        }
+      }
+
+      if (this.text !== '') {
+        url += 'key=' + this.text + '&'
+      }
+
+      if (this.current !== 1) {
+        url += 'page=' + this.current.toString() + '&'
+      }
+
+      url = url.substr(0, url.length - 1)
+
+      this.$axios.get(url).then(res => {
         if (res.status === 200) {
           this.max_page = (res.data['page-number'] / 20) + 1
         }
       })
+    },
+    /**
+     * 获取车辆封面图
+     * @param img 汽车图片列表
+     * @returns {string|*} 封面图链接
+     */
+    getCover (img) {
+      if (img == null) {
+        return 'car_details_test_img/1.png'
+      }
+
+      return img[0]
     }
   },
   beforeMount () {

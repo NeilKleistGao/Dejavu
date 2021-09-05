@@ -21,9 +21,19 @@ public class fuelAndCodeUtil {
     codeKeyMap.put(5,"其他");
     fuelKeyMap.put("电动",6);
     codeKeyMap.put(6,"电动");
+    fuelKeyMap.put("未知动力类型",-1);
+    codeKeyMap.put(-1,"未知动力类型");
   }
-  public static Integer getCodeByFuel(String body){ return fuelKeyMap.get(body); }
+  public static Integer getCodeByFuel(String body){
+    if(!fuelKeyMap.containsKey(body)){
+      return -1;
+    }
+    return fuelKeyMap.get(body);
+  }
   public static String getFuelByCode(Integer code){
+    if(!codeKeyMap.containsKey(code)){
+      return "未知动力类型";
+    }
     return codeKeyMap.get(code);
   }
 }

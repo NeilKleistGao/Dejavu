@@ -3,22 +3,22 @@
  * @Author: NeilKleistGao
  * @Date: 2021/4/19
  * @LastEditors: NeilKleistGao
- * @LastEditTime: 2021/6/14
+ * @LastEditTime: 2021/6/15
  -->
 
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar class="bg-primary text-white shadow-2" style="padding: 15px 10px">
-        <q-toolbar-title @click="goHome">
+        <q-toolbar-title @click="go('/#/')">
           <q-icon class="iconfont icon-drifting"></q-icon>
           Dejavu二手车交易平台
         </q-toolbar-title>
 
-        <q-btn flat class="q-mr-xs" label="我要买车" @click="goSearch"/>
-        <q-btn flat class="q-mr-xs" label="我要卖车" @click="goSell"/>
+        <q-btn flat class="q-mr-xs" label="我要买车" @click="go('/#/search')"/>
+        <q-btn flat class="q-mr-xs" label="我要卖车" @click="go('/#/sell')"/>
         <q-btn flat class="q-mr-xs" :label="'当前城市：' + city">
-          <q-popup-proxy >
+          <q-popup-proxy>
             <q-card style="width: 600px; min-height: 400px">
               <q-card-section>
                 <span class="text-h4">选择城市</span>
@@ -34,12 +34,12 @@
         </q-btn>
         <q-separator vertical inset=""/>
         <div v-if="!hasLogin">
-          <q-btn flat class="q-mr-xs" label="登录" @click="goLogin"/>
-          <q-btn flat class="q-mr-xs" label="注册" @click="goRegister"/>
+          <q-btn flat class="q-mr-xs" label="登录" @click="go('/#/login')"/>
+          <q-btn flat class="q-mr-xs" label="注册" @click="go('/#/register')"/>
         </div>
         <div v-else>
-          <q-avatar size="32px" @click="goUser">
-            <img src="default-avatar.jpg"/>
+          <q-avatar size="32px" @click="go('/#/user')">
+            <img :src="avatar"/>
           </q-avatar>
           <q-btn flat class="q-mr-xs" label="退出" @click="logout"/>
         </div>
@@ -51,7 +51,7 @@
     </q-page-container>
     <div>
       <q-toolbar class="bg-primary text-white shadow-2" style="padding: 15px 10px">
-        <q-toolbar-title @click="goHome">
+        <q-toolbar-title @click="go('/#/')">
           <q-icon class="iconfont icon-drifting"></q-icon>
           <span class="text-h6">Dejavu二手车交易平台</span>
           <br/>
@@ -71,34 +71,23 @@ export default {
     return {
       provinces: CityList.provinces,
       cities: CityList.cities,
+      avatar: 'default-avatar.jpg',
       city: '' // 当前城市名称
     }
   },
   methods: {
     /**
-     * @description: 重定向回主页
-     * @return void
+     * 重定向页面
+     * @param url 重定向目标url
      */
-    goHome () {
-      window.location = '/'
+    go (url) {
+      window.location = url
+      window.location.reload()
     },
-    goSell () {
-      window.location = '/#/sell'
-    },
-    goSearch () {
-      window.location = '/#/search'
-    },
-    goLogin () {
-      window.location = '/#/login'
-    },
-    goRegister () {
-      window.location = '/#/register'
-    },
-    goUser () {
-      window.location = '/#/user'
-    },
+    /**
+     * 用户登出
+     */
     logout () {
-      console.log(sessionStorage.getItem('token'))
       this.$axios.post('/api/user/logout', {
         uid: sessionStorage.getItem('uid'),
         token: sessionStorage.getItem('token')
@@ -123,6 +112,22 @@ export default {
     }
 
     this.city = city
+    if (sessionStorage.getItem('token') !== null) {
+      const self = this
+      this.$axios.get('/api/user/info/query?uid=' + sessionStorage.getItem('uid'), {
+        headers: { token: sessionStorage.getItem('token') }
+      }).then((response) => {
+        if (response.status === 200) {
+          if (response.data.avatar !== null && response.data.avatar !== undefined && response.data.avatar !== '') {
+            self.avatar = response.data.avatar
+          }
+        } else {
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('uid')
+          this.$forceUpdate()
+        }
+      })
+    }
   },
   watch: {
     city: {
@@ -135,6 +140,10 @@ export default {
     }
   },
   computed: {
+    /**
+     * 用户是否已经登录
+     * @returns {boolean} true表示已经登录，反之返回false
+     */
     hasLogin () {
       return sessionStorage.getItem('token') !== null
     }

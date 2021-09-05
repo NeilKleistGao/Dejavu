@@ -2,8 +2,8 @@
  * @FileDescription: 个人用户信息页面
  * @Author: wnn
  * @Date: 2021/5/28
- * @LastEditors: wnn
- * @LastEditTime: 2021/6/14
+ * @LastEditors: NeilKleistGao
+ * @LastEditTime: 2021/6/15
  -->
 <template>
   <q-page class="flex" style="margin-top: 2em; margin-bottom: 1em">
@@ -23,7 +23,6 @@
             <q-tab name="UserInformation" icon="img:icons/gerenxinxi.png" label="用户信息" />
             <q-tab name="Bargain"  icon="img:icons/kanjiashangcheng.png" label="砍价信息" />
             <q-tab name="Transaction" icon="img:icons/jiaoyi.png" label="交易信息"/>
-            <q-tab name="CarInfo"  icon="img:icons/cheliangxinxi.png" label="卖车信息" />
           </q-tabs>
         </template>
 
@@ -63,7 +62,7 @@
 
                   <div>
                     <q-btn label="修改密码" color="primary" style="margin-right: 0.5em" @click="user_data.password_changing = true"/>
-                    <q-btn label="保存修改" color="primary"/>
+                    <q-btn label="保存修改" color="primary" @click="modifyInformation"/>
                   </div>
                 </div>
               </template>
@@ -75,13 +74,28 @@
                 <div class="q-pa-md" style="width: 100%">
                   <q-table
                     title="砍价记录"
-                    :data="data"
+                    :data="bargain_data"
                     :columns="columns"
                     row-key="name"
-                    hide-header
                     hide-bottom
-                  />
-                  <router-link>修改个人信息</router-link>
+                    no-data-label="没有查询到相关数据"
+                  >
+                    <template v-slot:body="props">
+                      <q-tr>
+                        <q-td key="name" :props="props">
+                          <a :href="'/#/car/' + props.row.car_id">{{ props.row.name }}</a>
+                        </q-td>
+                        <q-td key="price" :props="props">
+                          {{ props.row.price }}
+                        </q-td>
+                        <q-td key="state" :props="props">
+                          <q-badge v-if="props.row.state === -1" color="primary" label="等待车主联系"/>
+                          <q-badge v-else-if="props.row.state === 0" color="positive" label="车主正在联系您"/>
+                          <q-badge v-else color="negative" label="交易已结束"/>
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
                 </div>
               </template>
             </q-tab-panel>
@@ -94,23 +108,31 @@
                   :data=trans_data
                   :columns="trans"
                   row-key="name"
-                  hide-header
                   hide-bottom
-                />
-              </div>
-            </q-tab-panel>
-            <q-tab-panel name="CarInfo">
-              <div class="text-h4 q-mb-md">卖车信息</div>
-              <div class="q-pa-md">
-                <q-table
-                  title="卖车记录"
-                  :data="sale_data"
-                  :columns="sales"
-                  row-key="name"
-                  hide-header
-                  hide-bottom
-                  style="width: auto"
-                />
+                >
+                  <template v-slot:body="props">
+                    <q-tr :props="props">
+                      <q-td key="sale_id" :props="props">
+                        {{ props.row.sale_id }}
+                      </q-td>
+                      <q-td key="car_id" :props="props">
+                        <a :href="'/#/car/' + props.row.car_id">
+                          {{ props.row.car_info }}
+                        </a>
+                      </q-td>
+                      <q-td>
+                        <q-badge v-if="props.row.buyer_id.toString() === currentUID" label="买家"/>
+                        <q-badge v-else label="卖家"/>
+                      </q-td>
+                      <q-td key="deal_price" :props="props">
+                        {{ props.row.deal_price }}
+                      </q-td>
+                      <q-td key="deal_time" :props="props">
+                        {{ props.row.deal_time }}
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
               </div>
             </q-tab-panel>
           </q-tab-panels>
@@ -118,6 +140,7 @@
 
       </q-splitter>
     </div>
+
     <q-dialog v-model="user_data.password_changing" persistent>
       <q-card style="min-width: 400px">
         <q-card-section>
@@ -144,126 +167,48 @@ export default {
   name: 'User',
   data () {
     return {
-      tab: 'UserInformation',
-      splitterModel: 20,
+      tab: 'UserInformation', // tab控件标签
+      splitterModel: 20, // 分隔栏比例
       user_data: {
-        name: '',
-        avatar: 'default-avatar.jpg',
-        mail: '',
-        phone: '',
-        old_password: '',
-        new_password: '',
-        conform_password: '',
-        password_changing: false,
-        avatar_file: null
-      },
+        name: '', // 用户昵称
+        avatar: 'default-avatar.jpg', // 用户头像链接
+        mail: '', // 用户邮箱
+        phone: '', // 用户手机号
+        old_password: '', // 旧密码
+        new_password: '', // 新密码
+        conform_password: '', // 确认密码
+        password_changing: false, // 是否显示修改密码
+        avatar_file: null // 头像文件
+      }, // 用户数据
       columns: [
-        {
-          name: 'desc',
-          required: true,
-          label: 'Dessert (100g serving)',
-          align: 'left',
-          field: row => row.name,
-          format: val => `${val}`,
-          sortable: true
-        },
-        { name: 'uid', align: 'center', label: 'uid', field: 'uid', sortable: true },
-        { name: 'carID', label: 'carId', field: 'carId', sortable: true },
-        { name: 'pirce', label: 'price', field: 'price' },
-        { name: 'start_time', label: 'start_time', field: 'start_time' },
-        { name: 'end_time', label: 'end_time', field: 'sodium' }
-      ],
-      data: [
-        {
-          name: 1,
-          uid: 2017213391,
-          carId: 101875436,
-          price: '20.3w',
-          start_time: '2020/04/20 14:00',
-          end_time: '2020/04/20 14:35'
-        },
-        {
-          name: 2,
-          uid: 2017213391,
-          carId: 101875436,
-          price: '2.3w',
-          start_time: '2020/05/13 16:17',
-          end_time: '2020/05/13 16:31'
-        },
-        {
-          name: 3,
-          uid: 2017213391,
-          carId: 101875436,
-          price: '20.3w',
-          start_time: '2020/04/20 14:00',
-          end_time: '2020/04/20 14:35'
-        }
-      ],
+        { name: 'name', label: '车辆', field: 'name', sortable: true },
+        { name: 'price', label: '价格', field: 'price', sortable: true },
+        { name: 'state', label: '状态', field: 'state', sortable: true }
+      ], // 砍价记录表格表头
+      bargain_data: [], // 用户砍价数据
       trans: [
-        {
-          name: 'desc',
-          required: true,
-          label: 'Dessert',
-          align: 'left',
-          field: row => row.name,
-          format: val => `${val}`,
-          sortable: true
-        },
-        { name: 'sale_id', align: 'center', lable: 'sale_id', field: 'sale_id' },
-        { name: 'buyer_id', align: 'center', label: 'buyer_id', field: 'buyer_id' },
-        { name: 'seller_id', align: 'center', label: 'seller_id', field: 'seller_id' },
-        { name: 'car_id', align: 'center', label: 'car_id', field: 'car_id' },
-        { name: 'deal_price', align: 'center', label: 'deal_price', field: 'deal_price', sortable: true },
-        { name: 'deal_time', align: 'center', label: 'deal_time', field: 'deal_time', sortable: true }
-      ],
-      trans_data: [
-        {
-          name: 1,
-          sale_id: 202104211605,
-          buyer_id: 1018472973,
-          seller_id: 1020472973,
-          carId: 11111111,
-          deal_price: 23,
-          deal_time: '2020/04/21 16:05'
-        },
-        {
-          name: 2,
-          sale_id: 202104211605,
-          buyer_id: 1018472973,
-          seller_id: 1020472973,
-          carId: 11111111,
-          deal_price: 23,
-          deal_time: '2020/04/21 16:05'
-        }
-      ],
-      sales: [
-        {
-          name: 'sales',
-          required: true,
-          label: 'sales',
-          align: 'left',
-          field: row => row.name,
-          format: val => `${val}`,
-          sortable: true
-        },
-        { name: 'carID', label: 'carId', field: 'carId', sortable: true },
-        { name: 'state', label: 'state', field: 'state', sortable: true }
-      ],
-      sale_data: [
-        {
-          name: 1,
-          carID: 534234632,
-          state: '未售出'
-        },
-        {
-          name: 2,
-          carID: 3457845786,
-          state: '已售出'
-        }
-      ]
+        { name: 'sale_id', align: 'center', label: '成交ID', field: 'sale_id', sortable: true },
+        { name: 'car_id', align: 'center', label: '车辆信息', field: 'car_info', sortable: true },
+        { name: 'char', align: 'left', label: '您的角色', field: 'buyer' },
+        { name: 'deal_price', align: 'center', label: '成交价格', field: 'deal_price', sortable: true },
+        { name: 'deal_time', align: 'center', label: '成交时间', field: 'deal_time', sortable: true }
+      ], // 用户交易表格表头
+      trans_data: [] // 交易数据
     }
   },
   methods: {
+    /**
+     * 要求用户重新登录
+     */
+    reLogin () {
+      sessionStorage.removeItem('uid')
+      sessionStorage.removeItem('token')
+      window.location = '/#/login'
+      window.location.reload()
+    },
+    /**
+     * 上传用户头像
+     */
     upload () {
       const self = this
       const file = self.user_data.avatar_file
@@ -271,7 +216,6 @@ export default {
       reader.readAsDataURL(file)
       reader.onloadend = function (e) {
         const data = file
-        console.log(data)
         const formData = new FormData()
         formData.append('smfile', data)
         formData.append('Authorization', '')
@@ -283,13 +227,13 @@ export default {
           if (response.status === 200 && response.data.success) {
             const url = response.data.data.url
             self.$axios.post('/api/user/info/modify', {
-              uid: sessionStorage.getItem('uid'),
+              userId: Number.parseInt(sessionStorage.getItem('uid')),
               token: sessionStorage.getItem('token'),
-              avatar: url
+              avatar: url,
+              mail: self.user_data.mail
             }, {
               headers: { token: sessionStorage.getItem('token') }
             }).then((response) => {
-              console.log(response)
               if (response.status === 200 && response.data.result) {
                 window.location.reload()
               }
@@ -298,17 +242,19 @@ export default {
         })
       }
     },
+    /**
+     * 修改用户密码
+     */
     modifyPassword () {
       if (this.user_data.new_password !== this.user_data.conform_password) {
         alert('两次密码不一致')
       } else {
         const self = this
-        console.log(self.user_data.new_password)
         this.$axios.post('/api/user/info/password', {
           uid: sessionStorage.getItem('uid'),
           token: sessionStorage.getItem('token'),
-          old: self.user_data.old_password,
-          new: self.user_data.new_password
+          oldPassword: self.user_data.old_password,
+          newPassword: self.user_data.new_password
         }, {
           headers: { token: sessionStorage.getItem('token') }
         }).then((response) => {
@@ -320,6 +266,118 @@ export default {
           }
         })
       }
+    },
+    /**
+     * 修改用户基本信息
+     */
+    modifyInformation () {
+      this.$axios.post('/api/user/info/modify', {
+        userId: Number.parseInt(sessionStorage.getItem('uid')),
+        token: sessionStorage.getItem('token'),
+        avatar: this.user_data.avatar,
+        mail: this.user_data.mail,
+        name: this.user_data.name
+      }, {
+        headers: { token: sessionStorage.getItem('token') }
+      }).then((response) => {
+        if (response.status === 200 && response.data.result) {
+          window.location.reload()
+        }
+      })
+    },
+    /**
+     * 获取用户砍价记录列表
+     */
+    getBargainList () {
+      const id = sessionStorage.getItem('uid')
+      const token = sessionStorage.getItem('token')
+      this.$axios.post('/api/transaction/bargain/query', {
+        uid: id
+      }, {
+        headers: {
+          token: token
+        }
+      }).then((response) => {
+        if (response.status === 200 && response.data.errCode === 0) {
+          this.bargain_data = response.data.result
+          const self = this
+          for (let i = 0; i < this.bargain_data.length; ++i) {
+            this.$axios.get('/api/car?id=' + this.bargain_data[i].car_id).then((response) => {
+              if (response.status === 200) {
+                self.bargain_data[i].name = response.data.manufacturer + response.data.model_name
+              }
+            })
+
+            const start = Date.parse(this.bargain_data[i].start_time)
+            const end = Date.parse(this.bargain_data[i].end_time)
+            const now = new Date()
+            now.setHours(0)
+            now.setMinutes(0)
+            now.setSeconds(0)
+
+            if (start > now) {
+              this.bargain_data[i].state = -1
+            } else if (now > end) {
+              this.bargain_data[i].state = 1
+            } else {
+              this.bargain_data[i].state = 0
+            }
+          }
+        } else {
+          this.reLogin()
+        }
+      })
+    },
+    /**
+     * 获取用户交易记录列表
+     */
+    getTransactionList () {
+      const id = sessionStorage.getItem('uid')
+      const token = sessionStorage.getItem('token')
+      this.$axios.post('/api/transaction/sale/query', {
+        buyer: id
+      }, {
+        headers: {
+          token: token
+        }
+      }).then((response) => {
+        console.log(response)
+        if (response.status === 200 && response.data.errCode === 0) {
+          this.trans_data = this.trans_data.concat(response.data.result)
+        } else {
+          this.reLogin()
+        }
+      })
+
+      this.$axios.post('/api/transaction/sale/query', {
+        seller: id
+      }, {
+        headers: {
+          token: token
+        }
+      }).then((response) => {
+        console.log(response)
+        if (response.status === 200 && response.data.errCode === 0) {
+          this.trans_data = this.trans_data.concat(response.data.result)
+          for (let i = 0; i < this.trans_data.length; ++i) {
+            this.$axios.get('/api/car?id=' + this.trans_data[i].car_id).then(res => {
+              if (res.status === 200 && res.data.model_name !== null && res.data.model_name !== undefined) {
+                this.trans_data[i].car_info = res.data.model_name
+                console.log(res.data)
+              } else {
+                this.trans_data[i].car_info = '未知车辆'
+              }
+            })
+          }
+        } else {
+          this.reLogin()
+        }
+      })
+    }
+  },
+  computed: {
+    currentUID () {
+      return sessionStorage.getItem('uid')
     }
   },
   beforeMount () {
@@ -327,6 +385,7 @@ export default {
     this.$axios.get('/api/user/info/query?uid=' + sessionStorage.getItem('uid'), {
       headers: { token: sessionStorage.getItem('token') }
     }).then((response) => {
+      console.log(response)
       if (response.status === 200) {
         const data = response.data
         self.user_data.name = data.name
@@ -336,8 +395,13 @@ export default {
         if (data.avatar !== null && data.avatar !== undefined && data.avatar !== '') {
           self.user_data.avatar = data.avatar
         }
+      } else {
+        this.reLogin()
       }
     })
+
+    this.getBargainList()
+    this.getTransactionList()
   },
   beforeRouteEnter (to, from, next) {
     if (sessionStorage.getItem('token') === null) {
