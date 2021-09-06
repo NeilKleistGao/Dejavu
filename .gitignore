@@ -38,3 +38,4 @@ build/
 ### PyCharm ###
 temp*.csv
 dm/venv
+frontend/node_modules
