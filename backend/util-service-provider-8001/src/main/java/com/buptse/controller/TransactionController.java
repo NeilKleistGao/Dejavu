@@ -112,6 +112,7 @@ public class TransactionController {
         carService.updateById(car);
         return CommonResult.success(id);
     }
+
     @RequiresRoles({"manager"})
     @PostMapping("/transaction/sale/delete")
     public CommonResult deleteTransaction(

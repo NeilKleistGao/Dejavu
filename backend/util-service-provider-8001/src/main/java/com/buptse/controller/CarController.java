@@ -39,7 +39,8 @@ public class CarController {
     public CarDto getCarById(@RequestParam Integer id){
         CarDto carDto = carService.getCarDto(carService.getById(id));
         QueryWrapper<Carimg> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("car_id",id);
+        queryWrapper.eq("" +
+                "car_id",id);
         List<Carimg> list = carimgService.list(queryWrapper);
         final List<String> imgs = list.stream().map(Carimg::getImg).collect(Collectors.toList());
         carDto.setImgs(imgs);

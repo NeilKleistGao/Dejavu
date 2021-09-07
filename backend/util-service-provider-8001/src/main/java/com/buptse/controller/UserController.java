@@ -2,6 +2,7 @@ package com.buptse.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.buptse.common.RESULT;
 import com.buptse.common.util.*;
@@ -30,6 +31,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,9 +53,13 @@ public class UserController {
     IShiroService shiroService;
     @Autowired
     IUserService userService;
-
     @Autowired
     private IUserRoleService userRoleService;
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    private final static String TOPIC_NAME = "user-topic-modify-mail";
+
 
     @GetMapping("/user/get/{uid}")
     /**
@@ -249,5 +255,23 @@ public class UserController {
         result.put("result",uid);
         result.put("info","注册成功");
         return result;
+    }
+
+
+    @GetMapping("/pressure-test/update-mail/kafka")
+    public String presstestKafka(@RequestParam("uid") String uid,
+                       @RequestParam("mail") String mail) {
+        kafkaTemplate.send(TOPIC_NAME, uid, mail);
+        return uid+"  信息修改成功";
+    }
+
+    @GetMapping("/pressure-test/update-mail")
+    public String presstest(@RequestParam("uid") String uid,
+                       @RequestParam("mail") String mail) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        User user = userService.getById(uid);
+        updateWrapper.set("mail",mail);
+        userService.update(user,updateWrapper);
+        return uid+"  信息修改成功";
     }
 }
