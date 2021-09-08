@@ -44,6 +44,9 @@ public class ShiroConfig {
     filterMap.put("/swagger-resources/**", "anon");
     filterMap.put("/doc.html", "anon");
     filterMap.put("/car/**","anon");
+    filterMap.put("/pressure-test/**","anon");
+    filterMap.put("/dataming/**","anon");
+
     // 除了以上路径，其他都需要权限验证
     filterMap.put("/**", "auth");
     shiroFilter.setLoginUrl("/user/login");
