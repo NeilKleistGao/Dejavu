@@ -1,9 +1,15 @@
 package com.buptse.service;
 
+import org.apache.spark.SparkConf;
+import org.apache.spark.SparkContext;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.ml.PipelineModel;
+import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 
 /**
  * @ClassName DataMineService
@@ -28,7 +34,7 @@ public class DataMineService {
             .add("power", DataTypes.IntegerType, true)
             .add("kilometer", DataTypes.DoubleType, true)
             .add("unrepairedDamage", DataTypes.DoubleType, true)
-            .add("price", DataTypes.DoubleType, true)
+//            .add("price", DataTypes.DoubleType, true)
             .add("v0", DataTypes.DoubleType, true)
             .add("v2", DataTypes.DoubleType, true)
             .add("v3", DataTypes.DoubleType, true)
@@ -36,12 +42,20 @@ public class DataMineService {
             .add("v6", DataTypes.DoubleType, true);
 
     public static volatile PipelineModel pipelineModel;
-
+    public static SQLContext sqlContext;
+    public static  SQLContext LoadSpark(){
+        if(sqlContext==null) {
+            SparkConf conf = new SparkConf().setAppName("DataMineService").setMaster("local");
+            JavaSparkContext sc = new JavaSparkContext(conf);
+            sqlContext = new SQLContext(sc);
+        }
+        return sqlContext;
+    }
     public static  PipelineModel loadPipelineModel(){
         if(pipelineModel==null){
             synchronized (DataMineService.class){
-                if(pipelineModel == null){
-                    pipelineModel = PipelineModel.load("D:\\Code\\used-car\\local\\Dejavu\\backend\\util-service-provider-8001\\src\\main\\java\\com\\buptse\\model\\rf.model");
+                if(pipelineModel == null) {
+                    pipelineModel = PipelineModel.load("./model/rf.model");
                 }
             }
         }

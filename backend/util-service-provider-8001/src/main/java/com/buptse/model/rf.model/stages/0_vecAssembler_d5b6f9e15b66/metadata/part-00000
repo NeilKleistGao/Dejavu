@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1631009714458,"sparkVersion":"2.2.0","uid":"vecAssembler_d5b6f9e15b66","paramMap":{"inputCols":["brand","fuelType","gearBox","power","kilometer","unrepairedDamage","v0","v2","v3","v4","v6"],"outputCol":"features"}}

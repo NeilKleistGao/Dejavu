@@ -48,8 +48,6 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        </dependency>
-
     </dependencies>
 
 </project>

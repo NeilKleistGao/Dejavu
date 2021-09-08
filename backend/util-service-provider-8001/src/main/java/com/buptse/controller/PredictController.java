@@ -6,10 +6,7 @@ import com.buptse.service.DataMineService;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.ml.PipelineModel;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
-import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,23 +34,22 @@ public class PredictController {
             @RequestParam("brand") Integer brand,
             @RequestParam("fuelType") Integer fuelType,
             @RequestParam("gearBox") Integer gearBox,
-            @RequestParam("kilometer") Integer kilometer,
-            @RequestParam("unrepairedDamage") Integer unrepairedDamage
+            @RequestParam("power")Integer power,
+            @RequestParam("kilometer") Double kilometer,
+            @RequestParam("unrepairedDamage") Double unrepairedDamage
     ) {
 
-        List<Row> data = Collections.singletonList(RowFactory.create(brand, fuelType, gearBox, kilometer, unrepairedDamage,
+        List<Row> data = Collections.singletonList(RowFactory.create(brand, fuelType, gearBox, power,kilometer, unrepairedDamage,
                 DataMineService.V0, DataMineService.V2,
                 DataMineService.V3, DataMineService.V4, DataMineService.V6));
-
+        SQLContext sql = DataMineService.sqlContext == null?
+                DataMineService.LoadSpark() : DataMineService.sqlContext;
         PipelineModel model = DataMineService.pipelineModel == null ?
                 DataMineService.loadPipelineModel() : DataMineService.pipelineModel;
-        SparkConf conf = new SparkConf().setAppName("RandomForest").setMaster("local");
-        JavaSparkContext sc = new JavaSparkContext(conf);
-        SQLContext sql = new SQLContext(sc);
-        Dataset<Row> dataFrame = sql.createDataFrame(data, DataMineService.schema);
+        Dataset<Row> dataFrame = sql.createDataFrame(data,DataMineService.schema);
         Dataset<Row> prediction = model.transform(dataFrame);
-        Double  price= (Double) prediction.select("prediction").collect();
-        return CommonResult.success(PredictDto.genPredictDto(price));
+        List<Double> prediction1 = prediction.select("prediction").as(Encoders.DOUBLE()).collectAsList();
+        return CommonResult.success(PredictDto.genPredictDto(prediction1.get(0)));
 
     }
 }
