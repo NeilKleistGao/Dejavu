@@ -278,6 +278,8 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
+import * as imageConversion from 'image-conversion'
 import carInformationJson from '../../public/car_information/car_information.json'
 // eslint-disable-next-line no-unused-vars
 const carInformation = carInformationJson.car_information
@@ -515,23 +517,27 @@ export default {
       reader.onloadend = function (e) {
         const formData = new FormData()
         const data = file
-        formData.append('smfile', data)
-        formData.append('Authorization', 'Ofarf02h3SOyeNsU3TSsq3XTqEmG1GSz')
-        self.$axios.post('/cdn/upload', formData, {
-          headers: {
-            Authorization: 'Ofarf02h3SOyeNsU3TSsq3XTqEmG1GSz'
-          }
-        }).then((response) => {
-          if (response.status === 200 && response.data.success) {
-            self.images.push(response.data.data.url)
-            self.uploadImage(index + 1)
-          } else {
+        imageConversion.compressAccurately(data, 60).then(res => {
+          res = new File([res], file.name, { type: res.type, lastModified: Date.now() })
+          formData.append('smfile', res)
+          formData.append('Authorization', 'Ofarf02h3SOyeNsU3TSsq3XTqEmG1GSz')
+
+          self.$axios.post('/cdn/upload', formData, {
+            headers: {
+              Authorization: 'Ofarf02h3SOyeNsU3TSsq3XTqEmG1GSz'
+            }
+          }).then((response) => {
+            if (response.status === 200 && response.data.success) {
+              self.images.push(response.data.data.url)
+              self.uploadImage(index + 1)
+            } else {
+              alert('图片上传失败，请重试')
+              self.images = []
+            }
+          }).catch(() => {
             alert('图片上传失败，请重试')
             self.images = []
-          }
-        }).catch(() => {
-          alert('图片上传失败，请重试')
-          self.images = []
+          })
         })
       }
     }

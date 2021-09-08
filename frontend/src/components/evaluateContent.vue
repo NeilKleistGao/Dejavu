@@ -71,10 +71,10 @@
               />
 
               <div>
-                <q-btn label="提交" type="submit" color="primary" @click="result = true"/>
+                <q-btn label="提交" type="submit" color="primary"/>
                 <div>
                   <q-dialog v-model="result">
-                    <evaluate-result/>
+                    <evaluate-result :hint="hint"/>
                   </q-dialog>
                 </div>
                 <q-btn label="重置" type="reset" color="primary" flat class="q-ml-sm" />
@@ -107,7 +107,18 @@ export default {
   },
   methods: {
     onSubmit () {
+      if (this.brand === null || this.fueltype === null || this.gearbox === null || this.power === null || this.kilometer === null ||
+        this.damage === null) {
+        alert('请填写完表单！')
+        return
+      }
 
+      const self = this
+      this.$axios.post('/spark/dataming/predict/?brand=' + this.brand + '&fuelType=' + this.fueltype +
+        '&gearBox=' + this.gearbox + '&power=' + this.power + '&kilometer=' + this.kilometer + '&unrepairedDamage=' + this.damage).then((res) => {
+        self.hint = res.data.result.priceDown.toString() + '~' + res.data.result.priceUp.toString()
+        self.result = true
+      })
     },
 
     onReset () {

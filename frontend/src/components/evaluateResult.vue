@@ -4,7 +4,7 @@
       <div class="col">
         <q-bar dark class="bg-primary text-white" style="height: 10vh">
           <div class="col text-weight-bold">
-            Dejavu预约卖车，多卖20%，平均7天成交。
+            Dejavu为您预测的价格区间为：
             {{hint}}
           </div>
         </q-bar>
@@ -16,9 +16,13 @@
 <script>
 export default {
   name: 'evaluateResult',
+  props: {
+    hint: {
+      required: true
+    }
+  },
   data () {
     return {
-      hint: ' '
     }
   }
 }

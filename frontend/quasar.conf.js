@@ -78,7 +78,7 @@ module.exports = function (/* ctx */) {
       open: false, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'http://124.70.47.227:8001/',
+          target: 'http://101.200.202.11:8001/',
           ws: true,
           changeOrigin: true,
           pathRewrite: {
@@ -95,6 +95,14 @@ module.exports = function (/* ctx */) {
           },
           headers: {
             Referer: 'https://sm.ms'
+          }
+        },
+        '/spark': {
+          target: 'http://127.0.0.1:8001/',
+          ws: true,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/spark': ''
           }
         }
       }

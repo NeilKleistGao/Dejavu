@@ -34,3 +34,8 @@ build/
 .vscode/
 
 .mvn/
+
+### PyCharm ###
+temp*.csv
+dm/venv
+frontend/node_modules
