@@ -102,7 +102,7 @@ export default {
       kilometer: null,
       damage: null,
       result: false,
-      hint: '12we434 '
+      hint: null
     }
   },
   methods: {
@@ -114,10 +114,10 @@ export default {
       }
 
       const self = this
+      this.result = true
       this.$axios.post('/spark/dataming/predict/?brand=' + this.brand + '&fuelType=' + this.fueltype +
         '&gearBox=' + this.gearbox + '&power=' + this.power + '&kilometer=' + this.kilometer + '&unrepairedDamage=' + this.damage).then((res) => {
         self.hint = res.data.result.priceDown.toString() + '~' + res.data.result.priceUp.toString()
-        self.result = true
       })
     },
 
